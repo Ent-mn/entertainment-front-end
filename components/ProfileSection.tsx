@@ -1,5 +1,5 @@
 const ProfileSection = () => {
-  return <div>ProfileSection</div>;
+  return <div>Test</div>;
 };
 
 export default ProfileSection;
