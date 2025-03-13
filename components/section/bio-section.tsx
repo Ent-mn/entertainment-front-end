@@ -45,7 +45,7 @@ export default function BioSection({ bio, updateBio, error }: BioSectionProps) {
   };
 
   const applyFormatting = (command: string, value: string | null = null) => {
-    document.execCommand(command, false, value);
+    document.execCommand(command, false,);
     handleEditorChange();
     editorRef.current?.focus();
   };

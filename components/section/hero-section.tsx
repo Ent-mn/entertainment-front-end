@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 import ImageUploader from "../profile/image-uploader";
-import type { ArtistData } from "../artist-admin";
+import type { ArtistData } from "../profile/artist-admin";
 
 interface HeroSectionProps {
   data: ArtistData;

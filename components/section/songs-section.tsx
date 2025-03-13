@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import type { Song } from "../artist-admin";
+import type { Song } from "../profile/artist-admin";
 import {
   Trash2,
   Music,

@@ -12,7 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { Event } from "../artist-admin";
+import type { Event } from "../profile/artist-admin";
 import {
   Trash2,
   Calendar,
