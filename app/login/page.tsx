@@ -110,7 +110,9 @@ const Login = () => {
               }`}
             />
             {errors.email && (
-              <p className="text-sm text-red-500">{errors.email.message}</p>
+              <p className="text-sm text-red-500">
+                {typeof errors.email.message === 'string' ? errors.email.message : ''}
+              </p>
             )}
           </div>
 
@@ -141,7 +143,9 @@ const Login = () => {
               </button>
             </div>
             {errors.password && (
-              <p className="text-sm text-red-500">{errors.password.message}</p>
+              <p className="text-sm text-red-500">
+                {typeof errors.password.message === 'string' ? errors.password.message : ''}
+              </p>
             )}
           </div>
 
