@@ -81,7 +81,7 @@ export default function CountdownCard({
   useEffect(() => {
     const timer = setInterval(() => {
       const now = new Date().getTime();
-      const distance = endDate.getTime() - now;
+      const distance = endDate?.getTime() ?? 0 - now;
 
       setTimeLeft({
         days: Math.floor(distance / (1000 * 60 * 60 * 24)),

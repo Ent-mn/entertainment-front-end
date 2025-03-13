@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import Card from "../Card";
-import { Banner3 } from "../banner3/Banner3";
+import Card from "@/components/Card";
+import { Banner3 } from "@/components/banner3/Banner3";
 
 interface FavoriteProduct {
   productdata: {
