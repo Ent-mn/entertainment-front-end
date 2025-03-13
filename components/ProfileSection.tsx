@@ -15,7 +15,7 @@ import {
 
 export default function ProfileSection() {
   return (
-    <div className="min-h-screen bg-[#242424] text-white">
+    <div className="min-h-screen bg-[#1c1c1c] text-white">
       <div>
         <img
           src="https://mgl.gogo.mn/news/2013/9/5/bold.jpg"
