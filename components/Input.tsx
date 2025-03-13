@@ -3,7 +3,7 @@
 import { useState } from "react";
 import clsx from "clsx";
 
-interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> {
   label?: string;
   type?: "text" | "password" | "email" | "number";
   size?: "sm" | "md" | "lg";
@@ -48,7 +48,11 @@ const Input: React.FC<InputProps> = ({
       <div className="relative flex items-center">
         {iconLeft && (
           <span className="absolute left-3">
-            <img className="h-4 w-4" src={iconLeft} alt="eye toggle" />
+            {typeof iconLeft === 'string' ? (
+              <img className="h-4 w-4" src={iconLeft} alt="icon" />
+            ) : (
+              iconLeft
+            )}
           </span>
         )}
         <input
