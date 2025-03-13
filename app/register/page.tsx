@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { Button } from "@/components/ui/button";
 
 const Register = () => {
   const router = useRouter();
@@ -253,7 +254,7 @@ const Register = () => {
             Нэвтрэх
           </button>
 
-          <button
+          <Button
             variant="outline"
             type="button"
             className="w-[148px] flex items-center gap-2 border rounded-md px-4 py-2"
@@ -265,8 +266,8 @@ const Register = () => {
               height={20}
             />
             <span className="text-[#828282]">Facebook</span>
-          </button>
-          <button
+          </Button>
+          <Button
             variant="outline"
             type="button"
             className="w-[148px] flex items-center gap-2 border rounded-md px-4 py-2"
@@ -278,7 +279,7 @@ const Register = () => {
               height={20}
             />
             <span className="text-[#828282]">Google</span>
-          </button>
+          </Button>
         </div>
       </div>
     </div>
