@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Eye, EyeOff } from "lucide-react";
+import axios from "axios";
 
 const Login = () => {
   const router = useRouter();
@@ -15,8 +16,25 @@ const Login = () => {
   } = useForm();
   const [showPassword, setShowPassword] = useState(false);
 
-  const onSubmit = (data: Record<string, any>) => {
-    console.log("Нэвтрэх мэдээлэл:", data);
+  const onSubmit = (userdata: Record<string, any>) => {
+    // const fetchData = async () => {
+    //   try {
+    //     const { data }: any = await axios.post(`${process.env}/login`, {
+    //       userdata,
+    //     });
+    //     if (data) {
+    //       router.push("/home");
+    //     } else {
+    //       console.log("false");
+    //     }
+    //   } catch (error) {
+    //     console.log(error);
+    //   }
+    // };
+    // fetchData();
+
+    window.localStorage.setItem("user", `${userdata.name}`);
+    router.push("/");
   };
 
   const images = ["/image copy.png", "/perfume.png", "/image copy.png"];
@@ -97,21 +115,21 @@ const Login = () => {
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 w-full">
           <div>
-            <label htmlFor="email" className="block text-sm font-semibold">
+            <label htmlFor="string" className="block text-sm font-semibold">
               Нэвтрэх нэр
             </label>
             <input
-              id="email"
-              type="email"
+              id="name"
+              type="name"
               placeholder="Имэйл хаяг"
-              {...register("email", { required: "Нэвтрэх нэр эсвэл Имэйл" })}
+              {...register("name", { required: "Нэвтрэх нэр эсвэл Имэйл" })}
               className={`w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-400 ${
                 errors.email ? "border-red-500" : "border-gray-300"
               }`}
             />
-            {errors.email && (
+            {errors.string && (
               <p className="text-sm text-red-500">
-                {typeof errors.email.message === 'string' ? errors.email.message : ''}
+                {typeof errors === "string" ? errors : "123"}
               </p>
             )}
           </div>
@@ -144,7 +162,9 @@ const Login = () => {
             </div>
             {errors.password && (
               <p className="text-sm text-red-500">
-                {typeof errors.password.message === 'string' ? errors.password.message : ''}
+                {typeof errors.password.message === "string"
+                  ? errors.password.message
+                  : ""}
               </p>
             )}
           </div>
