@@ -12,16 +12,6 @@ permissions:
   pull-requests: write
 
 jobs:
-
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Install dependencies
-        run: yarn install
-
-
   test:
     runs-on: ubuntu-latest
     steps:
@@ -54,6 +44,6 @@ jobs:
       - name: Add preview link to PR
         run: |
           PREVIEW_URL=$(vercel --token ${{ secrets.VERCEL_TOKEN }} --scope ${{ secrets.VERCEL_ORG_ID }} --confirm)
-          gh pr comment ${{ github.event.pull_request.number }} --body "🚀 **Preview Link:** $PREVIEW_URL"
+          gh pr comment ${{ github.event.pull_request.number }} --body "🚀 **Preview URL:** $PREVIEW_URL"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
