@@ -1,8 +1,9 @@
-import ProfileSection from "@/components/ProfileSection";
+// import ProfileSection from "@/components/ProfileSection";
 const page = () => {
   return (
     <div>
-      <ProfileSection />
+      test
+      {/* <ProfileSection /> */}
     </div>
   );
 };
