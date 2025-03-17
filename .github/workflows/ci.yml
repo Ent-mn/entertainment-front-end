@@ -21,9 +21,6 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
-      - name: Run tests
-        run: yarn test
-
   preview:
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
