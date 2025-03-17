@@ -30,3 +30,4 @@ jobs:
           vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
           vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
           vercel deploy --prod --token=${{ secrets.VERCEL_TOKEN }}
+s
