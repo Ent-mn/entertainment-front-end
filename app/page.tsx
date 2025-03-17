@@ -408,7 +408,7 @@ const Home = () => {
   return (
     <div className="flex justify-center items-center h-screen">
       <ThemeToggle />
-      test
+      asd asd
     </div>
   );
 };
