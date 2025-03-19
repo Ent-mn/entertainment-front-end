@@ -1,11 +1,14 @@
 "use client";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import Input from "../Input";
 import SiteHeader from "./SiteHeader";
-import { useRouter } from "next/navigation";
+import { useUser } from "@/context/UserContext";
 
 export const Header = () => {
   const router = useRouter();
+  const { user, isLoggedIn, logout } = useUser();
+
   return (
     <div className="w-screen flex flex-col">
       <header className="flex items-center justify-between px-6 py-3 bg-white border-b border-gray-200">
@@ -21,26 +24,36 @@ export const Header = () => {
         </div>
 
         <div className="flex items-center gap-6">
-          {!window.localStorage.user ? (
-            <Link href={"/login"}>
+          {!isLoggedIn ? (
+            <Link href="/login">
               <div className="cursor-pointer">Login</div>
             </Link>
           ) : (
-            <div
-              className="flex items-center gap-3 cursor-pointer"
-              onClick={() => {
-                router.push("/profile");
-              }}
-            >
-              <img src="bold.png" alt="" className="w-10 h-10 rounded-2xl" />
-              <div>
-                <p className="font-semibold text-sm">Bold</p>
-                <p className="text-xs text-gray-500">Admin</p>
+            <div>
+              <div
+                className="flex items-center gap-3 cursor-pointer"
+                onClick={() => {
+                  router.push("/profile");
+                }}
+              >
+                <img
+                  src="bold.png"
+                  alt="User profile"
+                  className="w-10 h-10 rounded-2xl"
+                />
+                <div>
+                  <p className="font-semibold text-sm">{user?.customer_name}</p>
+                  <p className="text-xs text-gray-500">{user?.org_name}</p>
+                </div>
               </div>
+              <button onClick={logout} className="text-red-500 cursor-pointer">
+                Logout
+              </button>
             </div>
           )}
         </div>
       </header>
+
       <div className="bg-gradient-to-r from-[#FF7324] via-[#FF4E93] to-[#B84EFF] py-4">
         <div className="container mx-auto px-4">
           <p className="text-white text-center">
@@ -48,6 +61,7 @@ export const Header = () => {
           </p>
         </div>
       </div>
+
       <SiteHeader />
     </div>
   );

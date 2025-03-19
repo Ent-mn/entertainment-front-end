@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Eye, EyeOff } from "lucide-react";
 import axios from "axios";
+import { useUser } from "@/context/UserContext";
 
 const Login = () => {
   const router = useRouter();
@@ -16,25 +17,51 @@ const Login = () => {
   } = useForm();
   const [showPassword, setShowPassword] = useState(false);
 
-  const onSubmit = (userdata: Record<string, any>) => {
-    // const fetchData = async () => {
-    //   try {
-    //     const { data }: any = await axios.post(`${process.env}/login`, {
-    //       userdata,
-    //     });
-    //     if (data) {
-    //       router.push("/home");
-    //     } else {
-    //       console.log("false");
-    //     }
-    //   } catch (error) {
-    //     console.log(error);
-    //   }
-    // };
-    // fetchData();
+  const { login, isLoggedIn } = useUser();
 
-    window.localStorage.setItem("user", `${userdata.name}`);
-    router.push("/");
+  const [error, setError] = useState("");
+
+  const handleChange = () => {
+    setError("");
+  };
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      router.push("/");
+    }
+  }, [isLoggedIn, router]);
+
+  const onSubmit = (userdata: Record<string, any>) => {
+    userdata.sn = "customer_login";
+
+    const fetchData = async () => {
+      try {
+        const { data }: any = await axios.post(
+          "http://202.179.6.27:7000/api_open",
+          {
+            sn: userdata.sn,
+            phone: userdata.phone,
+            password: userdata.password,
+          }
+        );
+        if (data.status !== "error") {
+          setError("");
+          const user = data.result;
+          const token = data.token;
+
+          login(user, token);
+          router.push("/");
+        } else {
+          console.log("false");
+          setError("Нэр эсвэл нууц үг буруу байна ");
+          console.log(data);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchData();
   };
 
   const images = ["/image copy.png", "/perfume.png", "/image copy.png"];
@@ -114,7 +141,7 @@ const Login = () => {
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 w-full">
-          <div>
+          <div onChange={handleChange}>
             <label htmlFor="string" className="block text-sm font-semibold">
               Нэвтрэх нэр
             </label>
@@ -122,7 +149,7 @@ const Login = () => {
               id="name"
               type="name"
               placeholder="Имэйл хаяг"
-              {...register("name", { required: "Нэвтрэх нэр эсвэл Имэйл" })}
+              {...register("phone", { required: "Нэвтрэх нэр эсвэл Имэйл" })}
               className={`w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-400 ${
                 errors.email ? "border-red-500" : "border-gray-300"
               }`}
@@ -135,43 +162,46 @@ const Login = () => {
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-semibold">
-              Нууц үг
-            </label>
-            <div className="relative">
-              <input
-                id="password"
-                type={showPassword ? "text" : "password"}
-                placeholder="Нууц үг"
-                {...register("password", { required: "Нууц үг оруулна уу!" })}
-                className={`w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-400 ${
-                  errors.password ? "border-red-500" : "border-gray-300"
-                }`}
-              />
-              <button
-                type="button"
-                className="absolute right-2 top-1/2 -translate-y-1/2"
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? (
-                  <EyeOff className="h-4 w-4" />
-                ) : (
-                  <Eye className="h-4 w-4" />
-                )}
-              </button>
+            <div onChange={handleChange}>
+              <label htmlFor="password" className="block text-sm font-semibold">
+                Нууц үг
+              </label>
+              <div className="relative">
+                <input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Нууц үг"
+                  {...register("password", { required: "Нууц үг оруулна уу!" })}
+                  className={`w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-400 ${
+                    errors.password ? "border-red-500" : "border-gray-300"
+                  }`}
+                />
+                <button
+                  type="button"
+                  className="absolute right-2 top-1/2 -translate-y-1/2"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
+                </button>
+              </div>
+              {errors.password && (
+                <p className="text-sm text-red-500">
+                  {typeof errors.password.message === "string"
+                    ? errors.password.message
+                    : ""}
+                </p>
+              )}
             </div>
-            {errors.password && (
-              <p className="text-sm text-red-500">
-                {typeof errors.password.message === "string"
-                  ? errors.password.message
-                  : ""}
-              </p>
-            )}
+            <p className="text-sm text-red-500">{error}</p>
           </div>
 
           <button
             type="submit"
-            className="w-full py-2 bg-orange-400 text-white rounded-md hover:bg-orange-500 transition duration-200"
+            className="w-full py-2  cursor-pointer bg-orange-400 text-white rounded-md hover:bg-orange-500 transition duration-200"
           >
             Нэвтрэх
           </button>
@@ -193,10 +223,10 @@ const Login = () => {
             Бүртгүүлэх
           </button>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-4 pb-9">
             <button
               type="button"
-              className="w-full py-2 border border-gray-300 rounded-md flex items-center justify-center gap-2 hover:bg-gray-100"
+              className="w-full py-2 border border-gray-300 rounded-md flex items-center cursor-pointer justify-center gap-2 hover:bg-gray-100"
             >
               <Image
                 src="/image copy 3.png"
@@ -208,7 +238,7 @@ const Login = () => {
             </button>
             <button
               type="button"
-              className="w-full py-2 border border-gray-300 rounded-md flex items-center justify-center gap-2 hover:bg-gray-100"
+              className="w-full py-2 border border-gray-300 rounded-md flex items-center cursor-pointer justify-center gap-2 hover:bg-gray-100"
             >
               <Image
                 src="/image copy 2.png"
