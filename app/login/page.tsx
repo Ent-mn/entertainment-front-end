@@ -37,7 +37,7 @@ const Login = () => {
     const fetchData = async () => {
       try {
         const { data }: any = await axios.post(
-          "http://202.179.6.27:7000/api_open",
+          "https://202.179.6.27:7000/api_open",
           {
             sn: userdata.sn,
             phone: userdata.phone,
