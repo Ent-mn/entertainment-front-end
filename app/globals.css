@@ -1,23 +1,18 @@
 @import "tailwindcss";
-
 @plugin "tailwindcss-animate";
 
-/* src/styles/globals.css */
+@layer base {
+  :root {
+    --background: 0 0% 100%; /* Light mode background */
+    --foreground: 222.2 84% 4.9%; /* Light mode text */
+    --primary: 221.2 83.2% 53.3%; /* Primary color */
+    --secondary: 210 40% 96%; /* Secondary color */
+  }
 
-/* Light theme */
-:root {
-  --background-color: #ffffff;
-  --text-color: #000000;
-}
-
-/* Dark theme */
-.dark {
-  --background-color: #121212;
-  --text-color: #ffffff;
-}
-
-body {
-  background-color: var(--background-color);
-  color: var(--text-color);
-  transition: background-color 0.3s ease, color 0.3s ease;
+  .dark {
+    --background: 222.2 84% 4.9%; /* Dark mode background */
+    --foreground: 210 40% 98%; /* Dark mode text */
+    --primary: 221.2 83.2% 53.3%; /* Primary color */
+    --secondary: 210 40% 20%; /* Secondary color */
+  }
 }
