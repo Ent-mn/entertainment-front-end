@@ -77,7 +77,7 @@ const Page = () => {
 
   return (
     <div className="p-6">
-      <h1 className="text-xl font-bold">Customer Details</h1>
+      <h1 className="text-xl font-bold">Мэдээлэл</h1>
       {error && <p className="text-red-500">{error}</p>}
       {customer ? (
         <div className="mt-4 p-4 border rounded shadow">
@@ -87,7 +87,7 @@ const Page = () => {
                 onClick={() => setIsEditing(true)}
                 className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
               >
-                Edit Profile
+                засах
               </button>
             ) : (
               <div>
@@ -95,13 +95,13 @@ const Page = () => {
                   onClick={handleSave}
                   className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 mr-2"
                 >
-                  Save
+                  хадгалах
                 </button>
                 <button
                   onClick={() => setIsEditing(false)}
                   className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
                 >
-                  Cancel
+                  болих
                 </button>
               </div>
             )}
