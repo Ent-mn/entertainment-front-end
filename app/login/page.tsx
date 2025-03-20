@@ -36,14 +36,12 @@ const Login = () => {
 
     const fetchData = async () => {
       try {
-        const { data }: any = await axios.post(
-          "https://202.179.6.27:7000/api_open",
-          {
-            sn: userdata.sn,
-            phone: userdata.phone,
-            password: userdata.password,
-          }
-        );
+        const { data }: any = await axios.post("/api/api_open", {
+          sn: userdata.sn,
+          phone: userdata.phone,
+          password: userdata.password,
+        });
+
         if (data.status !== "error") {
           setError("");
           const user = data.result;

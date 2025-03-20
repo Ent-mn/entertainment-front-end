@@ -33,7 +33,7 @@ export const Header = () => {
               <div
                 className="flex items-center gap-3 cursor-pointer"
                 onClick={() => {
-                  router.push("/profile");
+                  router.push("/profiletest");
                 }}
               >
                 <img
