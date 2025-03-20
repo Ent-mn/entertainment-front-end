@@ -45,9 +45,8 @@ const Login = () => {
         if (data.status !== "error") {
           setError("");
           const user = data.result;
-          const token = data.token;
 
-          login(user, token);
+          login(user);
           router.push("/");
         } else {
           console.log("false");
