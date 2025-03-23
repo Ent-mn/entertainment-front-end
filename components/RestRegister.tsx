@@ -3,11 +3,61 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Eye } from "lucide-react";
+import { Input } from "./ui/input";
+import { useState } from "react";
+import { Checkbox } from "./ui/checkbox";
+import { Button } from "./ui/button";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 const RestRegister = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [repassword, setRepassword] = useState("");
+  const [agreed, setAgreed] = useState(false);
+  const [error, setError] = useState("");
+  const [eye, setEye] = useState(false);
+
+  const router = useRouter();
+
+  const handleChange = () => {
+    setError("");
+  };
+
+  const onSubmit = () => {
+    if (repassword === password) {
+      const fetchData = async () => {
+        try {
+          const { data }: any = await axios.post("/api/api_open", {
+            sn: "customer_add",
+            phone: email,
+            password: password,
+            email: "shagai123456@yahoo.com",
+          });
+          if (data.status == "success") {
+            setError("");
+            const user = data.result;
+            const token = data.token;
+
+            router.push("/");
+          } else {
+            setError(`${data.message}`);
+            console.log(data);
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      };
+
+      fetchData();
+    } else {
+      setError("nuuts ug tarahgui baina");
+    }
+  };
+
   return (
     <div>
-      <div className="flex w-[1059px] rounded-3xl h-[696px] px-12 py-[45px] bg-[#eaeaea]">
+      <div className="flex w-[1059px] rounded-3xl h-[696px] px-12 py-[45px] bg-[#f3f3f3]">
         {/* Left Panel */}
         <div className="hidden md:flex md:w-1/2 bg-[#ffa726] flex-col items-center justify-between p-12 text-white">
           <div className="text-center max-w-md">
@@ -70,32 +120,42 @@ const RestRegister = () => {
               </Link>
             </p>
 
-            <form className=" flex flex-col gap-1.5">
-              <div>
-                <label htmlFor="email" className="block text-[#5c5c5c] mb-2">
+            <div className=" flex flex-col gap-1.5">
+              <div onChange={handleChange}>
+                <label
+                  htmlFor="emailRegister"
+                  className="block text-[#5c5c5c] mb-2"
+                >
                   E-mail or phone number
                 </label>
-                <input
+                <Input
+                  id="emailRegister"
                   type="text"
-                  id="email"
-                  placeholder="E-mail or phone number"
-                  className="w-full p-3 border border-[#e3e3e3] rounded-lg bg-[#ffffff]"
+                  placeholder="E-mail or Phone number"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="h-14 rounded-md  border-[#e0e0e0] bg-[#ECECEC] px-4 text-lg placeholder:text-[#ababab]"
                 />
               </div>
 
-              <div>
-                <label htmlFor="password" className="block text-[#5c5c5c] mb-2">
+              <div onChange={handleChange}>
+                <label
+                  htmlFor="passwordRegister"
+                  className="block text-[#5c5c5c] mb-2"
+                >
                   Password
                 </label>
-                <input
+                <Input
+                  id="passwordRegister"
                   type="password"
-                  id="password"
                   placeholder="Password"
-                  className="w-full p-3 border border-[#e3e3e3] rounded-lg bg-[#ffffff]"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="h-14 rounded-md border-[#e0e0e0] bg-[#ECECEC] px-4 text-lg placeholder:text-[#ababab]"
                 />
               </div>
 
-              <div>
+              <div onChange={handleChange}>
                 <label
                   htmlFor="confirmPassword"
                   className="block text-[#5c5c5c] mb-2"
@@ -103,38 +163,77 @@ const RestRegister = () => {
                   re-password
                 </label>
                 <div className="relative">
-                  <input
-                    type="password"
-                    id="confirmPassword"
-                    placeholder="Password"
-                    className="w-full p-3 border border-[#e3e3e3] rounded-lg bg-[#ffffff]"
-                  />
+                  {eye ? (
+                    <Input
+                      id="repassword1"
+                      type="text"
+                      placeholder="Password"
+                      value={repassword}
+                      onChange={(e) => setRepassword(e.target.value)}
+                      className="h-14 rounded-md border-[#e0e0e0] bg-[#ECECEC] px-4 text-lg placeholder:text-[#ababab]"
+                    />
+                  ) : (
+                    <Input
+                      id="repassword2"
+                      type="password"
+                      placeholder="Password"
+                      value={repassword}
+                      onChange={(e) => setRepassword(e.target.value)}
+                      className="h-14 rounded-md border-[#e0e0e0] bg-[#ECECEC] px-4 text-lg placeholder:text-[#ababab]"
+                    />
+                  )}
                   <button
+                    onMouseDown={() => {
+                      setEye(true);
+                    }}
+                    onMouseUp={() => {
+                      setEye(false);
+                    }}
+                    onMouseLeave={() => {
+                      setEye(false);
+                    }}
                     type="button"
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#828282]"
+                    className="absolute cursor-pointer right-3 top-1/2 transform -translate-y-1/2 text-[#828282]"
                   >
                     <Eye size={20} />
                   </button>
                 </div>
               </div>
-
-              <div className="flex items-start">
-                <input
-                  type="checkbox"
-                  id="terms"
-                  className="mt-1 border-[#cdcdcd] rounded"
+              <p className="text-sm text-red-500">{error}</p>
+              <div className="flex items-center  space-x-2">
+                <Checkbox
+                  id="termsRegister"
+                  checked={agreed}
+                  onCheckedChange={(checked) => setAgreed(checked === true)}
+                  className="h-5 w-5 border-[#828282] cursor-pointer data-[state=checked]:bg-[#fa742a] data-[state=checked]:border-[#fa742a]"
                 />
-                <label htmlFor="terms" className="ml-2 text-[#656565]">
+                <label
+                  htmlFor="termsRegister"
+                  className="text-[#676767] cursor-pointer text-base"
+                >
                   I agree to the
                 </label>
               </div>
-
-              <button
-                type="submit"
-                className="w-full p-3 rounded-lg font-medium text-white bg-gradient-to-r from-[#ffc107] to-[#ffa726]"
-              >
-                Create account
-              </button>
+              {agreed ? (
+                <Button
+                  onClick={() => {
+                    onSubmit();
+                  }}
+                  className="w-full  h-14 cursor-pointer rounded-md text-white text-lg font-medium bg-gradient-to-r from-[#ffc107] to-[#ff3d00] hover:opacity-90"
+                >
+                  Create account
+                </Button>
+              ) : (
+                <Button
+                  disabled
+                  onClick={() => {
+                    onSubmit();
+                  }}
+                  className="w-full  h-14 cursor-pointer rounded-md text-white text-lg font-medium bg-gradient-to-r from-[#ffc107] to-[#ff3d00] hover:opacity-90"
+                >
+                  Create account
+                </Button>
+              )}
 
               <div className="relative flex items-center justify-center my-4">
                 <div className="border-t border-[#e0e0e0] absolute w-full"></div>
@@ -189,7 +288,7 @@ const RestRegister = () => {
                   <span className="text-[#8c8c8c]">Sign in with Google</span>
                 </button>
               </div>
-            </form>
+            </div>
           </div>
         </div>
       </div>

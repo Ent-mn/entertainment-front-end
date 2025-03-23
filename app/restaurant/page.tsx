@@ -4,11 +4,9 @@ import RestRegister from "../../components/RestRegister";
 
 const page = () => {
   return (
-    <div className=" flex-col gap-7 flex">
-      restaurant
-      <RestLogin />
-      <RestRegister />
+    <div>
       <RestaurantWebsite />
     </div>
   );
 };
+export default page;

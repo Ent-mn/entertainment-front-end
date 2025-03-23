@@ -19,6 +19,20 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import RestLogin from "../RestLogin";
+import RestForgetPass from "../RestForgetPass";
+
 export default function RestaurantWebsite() {
   const [activeTab, setActiveTab] = useState("all");
 
@@ -130,7 +144,20 @@ export default function RestaurantWebsite() {
                   {link.name}
                 </Link>
               ))}
-              <User className="w-5 h-5 text-white" />
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="outline">
+                    <User className="w-5 h-5 text-white" />
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="p-0 border-none w-auto sm:max-w-auto">
+                  <RestLogin />
+                  <DialogHeader>
+                    <DialogTitle></DialogTitle>
+                    <DialogDescription></DialogDescription>
+                  </DialogHeader>
+                </DialogContent>
+              </Dialog>
             </nav>
 
             <button className="md:hidden text-white">
