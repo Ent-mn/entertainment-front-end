@@ -22,20 +22,17 @@ const RestLogin = () => {
   const onSubmit = () => {
     const fetchData = async () => {
       try {
-        const { data }: any = await axios.post(
-          "http://202.179.6.27:7000/api_open",
-          {
-            sn: "customer_login",
-            phone: email,
-            password: password,
-          }
-        );
+        const { data }: any = await axios.post("/api/api_open", {
+          sn: "customer_login",
+          phone: email,
+          password: password,
+        });
         if (data.result) {
           setError("");
           const user = data.result;
           const token = data.token;
 
-          login(user, token);
+          login(user);
           router.push("/");
         } else {
           console.log("false");

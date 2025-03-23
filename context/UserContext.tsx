@@ -25,7 +25,7 @@ interface User {
 interface UserContextType {
   user: User | null;
   isLoggedIn: boolean;
-  login: (user: User, token: string) => void;
+  login: (user: User) => void;
   logout: () => void;
 }
 
@@ -36,11 +36,10 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    // client-side дээр хадгалагдсан token-ыг шалгах
     if (typeof window !== "undefined") {
-      const token = window.localStorage.getItem("token");
-      if (token) {
-        // token байгаа тохиолдолд хэрэглэгчийг автоматаар нэвтрүүлнэ
+      const userId = window.localStorage.getItem("user_id");
+      if (userId) {
+        // Restore user from localStorage if an ID is found
         const storedUser = JSON.parse(
           window.localStorage.getItem("user") || "{}"
         );
@@ -50,19 +49,18 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     }
   }, []);
 
-  const login = (user: User, token: string) => {
+  const login = (user: User) => {
     setUser(user);
     setIsLoggedIn(true);
-    // token болон хэрэглэгчийн мэдээллийг localStorage-д хадгална
-    window.localStorage.setItem("token", `${token}`);
+    // Store the user's ID instead of a token
+    window.localStorage.setItem("user_id", user.id);
   };
 
   const logout = () => {
     setUser(null);
     setIsLoggedIn(false);
-    // localStorage-ээс мэдээллийг устгана
-    window.localStorage.removeItem("token");
-    window.localStorage.removeItem("user");
+    // Remove user data from localStorage
+    window.localStorage.removeItem("user_id");
   };
 
   return (
@@ -72,7 +70,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-// useUser хуук
+// useUser hook
 export const useUser = (): UserContextType => {
   const context = useContext(UserContext);
   if (!context) {
