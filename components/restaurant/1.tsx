@@ -32,9 +32,15 @@ import {
 import { Label } from "@/components/ui/label";
 import RestLogin from "../RestLogin";
 import RestForgetPass from "../RestForgetPass";
+import { useUser } from "@/context/UserContext";
+import { useRouter } from "next/navigation";
 
 export default function RestaurantWebsite() {
   const [activeTab, setActiveTab] = useState("all");
+
+  const { user, isLoggedIn, logout } = useUser();
+
+  const router = useRouter();
 
   // Navigation links
   const navLinks = [
@@ -144,20 +150,49 @@ export default function RestaurantWebsite() {
                   {link.name}
                 </Link>
               ))}
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button variant="outline">
-                    <User className="w-5 h-5 text-white" />
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="p-0 border-none w-auto sm:max-w-auto">
-                  <RestLogin />
-                  <DialogHeader>
-                    <DialogTitle></DialogTitle>
-                    <DialogDescription></DialogDescription>
-                  </DialogHeader>
-                </DialogContent>
-              </Dialog>
+              {!isLoggedIn ? (
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="outline">
+                      <User className="w-5 h-5 text-white" />
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="p-0 border-none w-auto sm:max-w-auto">
+                    <RestLogin />
+                    <DialogHeader>
+                      <DialogTitle></DialogTitle>
+                      <DialogDescription></DialogDescription>
+                    </DialogHeader>
+                  </DialogContent>
+                </Dialog>
+              ) : (
+                <div>
+                  <div
+                    className="flex items-center gap-3 cursor-pointer"
+                    onClick={() => {
+                      router.push("/profiletest");
+                    }}
+                  >
+                    <img
+                      src="bold.png"
+                      alt="User profile"
+                      className="w-10 h-10 rounded-2xl"
+                    />
+                    <div>
+                      <p className="font-semibold text-sm">
+                        {user?.customer_name}
+                      </p>
+                      <p className="text-xs text-gray-500">{user?.org_name}</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={logout}
+                    className="text-red-500 cursor-pointer"
+                  >
+                    Logout
+                  </button>
+                </div>
+              )}
             </nav>
 
             <button className="md:hidden text-white">

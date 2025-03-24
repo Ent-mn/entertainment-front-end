@@ -32,14 +32,14 @@ const RestRegister = () => {
             sn: "customer_add",
             phone: email,
             password: password,
-            email: "shagai123456@yahoo.com",
+            email: `${email}@yahoo.com`,
           });
           if (data.status == "success") {
             setError("");
             const user = data.result;
             const token = data.token;
 
-            router.push("/");
+            router.push("/restaurant");
           } else {
             setError(`${data.message}`);
             console.log(data);

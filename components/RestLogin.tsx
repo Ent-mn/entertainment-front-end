@@ -1,11 +1,14 @@
 "use client";
 
+import FacebookLogin, {
+  SuccessResponse,
+} from "@greatsumini/react-facebook-login";
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Facebook } from "lucide-react";
-import Link from "next/link";
 import { useUser } from "@/context/UserContext";
 import { useRouter } from "next/navigation";
 import axios from "axios";
@@ -43,7 +46,7 @@ const RestLogin = () => {
           const token = data.token;
 
           login(user);
-          router.push("/");
+          router.push("/restaurant");
         } else {
           console.log("false");
           setError("Нэр эсвэл нууц үг буруу байна ");
@@ -55,6 +58,26 @@ const RestLogin = () => {
     };
 
     fetchData();
+  };
+
+  // facebook login heseg
+
+  const [message, setMessage] = useState<{
+    text: string;
+    severity: "error" | "success";
+  }>();
+
+  const onSuccessHandler = async (response: SuccessResponse) => {
+    const apiResponse = await fetch("/api/facebook-login", {
+      method: "POST",
+      body: JSON.stringify({
+        userId: response.userID,
+        accessToken: response.accessToken,
+      }),
+    });
+    const data = await apiResponse.json();
+    if (data.success)
+      setMessage({ text: "Login Successful.", severity: "success" });
   };
 
   return (
@@ -164,13 +187,37 @@ const RestLogin = () => {
                   </Button>
 
                   <div className="grid grid-cols-2 gap-4 pt-4">
-                    <Button
-                      variant="outline"
-                      className="h-12 rounded-md border cursor-pointer border-[#e0e0e0] bg-white hover:bg-white/90 text-[#676767]"
-                    >
-                      <Facebook className="mr-2 h-5 w-5 text-[#1577f2]" />
-                      Sign in with Facebook
-                    </Button>
+                    <FacebookLogin
+                      appId="614567378085067"
+                      onSuccess={onSuccessHandler}
+                      onFail={(error) => {
+                        setMessage({
+                          text: "Error occured",
+                          severity: "error",
+                        });
+                      }}
+                      render={({ onClick }) => (
+                        <Button
+                          onClick={onClick}
+                          variant="outline"
+                          className="h-12 rounded-md border cursor-pointer border-[#e0e0e0] bg-white hover:bg-white/90 text-[#676767]"
+                        >
+                          <Facebook className="mr-2 h-5 w-5 text-[#1577f2]" />
+                          Sign in with Facebook
+                        </Button>
+                      )}
+                    />
+                    {message && (
+                      <div
+                        className={`${
+                          message.severity === "error"
+                            ? "text-red-600"
+                            : "text-green-600"
+                        }`}
+                      >
+                        {message.text}
+                      </div>
+                    )}
 
                     <Button
                       variant="outline"
