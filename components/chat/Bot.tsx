@@ -63,7 +63,7 @@ export default function ChatInput() {
         method: "POST",
         headers: {
           Authorization:
-            "Bearer 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",
+            "Bearer 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",
           "HTTP-Referer": "<YOUR_SITE_URL>",
           "X-Title": "<YOUR_SITE_NAME>",
           "Content-Type": "application/json",
