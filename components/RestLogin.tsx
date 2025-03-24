@@ -68,16 +68,32 @@ const RestLogin = () => {
   }>();
 
   const onSuccessHandler = async (response: SuccessResponse) => {
-    const apiResponse = await fetch("/api/facebook-login", {
-      method: "POST",
-      body: JSON.stringify({
-        userId: response.userID,
-        accessToken: response.accessToken,
-      }),
-    });
-    const data = await apiResponse.json();
-    if (data.success)
-      setMessage({ text: "Login Successful.", severity: "success" });
+    try {
+      const apiResponse = await fetch("/api/facebook-login", {
+        method: "POST",
+        body: JSON.stringify({
+          userId: response.userID,
+          accessToken: response.accessToken,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const data = await apiResponse.json();
+      if (data.success) {
+        setMessage({ text: "Login Successful.", severity: "success" });
+        login(data.user);
+        router.push("/restaurant");
+      } else {
+        setMessage({ text: "Facebook login failed.", severity: "error" });
+      }
+    } catch (error) {
+      setMessage({
+        text: "An error occurred while logging in with Facebook.",
+        severity: "error",
+      });
+    }
   };
 
   return (
