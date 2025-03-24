@@ -1,6 +1,7 @@
 "use client";
 
 import { useTheme } from "@/context/ThemeContext";
+import { Sun } from "lucide-react";
 import { useMemo } from "react";
 
 const ThemeToggle = () => {
@@ -26,21 +27,12 @@ const ThemeToggle = () => {
         onClick={() =>
           setTheme(getNextTheme.value as "light" | "dark" | "system")
         }
-        className="p-2 px-4 bg-gray-100 dark:bg-gray-800 border dark:text-white border-gray-300 dark:border-gray-600 rounded-md shadow-sm hover:bg-gray-200 dark:hover:bg-gray-700 transition duration-200">
-        {getNextTheme.label}
+        className="p-3 px-3  dark:text-white border-gray-300 dark:border-gray-600 active:bg-black rounded-full shadow-sm transition duration-200"
+      >
+        <Sun className="w-5 h-5" />
       </button>
 
       {/* Select Menu */}
-      <select
-        value={theme}
-        onChange={(e) =>
-          setTheme(e.target.value as "light" | "dark" | "system")
-        }
-        className="p-2 bg-gray-100 dark:bg-gray-800 border dark:text-white border-gray-300 dark:border-gray-600 rounded-md shadow-sm hover:bg-gray-200 dark:hover:bg-gray-700 transition duration-200">
-        <option value="light">☀️ Light</option>
-        <option value="dark">🌙 Dark</option>
-        <option value="system">🖥 System</option>
-      </select>
     </div>
   );
 };

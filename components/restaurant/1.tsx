@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import axios from "axios";
 import {
   Search,
   User,
@@ -18,11 +19,21 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import ThemeToggle from "@/components/ThemeToggle";
+import ChatInput from "@/components/chat/Bot";
+
+interface Restaurant {
+  id: number;
+  name: string;
+  merchant_name: string;
+  product_images: Array<{ image_url: string }>;
+  product_details: Array<{ price: number }>;
+}
 
 export default function RestaurantWebsite() {
   const [activeTab, setActiveTab] = useState("all");
+  const [restaurantData, setRestaurantData] = useState<Restaurant[] | null>(null);
 
-  // Navigation links
   const navLinks = [
     { name: "Home", href: "#", active: true },
     { name: "Restaurants", href: "#", active: false },
@@ -30,7 +41,6 @@ export default function RestaurantWebsite() {
     { name: "Contact", href: "#", active: false },
   ];
 
-  // Reservation form fields
   const reservationFields = [
     {
       icon: <Users className="w-5 h-5" />,
@@ -54,7 +64,6 @@ export default function RestaurantWebsite() {
     },
   ];
 
-  // Tab options
   const tabOptions = [
     { value: "all", label: "Бүгд" },
     { value: "restaurant", label: "Ресторан" },
@@ -63,9 +72,31 @@ export default function RestaurantWebsite() {
     { value: "catering", label: "Гадаа Асар" },
   ];
 
+  const fetchRestaurants = async () => {
+    try {
+      const { data } = await axios.post("/api/api_open", {
+        sn: "product_list_all",
+        is_hot_deal: 1,
+        page_number: 1,
+        page_size: 10,
+      });
+      setRestaurantData(data.result);
+    } catch (error) {
+      console.error("Error fetching restaurant data:", error);
+    }
+  };
+
+  const handleTabChange = (value: any) => {
+    setActiveTab(value);
+    if (value === "restaurant") {
+      fetchRestaurants();
+    } else {
+      setRestaurantData(null);
+    }
+  };
+
   return (
     <div className="relative min-h-screen flex flex-col">
-      {/* Hero background image */}
       <div className="absolute inset-0 z-0">
         <Image
           src="/backround.jpg"
@@ -76,9 +107,7 @@ export default function RestaurantWebsite() {
         />
       </div>
 
-      {/* Main content */}
       <div className="relative z-10 flex flex-col min-h-screen">
-        {/* Header */}
         <header className="py-4 px-6 bg-[#00000080] md:px-[150px]">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -92,7 +121,6 @@ export default function RestaurantWebsite() {
               <span className="text-white font-medium">restaurant.mn</span>
             </div>
 
-            {/* Search */}
             <div className="hidden md:flex items-center bg-[#333333]/80 rounded-md px-3 py-1 w-full max-w-[665px] mx-8">
               <div className="flex items-center gap-2 border-r border-gray-500 pr-2">
                 <span className="text-white text-sm">Төрөл</span>
@@ -123,7 +151,7 @@ export default function RestaurantWebsite() {
                 <Link
                   key={link.name}
                   href={link.href}
-                  className={`text-white text-sm ${
+                  className={`text-white w-fit text-sm ${
                     link.active ? "border-b-2 border-amber-500 pb-1" : ""
                   }`}
                 >
@@ -151,9 +179,8 @@ export default function RestaurantWebsite() {
           </div>
         </header>
 
-        {/* Hero content */}
         <main className="flex-1 gap-8 flex flex-col items-center justify-center text-center px-6 py-12">
-          <h1 className="text-4xl md:text-5xl lg:text-[64px] font-bold text-white max-w-4xl mb-6">
+          <h1 className="text-4xl md:text-5xl lg:text-[64px] font-bold text-white max-w-8xl mb-6">
             There are many variations of passages of
           </h1>
           <p className="text-gray-300 max-w-2xl mb-16">
@@ -162,12 +189,11 @@ export default function RestaurantWebsite() {
             even
           </p>
 
-          {/* Reservation form */}
           <div className="w-full max-w-4xl bg-[#222222]/90 rounded-lg p-6 mt-auto">
             <Tabs
               defaultValue="all"
               className="w-full"
-              onValueChange={setActiveTab}
+              onValueChange={handleTabChange}
             >
               <TabsList className="bg-transparent border-b border-gray-700 rounded-none w-full justify-start mb-6 gap-8">
                 {tabOptions.map((tab) => (
@@ -181,40 +207,79 @@ export default function RestaurantWebsite() {
                 ))}
               </TabsList>
 
-              <div className="grid grid-cols-1 md:flex justify-between">
-                {reservationFields.map((field, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center gap-3  rounded-md p-3"
-                  >
-                    {field.icon}
-                    <div className="flex flex-col">
-                      <span className="text-xs text-gray-400">
-                        {field.label}
-                      </span>
-                      <span className="text-[7px] text-gray-500">
-                        {field.placeholder}
-                      </span>
+              {activeTab === "restaurant" && restaurantData ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {restaurantData.slice(0, 10).map((restaurant) => (
+                    <div
+                      key={restaurant.id}
+                      className="bg-[#333333]/50 rounded-lg p-4"
+                    >
+                      <Image
+                        src="/backround.jpg"
+                        alt={restaurant.name}
+                        width={400}
+                        height={200}
+                        className="object-cover rounded-md mb-4"
+                        onError={(e) => {
+                          console.log(
+                            `Failed to load: ${restaurant.product_images[0]?.image_url}`
+                          );
+                          (e.target as HTMLImageElement).src = "/fallback-image.jpg";
+                        }}
+                        onLoad={() =>
+                          console.log(
+                            `Loaded: ${restaurant.product_images[0]?.image_url}`
+                          )
+                        }
+                      />
+                      <h3 className="text-white text-lg">{restaurant.name}</h3>
+                      <p className="text-gray-400 text-sm">
+                        {restaurant.merchant_name}
+                      </p>
+                      <p className="text-amber-500 text-sm mt-2">
+                        Starting at ₮
+                        {Math.min(
+                          ...restaurant.product_details.map((d) => d.price)
+                        ).toLocaleString()}
+                      </p>
                     </div>
-                  </div>
-                ))}
-                <Button className="bg-gradient-to-b from-[#fd8e2e] to-[#f5be32] w-[67px] h-[67px] hover:opacity-80 text-white rounded-xl">
-                  <Search className="w-5 h-5" />
-                </Button>
-              </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:flex justify-between">
+                  {reservationFields.map((field, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center gap-3 rounded-md p-3"
+                    >
+                      {field.icon}
+                      <div className="flex flex-col">
+                        <span className="text-xs text-gray-400">
+                          {field.label}
+                        </span>
+                        <span className="text-[7px] text-gray-500">
+                          {field.placeholder}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                  <Button className="bg-gradient-to-b from-[#fd8e2e] to-[#f5be32] w-[67px] h-[67px] hover:opacity-80 text-white rounded-xl">
+                    <Search className="w-5 h-5" />
+                  </Button>
+                </div>
+              )}
             </Tabs>
           </div>
         </main>
       </div>
 
-      {/* Side icons */}
       <div className="fixed right-6 top-1/2 -translate-y-1/2 flex flex-col gap-4 z-20">
         <Button
           variant="outline"
           size="icon"
           className="bg-[#333333] border-0 text-amber-500 rounded-full w-10 h-10"
         >
-          <Sun className="w-5 h-5" />
+          <ThemeToggle />
         </Button>
         <Button
           variant="outline"
@@ -230,14 +295,8 @@ export default function RestaurantWebsite() {
         >
           <Heart className="w-5 h-5" />
         </Button>
-        <Button
-          variant="outline"
-          size="icon"
-          className="bg-[#333333] border-0 text-white rounded-full w-10 h-10"
-        >
-          <Headphones className="w-5 h-5" />
-        </Button>
       </div>
+      <ChatInput />
     </div>
   );
 }
