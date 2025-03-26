@@ -1,171 +1,125 @@
-import Image from "next/image";
-import { LightbulbIcon } from "lucide-react";
+"use client";
 
-// Feature card component
-function FeatureCard({ icon, title, description }: any) {
-  return (
-    <div className="text-center px-6 py-8 border-r border-gray-800 last:border-r-0">
-      <div className="flex justify-center mb-6">
-        <div className="w-12 h-12 rounded-full bg-[#1A1A1A] flex items-center justify-center">
-          {icon}
-        </div>
-      </div>
-      <h3 className="text-white text-xl font-medium mb-4">{title}</h3>
-      <p className="text-gray-400 text-sm leading-relaxed">{description}</p>
-    </div>
-  );
-}
+import type React from "react";
+
+import Image from "next/image";
+import { useMotionValue, motion, useMotionTemplate } from "framer-motion";
+import { useState, useRef } from "react";
+import { CanvasRevealEffect } from "@/components/ui/canvas-reveal-effect";
 
 export default function FeaturesSection() {
+  // State to track which card is being hovered and mouse position
+  const [hoveredCard, setHoveredCard] = useState<number | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
   // Feature data
   const features = [
     {
-      icon: <LightbulbIcon className="w-6 h-6 text-amber-500" />,
-      title: "Lorem ipsum",
-      description:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the",
+      image: "/hurim1.png",
+      title: "Хурим",
+      description: "Lorem Ipsum is simply dummy text of the",
     },
     {
-      icon: (
-        <svg
-          className="w-6 h-6 text-amber-500"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M16 16V8H8V16H16Z"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <path
-            d="M12 20V16"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <path
-            d="M12 8V4"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <path
-            d="M16 12H20"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <path
-            d="M4 12H8"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      ),
-      title: "Lorem ipsum",
-      description:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the",
+      image: "/hurim2.png",
+      title: "Хурим",
+      description: "Lorem Ipsum is simply dummy text of the",
     },
     {
-      icon: <LightbulbIcon className="w-6 h-6 text-amber-500" />,
-      title: "Lorem ipsum",
-      description:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the",
+      image: "/hurim3.png",
+      title: "Хурим",
+      description: "Lorem Ipsum is simply dummy text of the",
     },
     {
-      icon: (
-        <svg
-          className="w-6 h-6 text-amber-500"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M16 16V8H8V16H16Z"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <path
-            d="M12 20V16"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <path
-            d="M12 8V4"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <path
-            d="M16 12H20"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <path
-            d="M4 12H8"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      ),
-      title: "Lorem ipsum",
-      description:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the",
+      image: "/hurim4.png",
+      title: "Хурим",
+      description: "Lorem Ipsum is simply dummy text of the",
     },
   ];
 
+  // Handle mouse movement over the container
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (containerRef.current) {
+      const { left, top } = containerRef.current.getBoundingClientRect();
+      mouseX.set(e.clientX - left);
+      mouseY.set(e.clientY - top);
+    }
+  };
+
+  // Create the mask image template once
+  const maskImage = useMotionTemplate`
+    radial-gradient(
+      800px circle at ${mouseX}px ${mouseY}px,
+      white,
+      transparent 70%
+    )
+  `;
+
   return (
-    <div className="relative w-full min-h-screen flex flex-col justify-center">
-      {/* Background image */}
-      <div className="absolute inset-0 z-0">
-        <Image
-          src="/cover2.png"
-          alt="Restaurant interior"
-          fill
-          className="object-cover brightness-[0.1]"
-          priority
+    <div
+      ref={containerRef}
+      className="relative w-full min-h-screen flex flex-col justify-center bg-[#0A0A0A] overflow-hidden"
+      onMouseMove={handleMouseMove}
+    >
+      {/* Background with subtle gradient */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black to-[#111] opacity-80"></div>
+
+      {/* Spotlight effect on background - always rendered but opacity controlled by hoveredCard */}
+      <motion.div
+        className="pointer-events-none absolute inset-0 z-0 transition-opacity duration-300"
+        style={{
+          backgroundColor: "#D4AF37", // Gold color
+          opacity: hoveredCard !== null ? 0.35 : 0,
+          maskImage: maskImage,
+        }}
+      >
+        <CanvasRevealEffect
+          animationSpeed={3}
+          containerClassName="bg-transparent absolute inset-0 pointer-events-none"
+          colors={[
+            [212, 175, 55], // Gold
+            [255, 215, 0], // Golden yellow
+          ]}
+          dotSize={2}
         />
-      </div>
+      </motion.div>
 
       {/* Content */}
       <div className="relative z-10 container mx-auto px-4 py-16">
         {/* Heading */}
         <div className="text-center mb-16">
-          <h2 className="text-amber-500 font-great-vibes text-2xl mb-6">
-            Lorem Ipsum
+          <h2 className="text-amber-500 font-serif italic text-2xl mb-6">
+            Why Choose Us
           </h2>
           <p className="text-white text-3xl md:text-4xl font-medium max-w-4xl mx-auto leading-relaxed">
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum has been the
+            Lorem Ipsum is simply dummy
           </p>
         </div>
 
         {/* Features grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 border border-gray-800 rounded-lg overflow-hidden">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {features.map((feature, index) => (
-            <FeatureCard
+            <div
               key={index}
-              icon={feature.icon}
-              title={feature.title}
-              description={feature.description}
-            />
+              className="relative overflow-hidden rounded-lg group"
+              onMouseEnter={() => setHoveredCard(index)}
+              onMouseLeave={() => setHoveredCard(null)}
+            >
+              <div className="h-[400px] relative">
+                <Image
+                  src={feature.image || "/placeholder.svg"}
+                  alt={feature.title}
+                  fill
+                  className="object-cover transition-transform duration-500 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+              </div>
+              <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                <h3 className="text-xl font-medium mb-2">{feature.title}</h3>
+                <p className="text-sm text-gray-200">{feature.description}</p>
+              </div>
+            </div>
           ))}
         </div>
       </div>

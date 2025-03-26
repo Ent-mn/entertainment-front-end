@@ -1,8 +1,10 @@
 "use client";
+import { LightbulbIcon } from "lucide-react";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import axios from "axios";
 import {
   Search,
   User,
@@ -18,31 +20,167 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-
 import {
   Dialog,
-  DialogClose,
   DialogContent,
-  DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
 import RestLogin from "../RestLogin";
-import RestForgetPass from "../RestForgetPass";
 import { useUser } from "@/context/UserContext";
 import { useRouter } from "next/navigation";
 
+function FeatureCard({ icon, title, description }: any) {
+  return (
+    <div className="text-center px-6 py-8">
+      <div className="flex flex-row items-center justify-center mb-6">
+        <div className="w-12 h-12 rounded-full bg-[#1A1A1A] flex items-center justify-center">
+          {icon}
+        </div>
+        <div className="flex flex-col">
+          <h3 className="text-white text-xl font-medium mb-4">{title}</h3>
+          <p className="text-gray-400 text-[10px] w-[230px] leading-relaxed">
+            {description}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function RestaurantWebsite() {
   const [activeTab, setActiveTab] = useState("all");
+  const [merchants, setMerchants] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedMerchant, setSelectedMerchant] = useState<any | null>(null);
+  const [searchQuery, setSearchQuery] = useState(""); // Category search
+  const [headerSearch, setHeaderSearch] = useState(""); // Header search
+  const [headerResults, setHeaderResults] = useState<any[]>([]); // Header search results
+  const [showBankDropdown, setShowBankDropdown] = useState(false); // Toggle bank dropdown
+
+  const features = [
+    {
+      icon: <LightbulbIcon className="w-6 h-6 text-amber-500" />,
+      title: "Lorem ipsum",
+      description:
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. ",
+    },
+    {
+      icon: (
+        <svg
+          className="w-6 h-6 text-amber-500"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M16 16V8H8V16H16Z"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M12 20V16"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M12 8V4"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M16 12H20"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M4 12H8"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      ),
+      title: "Lorem ipsum",
+      description:
+        "LLorem Ipsum is simply dummy text of the printing and typesetting industry. ",
+    },
+    {
+      icon: <LightbulbIcon className="w-6 h-6 text-amber-500" />,
+      title: "Lorem ipsum",
+      description:
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. ",
+    },
+    {
+      icon: (
+        <svg
+          className="w-6 h-6 text-amber-500"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M16 16V8H8V16H16Z"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M12 20V16"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M12 8V4"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M16 12H20"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M4 12H8"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      ),
+      title: "Lorem ipsum",
+      description:
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. ",
+    },
+  ];
 
   const { user, isLoggedIn, logout } = useUser();
-
   const router = useRouter();
 
-  // Navigation links
+  const hardcodedToken =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.Q9eW!zD0EeL7@ANeyJ1c2VyX2lkIjoiMSIsImlhdCI6MTcxODU5OTU0NywiZXhwIjoxNzUwMTM1NTQ3fQ.muFJPyUNLrjjeHTVI4Vjj-wkHoGJ7YceHPIsDNuhlOQ";
+
   const navLinks = [
     { name: "Home", href: "#", active: true },
     { name: "Restaurants", href: "#", active: false },
@@ -50,43 +188,257 @@ export default function RestaurantWebsite() {
     { name: "Contact", href: "#", active: false },
   ];
 
-  // Reservation form fields
   const reservationFields = [
     {
       icon: <Users className="w-5 h-5" />,
-      label: "Зочид",
+      label: "Нэр",
       placeholder: "Та хэдэн хүн бодож байна?",
     },
     {
       icon: <Calendar className="w-5 h-5" />,
-      label: "Хаана",
-      placeholder: "Та хаана гэж бодож байна?",
+      label: "дугаар",
+      placeholder: "Та хэзээ гэж бодож байна?",
     },
     {
       icon: <Clock className="w-5 h-5" />,
-      label: "Цаг",
-      placeholder: "Та хэдэд гэж бодож байна?",
+      label: "имэйл",
+      placeholder: "Та хэдэн хүн бодож байна?",
     },
     {
       icon: <MapPin className="w-5 h-5" />,
-      label: "Хаана",
+      label: "Банк",
       placeholder: "Та хаана гэж бодож байна?",
     },
   ];
 
-  // Tab options
   const tabOptions = [
     { value: "all", label: "Бүгд" },
-    { value: "restaurant", label: "Ресторан" },
-    { value: "event-hall", label: "Event Hall" },
-    { value: "food-delivery", label: "Гадаа талбай" },
-    { value: "catering", label: "Гадаа Асар" },
+    { value: "Ресторан", label: "Ресторан" },
+    { value: "Event Hall", label: "Event Hall" },
+    { value: "Гадаа талбай", label: "Гадаа талбай" },
+    { value: "Голын цаад эрэг", label: "Голын цаад эрэг" },
   ];
+
+  useEffect(() => {
+    const fetchMerchants = async () => {
+      try {
+        const customerId = user?.id || localStorage.getItem("user_id") || "8";
+        const { data } = await axios.post(
+          "/api",
+          {
+            sn: "merchant_list",
+            page_number: 1,
+            page_size: 50,
+            service_type_id: "204",
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${hardcodedToken}`,
+            },
+          }
+        );
+        if (data.status === "success") {
+          setMerchants(data.result);
+        } else {
+          setError(`Failed to fetch data: ${data.message || "Unknown error"}`);
+        }
+      } catch (err: any) {
+        setError(
+          `Error fetching data: ${err.response?.data?.message || err.message}`
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMerchants();
+  }, [user]);
+
+  // Real-time header search filtering
+  useEffect(() => {
+    if (headerSearch.trim() === "") {
+      setHeaderResults([]);
+      return;
+    }
+
+    const filtered = merchants.filter((merchant) =>
+      [
+        merchant.name || "",
+        merchant.phone || "",
+        merchant.email || "",
+        merchant.bank_name || "",
+        merchant.merchant_type_name || "",
+      ].some((field) =>
+        field.toLowerCase().includes(headerSearch.toLowerCase())
+      )
+    );
+
+    setHeaderResults(filtered.slice(0, 6)); // Limit to 6 results
+  }, [headerSearch, merchants]);
+
+  // Get unique bank names
+  const uniqueBanks = Array.from(
+    new Set(merchants.map((m) => m.bank_name).filter(Boolean))
+  );
+
+  const filteredMerchants =
+    activeTab === "all"
+      ? merchants
+      : merchants.filter((merchant) =>
+          merchant.merchant_type_name?.includes(activeTab)
+        );
+
+  const categorizedMerchants = (() => {
+    let result = filteredMerchants;
+
+    if (selectedMerchant) {
+      result = [selectedMerchant];
+      if (selectedCategory) {
+        const value = (() => {
+          switch (selectedCategory) {
+            case "Нэр":
+              return selectedMerchant.name;
+            case "дугаар":
+              return selectedMerchant.phone;
+            case "имэйл":
+              return selectedMerchant.email;
+            case "Банк":
+              return selectedMerchant.bank_name;
+            default:
+              return "";
+          }
+        })();
+        if (
+          !value ||
+          !value.toLowerCase().includes(searchQuery.toLowerCase())
+        ) {
+          return [];
+        }
+      }
+      return result;
+    }
+
+    if (selectedCategory) {
+      result = filteredMerchants.filter((merchant) => {
+        const value = (() => {
+          switch (selectedCategory) {
+            case "Нэр":
+              return merchant.name;
+            case "дугаар":
+              return merchant.phone;
+            case "имэйл":
+              return merchant.email;
+            case "Банк":
+              return merchant.bank_name;
+            default:
+              return "";
+          }
+        })();
+
+        return value && value.toLowerCase().includes(searchQuery.toLowerCase());
+      });
+    }
+
+    return result.length > 0 ? result : [];
+  })();
+
+  const handleCategoryClick = (label: string) => {
+    setSelectedCategory(label);
+    setSearchQuery("");
+  };
+
+  const handleItemClick = (merchant: any) => {
+    setSelectedMerchant(merchant);
+  };
+
+  const handleSearchClick = () => {
+    if (selectedCategory && selectedMerchant) {
+      router.push(
+        `/ordertest?category=${selectedCategory}&merchant=${encodeURIComponent(
+          JSON.stringify(selectedMerchant)
+        )}`
+      );
+    } else if (selectedCategory) {
+      router.push(
+        `/ordertest?category=${selectedCategory}&data=${encodeURIComponent(
+          JSON.stringify(categorizedMerchants)
+        )}`
+      );
+    } else {
+      router.push(
+        `/ordertest?data=${encodeURIComponent(JSON.stringify(merchants))}`
+      );
+    }
+  };
+
+  const handleHeaderResultClick = (merchant: any) => {
+    setSelectedMerchant(merchant);
+    setHeaderSearch("");
+    setHeaderResults([]);
+  };
+
+  const handleSeeMore = () => {
+    router.push(
+      `/ordertest?data=${encodeURIComponent(
+        JSON.stringify(
+          merchants.filter((merchant) =>
+            [
+              merchant.name || "",
+              merchant.phone || "",
+              merchant.email || "",
+              merchant.bank_name || "",
+              merchant.merchant_type_name || "",
+            ].some((field) =>
+              field.toLowerCase().includes(headerSearch.toLowerCase())
+            )
+          )
+        )
+      )}`
+    );
+  };
+
+  const handleBankClick = (bank: string) => {
+    setSelectedCategory("Банк"); // Set category to "Банк"
+    setSearchQuery(bank); // Filter by selected bank
+    setShowBankDropdown(false); // Hide dropdown
+  };
+
+  const renderMerchantField = (merchant: any) => {
+    switch (selectedCategory) {
+      case "Нэр":
+        return (
+          <p className="text-xs text-gray-400">Нэр: {merchant.name || "N/A"}</p>
+        );
+      case "дугаар":
+        return (
+          <p className="text-xs text-gray-400">
+            Утас: {merchant.phone || "N/A"}
+          </p>
+        );
+      case "имэйл":
+        return (
+          <p className="text-xs text-gray-400">
+            Имэйл: {merchant.email || "N/A"}
+          </p>
+        );
+      case "Банк":
+        return (
+          <p className="text-xs text-gray-400">
+            Банк: {merchant.bank_name || "N/A"}
+          </p>
+        );
+      default:
+        return (
+          <p className="text-xs text-gray-400">
+            Банк: {merchant.bank_name || "N/A"}
+          </p>
+        );
+    }
+  };
 
   return (
     <div className="relative min-h-screen flex flex-col">
-      {/* Hero background image */}
-      <div className="absolute inset-0 z-0">
+      <div className="fixed inset-0 z-0">
         <Image
           src="/backround.jpg"
           alt="Restaurant interior"
@@ -96,14 +448,12 @@ export default function RestaurantWebsite() {
         />
       </div>
 
-      {/* Main content */}
       <div className="relative z-10 flex flex-col min-h-screen">
-        {/* Header */}
-        <header className="py-4 px-6 bg-[#00000080] md:px-[150px]">
+        <header className="py-4 px-6 bg-[#00000080] md:px-[100px]">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Image
-                alt="Restaurant interior"
+                alt="Restaurant logo"
                 width={30}
                 height={30}
                 priority
@@ -112,10 +462,12 @@ export default function RestaurantWebsite() {
               <span className="text-white font-medium">restaurant.mn</span>
             </div>
 
-            {/* Search */}
-            <div className="hidden md:flex items-center bg-[#333333]/80 rounded-md px-3 py-1 w-full max-w-[665px] mx-8">
-              <div className="flex items-center gap-2 border-r border-gray-500 pr-2">
-                <span className="text-white text-sm">Төрөл</span>
+            <div className="hidden md:flex items-center bg-[#333333]/80 rounded-md px-3 py-1 w-full max-w-[665px] mx-8 relative">
+              <div
+                onClick={() => setShowBankDropdown(!showBankDropdown)}
+                className="flex cursor-pointer items-center gap-2 border-r border-gray-500 pr-2 relative"
+              >
+                <span className="text-white text-sm cursor-pointer">Төрөл</span>
                 <svg
                   className="w-4 h-4 text-white"
                   fill="none"
@@ -129,13 +481,63 @@ export default function RestaurantWebsite() {
                     d="M19 9l-7 7-7-7"
                   />
                 </svg>
+                {showBankDropdown && (
+                  <div className="absolute top-full left-[-12px] border-[1px] border-black mt-4 w-48 bg-[#333333]/90 rounded-md shadow-lg z-20 max-h-70 overflow-y-auto">
+                    {uniqueBanks.map((bank) => (
+                      <div
+                        key={bank}
+                        className="p-2 text-white hover:bg-amber-500/20 cursor-pointer text-sm"
+                        onClick={() => handleBankClick(bank)}
+                      >
+                        {bank}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
               <Search className="w-5 h-5 text-gray-400 mx-2" />
               <Input
                 type="text"
                 placeholder="Хайлт"
+                value={headerSearch}
+                onChange={(e) => setHeaderSearch(e.target.value)}
                 className="bg-transparent border-0 text-white focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-gray-400"
               />
+              {headerResults.length > 0 && (
+                <div className="absolute top-full left-0 mt-2 w-full bg-[#333333]/90 rounded-md shadow-lg z-20 max-h-100 overflow-y-auto">
+                  {headerResults.map((merchant) => (
+                    <div
+                      key={merchant.id}
+                      className="p-3 text-white hover:bg-amber-500/20 cursor-pointer"
+                      onClick={() => handleHeaderResultClick(merchant)}
+                    >
+                      <p className="text-sm">{merchant.name || "N/A"}</p>
+                      <p className="text-xs text-gray-400">
+                        {merchant.phone || "N/A"}
+                      </p>
+                    </div>
+                  ))}
+                  {merchants.filter((merchant) =>
+                    [
+                      merchant.name || "",
+                      merchant.phone || "",
+                      merchant.email || "",
+                      merchant.bank_name || "",
+                      merchant.merchant_type_name || "",
+                    ].some((field) =>
+                      field.toLowerCase().includes(headerSearch.toLowerCase())
+                    )
+                  ).length > 6 && (
+                    <Button
+                      variant="outline"
+                      className="w-full mt-2 text-amber-500 border-amber-500 hover:bg-amber-500/20"
+                      onClick={handleSeeMore}
+                    >
+                      See More
+                    </Button>
+                  )}
+                </div>
+              )}
             </div>
 
             <nav className="hidden md:flex items-center gap-8">
@@ -169,9 +571,7 @@ export default function RestaurantWebsite() {
                 <div>
                   <div
                     className="flex items-center gap-3 cursor-pointer"
-                    onClick={() => {
-                      router.push("/profiletest");
-                    }}
+                    onClick={() => router.push("/profiletest")}
                   >
                     <img
                       src="bold.png"
@@ -182,7 +582,6 @@ export default function RestaurantWebsite() {
                       <p className="font-semibold text-sm">
                         {user?.customer_name}
                       </p>
-                      <p className="text-xs text-gray-500">{user?.org_name}</p>
                     </div>
                   </div>
                   <button
@@ -213,10 +612,9 @@ export default function RestaurantWebsite() {
           </div>
         </header>
 
-        {/* Hero content */}
-        <main className="flex-1 gap-8 flex flex-col items-center justify-center text-center px-6 py-12">
-          <h1 className="text-4xl md:text-5xl lg:text-[64px] font-bold text-white max-w-4xl mb-6">
-            There are many variations of passages of
+        <main className="flex-1 flex flex-col items-center justify-center text-center px-6 py-12 overflow-auto">
+          <h1 className="text-4xl md:text-5xl mt-12 lg:text-[54px] font-bold text-white max-w-8xl mb-6">
+            There are many variations of passages of{" "}
           </h1>
           <p className="text-gray-300 max-w-2xl mb-16">
             Lorem Ipsum available, but the majority have suffered alteration in
@@ -224,8 +622,18 @@ export default function RestaurantWebsite() {
             even
           </p>
 
-          {/* Reservation form */}
-          <div className="w-full max-w-4xl bg-[#222222]/90 rounded-lg p-6 mt-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4  rounded-lg overflow-hidden">
+            {features.map((feature, index) => (
+              <FeatureCard
+                key={index}
+                icon={feature.icon}
+                title={feature.title}
+                description={feature.description}
+              />
+            ))}
+          </div>
+
+          <div className="w-full max-w-4xl bg-[#222222]/90 rounded-lg p-6">
             <Tabs
               defaultValue="all"
               className="w-full"
@@ -247,29 +655,74 @@ export default function RestaurantWebsite() {
                 {reservationFields.map((field, index) => (
                   <div
                     key={index}
-                    className="flex items-center gap-3  rounded-md p-3"
+                    className={`flex items-center gap-3 rounded-md p-3 cursor-pointer ${
+                      selectedCategory === field.label
+                        ? "bg-amber-500 text-white"
+                        : "text-gray-400"
+                    }`}
+                    onClick={() => handleCategoryClick(field.label)}
                   >
                     {field.icon}
                     <div className="flex flex-col">
-                      <span className="text-xs text-gray-400">
-                        {field.label}
-                      </span>
-                      <span className="text-[7px] text-gray-500">
-                        {field.placeholder}
-                      </span>
+                      <span className="text-xs">{field.label}</span>
+                      <span className="text-[7px]">{field.placeholder}</span>
                     </div>
                   </div>
                 ))}
-                <Button className="bg-gradient-to-b from-[#fd8e2e] to-[#f5be32] w-[67px] h-[67px] hover:opacity-80 text-white rounded-xl">
+                <Button
+                  className="bg-gradient-to-b from-[#fd8e2e] to-[#f5be32] w-[67px] h-[67px] hover:opacity-80 text-white rounded-xl"
+                  onClick={handleSearchClick}
+                >
                   <Search className="w-5 h-5" />
                 </Button>
               </div>
             </Tabs>
+
+            {selectedCategory && (
+              <div className="mt-4">
+                <Input
+                  type="text"
+                  placeholder={`Хайх (${selectedCategory})`}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="bg-[#333333]/80 text-white border-none rounded-md p-2 w-full max-w-md mx-auto"
+                />
+              </div>
+            )}
+          </div>
+
+          <div className="w-full max-w-4xl mt-8 min-h-[300px]">
+            {loading ? (
+              <p className="text-white">Loading data...</p>
+            ) : error ? (
+              <p className="text-red-500">{error}</p>
+            ) : selectedCategory || selectedMerchant ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {categorizedMerchants.length > 0 ? (
+                  categorizedMerchants.map((merchant) => (
+                    <div
+                      key={merchant.id}
+                      className={`bg-[#333333]/80 p-4 rounded-lg text-white cursor-pointer ${
+                        selectedMerchant?.id === merchant.id
+                          ? "border-2 border-amber-500"
+                          : ""
+                      }`}
+                      onClick={() => handleItemClick(merchant)}
+                    >
+                      {renderMerchantField(merchant)}
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-gray-400">No merchants found</p>
+                )}
+              </div>
+            ) : (
+              <p className="text-gray-400"></p>
+            )}
           </div>
         </main>
       </div>
 
-      {/* Side icons */}
       <div className="fixed right-6 top-1/2 -translate-y-1/2 flex flex-col gap-4 z-20">
         <Button
           variant="outline"
