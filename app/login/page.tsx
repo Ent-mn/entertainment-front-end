@@ -7,6 +7,7 @@ import Image from "next/image";
 import { Eye, EyeOff } from "lucide-react";
 import axios from "axios";
 import { useUser } from "@/context/UserContext";
+import { useSession, signIn, signOut } from "next-auth/react";
 
 const Login = () => {
   const router = useRouter();
@@ -15,9 +16,12 @@ const Login = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
+
   const [showPassword, setShowPassword] = useState(false);
 
   const { login, isLoggedIn } = useUser();
+
+  const { data: session, status } = useSession();
 
   const [error, setError] = useState("");
 
@@ -233,7 +237,24 @@ const Login = () => {
               />
               <span className="text-gray-600">Facebook</span>
             </button>
+            <div>
+              {status === "loading" ? (
+                <p>Loading...</p>
+              ) : !session ? (
+                <button onClick={() => signIn("google")}>
+                  Sign in with Google
+                </button>
+              ) : (
+                <div>
+                  <p>Welcome, {session.user?.name}</p>
+                  <button onClick={() => signOut()}>Sign out</button>
+                </div>
+              )}
+            </div>
             <button
+              onClick={() => {
+                console.log(session, status);
+              }}
               type="button"
               className="w-full py-2 border border-gray-300 rounded-md flex items-center cursor-pointer justify-center gap-2 hover:bg-gray-100"
             >
