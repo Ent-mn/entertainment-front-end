@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useTheme } from "next-themes";
+
 import {
   ChevronLeft,
   ChevronRight,
@@ -16,7 +16,7 @@ import {
   CreditCard,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Checkbox } from "@/components/ui/checkbox";
 import Image from "next/image";
 
@@ -53,10 +53,10 @@ const venue: Venue = {
   subtype: "Grand Ballroom",
   rating: 4.5,
   images: [
-    "/image copy 7.png",
-    "/image copy 7.png",
-    "/image copy 7.png",
-    "/image copy 7.png",
+    "/image copy 11.png",
+    "/image copy 10.png",
+    "/image copy 11.png",
+    "/image copy 8.png",
     "/image copy 7.png",
   ],
   pricePerPerson: 240000,
@@ -102,7 +102,6 @@ export default function BookingPage() {
   const [isPaymentDialogOpen, setIsPaymentDialogOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [isPaymentComplete, setIsPaymentComplete] = useState(false);
-  const { theme, setTheme } = useTheme();
 
   const subtotal = bookingDetails.menuPrice * bookingDetails.guestCount;
   const additionalTotal = bookingDetails.additionalServices.reduce(
@@ -314,15 +313,23 @@ export default function BookingPage() {
                       EVENT
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                      <div className="flex items-start gap-3">
-                        <Users className="h-5 w-5 text-gray-400 mt-0.5" />
-                        <div>
-                          <p className="font-medium text-white">Хүрим</p>
-                          <p className="text-sm text-gray-400">
-                            Захиалгын төрөл
-                          </p>
+                      <div className="flex gap-3">
+                        <img
+                          src="/image copy 11.png"
+                          alt=""
+                          className="w-[146px] h-[152px]"
+                        />
+                        <div className="flex items-start gap-3">
+                          <Users className="h-5 w-5 text-gray-400 mt-0.5" />
+                          <div>
+                            <p className="font-medium text-white">Хүрим</p>
+                            <p className="text-sm text-gray-400">
+                              Захиалгын төрөл
+                            </p>
+                          </div>
                         </div>
                       </div>
+
                       <div className="flex items-start gap-3">
                         <Calendar className="h-5 w-5 text-gray-400 mt-0.5" />
                         <div>
@@ -351,15 +358,25 @@ export default function BookingPage() {
                       MENU
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                      <div className="flex items-start gap-3">
-                        <Utensils className="h-5 w-5 text-gray-400 mt-0.5" />
-                        <div>
-                          <p className="font-medium text-white">
-                            {formatCurrency(bookingDetails.menuPrice)}
-                          </p>
-                          <p className="text-sm text-gray-400">Сонгосон меню</p>
+                      <div className="flex gap-3">
+                        <img
+                          src="/image copy 9.png"
+                          alt=""
+                          className="w-[146px] h-[152px]"
+                        />
+                        <div className="flex items-start gap-3">
+                          <Utensils className="h-5 w-5 text-gray-400 mt-0.5" />
+                          <div>
+                            <p className="font-medium text-white">
+                              {formatCurrency(bookingDetails.menuPrice)}
+                            </p>
+                            <p className="text-sm text-gray-400">
+                              Сонгосон меню
+                            </p>
+                          </div>
                         </div>
                       </div>
+
                       <div className="flex items-start gap-3">
                         <Users className="h-5 w-5 text-gray-400 mt-0.5" />
                         <div>
@@ -554,9 +571,9 @@ export default function BookingPage() {
                         <div className="w-12 h-12 bg-[#121212] dark:bg-blue-900 rounded-full flex items-center justify-center mb-2">
                           <CreditCard className="h-6 w-6 text-blue-600 dark:text-blue-400" />
                         </div>
-                        <span className="text-sm font-medium text-white">
+                        <DialogTitle className="text-sm font-medium text-white">
                           Картаар төлөх
-                        </span>
+                        </DialogTitle>
                       </div>
                       <div className="border rounded-md p-4 flex flex-col items-center justify-center cursor-pointer dark:border-gray-700">
                         <div className="w-12 h-12 bg-[#121212] rounded-full flex items-center justify-center mb-2">
