@@ -11,6 +11,8 @@ const authOptions = {
   pages: {
     signIn: "/restaurant",
   },
+  debug: true,
+  secret: process.env.NEXTAUTH_SECRET,
 };
 const handler = NextAuth(authOptions);
 
