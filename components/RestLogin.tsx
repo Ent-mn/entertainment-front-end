@@ -6,7 +6,6 @@ import FacebookLogin, {
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Facebook } from "lucide-react";
 import { useUser } from "@/context/UserContext";
@@ -60,42 +59,6 @@ const RestLogin = () => {
     };
 
     fetchData();
-  };
-
-  // facebook login heseg
-
-  const [message, setMessage] = useState<{
-    text: string;
-    severity: "error" | "success";
-  }>();
-
-  const onSuccessHandler = async (response: SuccessResponse) => {
-    try {
-      const apiResponse = await fetch("/api/facebook-login", {
-        method: "POST",
-        body: JSON.stringify({
-          userId: response.userID,
-          accessToken: response.accessToken,
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      const data = await apiResponse.json();
-      if (data.success) {
-        setMessage({ text: "Login Successful.", severity: "success" });
-        login(data.user);
-        router.push("/restaurant");
-      } else {
-        setMessage({ text: "Facebook login failed.", severity: "error" });
-      }
-    } catch (error) {
-      setMessage({
-        text: "An error occurred while logging in with Facebook.",
-        severity: "error",
-      });
-    }
   };
 
   return (
@@ -171,37 +134,13 @@ const RestLogin = () => {
                   </Button>
 
                   <div className="grid grid-cols-2 gap-4 pt-4">
-                    <FacebookLogin
-                      appId="614567378085067"
-                      onSuccess={onSuccessHandler}
-                      onFail={(error) => {
-                        setMessage({
-                          text: "Error occured",
-                          severity: "error",
-                        });
-                      }}
-                      render={({ onClick }) => (
-                        <Button
-                          onClick={onClick}
-                          variant="outline"
-                          className="h-12 rounded-md border cursor-pointer border-[#e0e0e0] bg-white hover:bg-white/90 text-[#676767]"
-                        >
-                          <Facebook className="mr-2 h-5 w-5 text-[#1577f2]" />
-                          Sign in with Facebook
-                        </Button>
-                      )}
-                    />
-                    {message && (
-                      <div
-                        className={`${
-                          message.severity === "error"
-                            ? "text-red-600"
-                            : "text-green-600"
-                        }`}
-                      >
-                        {message.text}
-                      </div>
-                    )}
+                    <div
+                      onClick={() => signIn("facebook")}
+                      className="h-12 rounded-md border cursor-pointer border-[#e0e0e0] bg-white hover:bg-white/90 text-[#676767] w-full flex items-center justify-center"
+                    >
+                      <Facebook className="mr-2 h-5 w-5 text-[#1577f2]" />
+                      Sign in with Facebook
+                    </div>
                     <div>
                       {status === "loading" ? (
                         <Button
