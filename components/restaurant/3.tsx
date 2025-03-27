@@ -21,21 +21,21 @@ export default function FeaturesSection() {
   // Feature data
   const features: Feature[] = [
     {
-      image: "/new1.mp4",
+      image: "/video.mp4",
       title: "ASDASDASADA",
       description:
         "asdasdasda sdasdoidhgoihgoweiurghwoier ghowierghoweirghweiogheworiu ghpweorghoe iwurghiweur gheiowrghweoirug",
       buttonText: "ДЭЛГЭРЭНГҮЙ",
     },
     {
-      image: "/2.mp4",
+      image: "/video1.mp4",
       title: "ASDADASD",
       description:
         "УЛААНБААТАР ХОТЫН ХАМГИЙН ТАНСАГ ЗААЛЫГ ТАНД ЗОРИУЛЖ БЭЛТГЭЛЭЭ. Ballroom 202: ОНЫ ХУРЫМЫН УЛИРЛЫГ УРДЧИЛСАН ЗАХИАЛГА АВЧ БАЙНА.",
       buttonText: "ДЭЛГЭРЭНГҮЙ",
     },
     {
-      image: "/new3.mp4",
+      image: "/video2.mp4",
       title: "ASDASDASD",
       description:
         "testttrgjwetoprw gjwre[gwerg[ewjweo irgjweorigkweorigmwe ogrirjtokfepltriokeptijfkorep lwtjigrkofelpritgjgrke lopdoritgjhgkorfe",

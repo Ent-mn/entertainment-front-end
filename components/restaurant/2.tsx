@@ -17,22 +17,22 @@ export default function FeaturesSection() {
   // Feature data
   const features = [
     {
-      image: "/hurim1.png",
+      image: "/uul.jpg",
       title: "Хурим",
       description: "Lorem Ipsum is simply dummy text of the",
     },
     {
-      image: "/hurim2.png",
+      image: "/uul.jpg",
       title: "Хурим",
       description: "Lorem Ipsum is simply dummy text of the",
     },
     {
-      image: "/hurim3.png",
+      image: "/uul.jpg",
       title: "Хурим",
       description: "Lorem Ipsum is simply dummy text of the",
     },
     {
-      image: "/hurim4.png",
+      image: "/uul.jpg",
       title: "Хурим",
       description: "Lorem Ipsum is simply dummy text of the",
     },
@@ -59,7 +59,7 @@ export default function FeaturesSection() {
   return (
     <div
       ref={containerRef}
-      className="relative w-full min-h-screen flex flex-col justify-center bg-[#0A0A0A] overflow-hidden"
+      className="relative w-full h-[1000px] flex flex-col justify-center bg-[#0A0A0A] overflow-hidden"
       onMouseMove={handleMouseMove}
     >
       {/* Background with subtle gradient */}
