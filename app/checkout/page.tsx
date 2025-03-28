@@ -3,7 +3,7 @@ import React from "react";
 
 const page = () => {
   return (
-    <div className="flex py-10 px-40 bg-gray-900">
+    <div className="flex py-10 px-40 ">
       <PaymentModal />
     </div>
   );
