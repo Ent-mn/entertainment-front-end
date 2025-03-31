@@ -92,7 +92,7 @@ const RestLogin = () => {
           {register ? (
             <RestRegister />
           ) : (
-            <div className="flex h-[802px] w-[587px] items-start pt-[48px] relative justify-center rounded-3xl bg-[#f3f3f3] p-4">
+            <div className="flex h-[752px] w-[587px] items-start pt-[48px] relative justify-center rounded-3xl bg-[#f3f3f3] p-4">
               <div className="w-full max-w-md space-y-8">
                 <div className="text-start ">
                   <div className="flex justify-between">

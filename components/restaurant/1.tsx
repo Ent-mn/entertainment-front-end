@@ -62,6 +62,7 @@ export default function RestaurantWebsite() {
   const [showBankDropdown, setShowBankDropdown] = useState(false); // Toggle bank dropdown
   const [selectedBank, setSelectedBank] = useState<string | null>(null); // Track selected bank
   const [showAnnouncement, setShowAnnouncement] = useState<boolean>(true);
+  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
 
   const features = [
     {
@@ -183,9 +184,9 @@ export default function RestaurantWebsite() {
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.Q9eW!zD0EeL7@ANeyJ1c2VyX2lkIjoiMSIsImlhdCI6MTcxODU5OTU0NywiZXhwIjoxNzUwMTM1NTQ3fQ.muFJPyUNLrjjeHTVI4Vjj-wkHoGJ7YceHPIsDNuhlOQ";
 
   const navLinks = [
-    { name: "Home", href: "#", active: true },
-    { name: "Restaurants", href: "#", active: false },
-    { name: "Event Hall", href: "#", active: false },
+    { name: "Захиалах", href: "#", active: true },
+    { name: "Түрээслэх", href: "#", active: false },
+    { name: "Зөвлөгөө", href: "#", active: false },
     { name: "Contact", href: "#", active: false },
   ];
 
@@ -455,6 +456,25 @@ export default function RestaurantWebsite() {
     }
   };
 
+  // Add this useEffect to handle clicking outside the dropdown
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const dropdown = document.getElementById("profile-dropdown");
+      const button = document.getElementById("profile-button");
+      if (
+        dropdown &&
+        button &&
+        !dropdown.contains(event.target as Node) &&
+        !button.contains(event.target as Node)
+      ) {
+        setShowProfileDropdown(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   return (
     <div className="relative min-h-screen flex flex-col">
       <div className="fixed inset-0 z-0">
@@ -470,20 +490,21 @@ export default function RestaurantWebsite() {
         {showAnnouncement && (
           <div className="bg-[#2C2C2C] text-white w-full py-2 px-4 flex items-center justify-between">
             <div className="flex-1 text-center text-sm md:text-base">
-              Novotel hotel - MoD/n Tok Restaurant - Хуримын урьдчилсан захиалга 20% хямдрал....
+              Novotel hotel - MoD/n Tok Restaurant - Хуримын урьдчилсан захиалга
+              20% хямдрал....
             </div>
-            <button 
+            <button
               onClick={() => setShowAnnouncement(false)}
               className="text-white hover:text-gray-300 p-1"
               aria-label="Close announcement"
             >
-              <svg 
-                className="w-4 h-4" 
-                fill="none" 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                strokeWidth="2" 
-                viewBox="0 0 24 24" 
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
                 stroke="currentColor"
               >
                 <path d="M6 18L18 6M6 6l12 12"></path>
@@ -612,10 +633,11 @@ export default function RestaurantWebsite() {
                   </DialogContent>
                 </Dialog>
               ) : (
-                <div>
+                <div className="relative">
                   <div
+                    id="profile-button"
                     className="flex items-center gap-3 cursor-pointer"
-                    onClick={() => router.push("/profiletest")}
+                    onClick={() => setShowProfileDropdown(!showProfileDropdown)}
                   >
                     <img
                       src="bold.png"
@@ -623,17 +645,32 @@ export default function RestaurantWebsite() {
                       className="w-10 h-10 rounded-2xl"
                     />
                     <div>
-                      <p className="font-semibold text-sm">
+                      <p className="font-semibold text-sm text-white">
                         {user?.customer_name}
                       </p>
                     </div>
                   </div>
-                  <button
-                    onClick={logout}
-                    className="text-red-500 cursor-pointer"
-                  >
-                    Logout
-                  </button>
+                  {showProfileDropdown && (
+                    <div
+                      id="profile-dropdown"
+                      className="absolute right-0 mt-2 w-16 bg-[#333333] rounded-md shadow-lg py-1 z-50"
+                    >
+                      <Link href="/profiletest">
+                        <button className="w-full text-center px-2 py-2 text-sm text-white hover:bg-[#444444] transition-colors duration-150">
+                          Profile
+                        </button>
+                      </Link>
+                      <button
+                        onClick={() => {
+                          logout();
+                          setShowProfileDropdown(false);
+                        }}
+                        className="w-full text-center py-2 px-2 text-sm text-red-500 hover:bg-[#444444] transition-colors duration-150"
+                      >
+                        Logout
+                      </button>
+                    </div>
+                  )}
                 </div>
               )}
             </nav>
