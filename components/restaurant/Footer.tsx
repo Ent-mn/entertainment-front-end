@@ -140,7 +140,7 @@ export default function RestaurantHorizontalSlider() {
             </div>
 
             {/* Navigation Buttons */}
-            <div className="flex justify-center mt-6 gap-4">
+            <div className="flex justify-start mt-6 gap-4">
               <button
                 onClick={scrollLeft}
                 className="w-10 h-10 rounded-full border border-gray-600 flex items-center justify-center hover:bg-gray-800 transition-colors"

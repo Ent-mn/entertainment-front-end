@@ -1,12 +1,12 @@
 import React from "react";
-import BookingPage from "./Test";
+// import BookingPage from "./Test";
 import FeaturesSection from "./CheckoutMain";
 
 const PaymentModal = () => {
   return (
     <div className="">
       {/* <FeaturesSection /> */}
-      <BookingPage />
+      {/* <BookingPage /> */}
     </div>
   );
 };

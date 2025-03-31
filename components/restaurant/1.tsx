@@ -1,6 +1,5 @@
 "use client";
 import { LightbulbIcon } from "lucide-react";
-
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -61,13 +60,15 @@ export default function RestaurantWebsite() {
   const [headerSearch, setHeaderSearch] = useState(""); // Header search
   const [headerResults, setHeaderResults] = useState<any[]>([]); // Header search results
   const [showBankDropdown, setShowBankDropdown] = useState(false); // Toggle bank dropdown
+  const [selectedBank, setSelectedBank] = useState<string | null>(null); // Track selected bank
+  const [showAnnouncement, setShowAnnouncement] = useState<boolean>(true);
 
   const features = [
     {
       icon: <LightbulbIcon className="w-6 h-6 text-amber-500" />,
       title: "Lorem ipsum",
       description:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. ",
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
     },
     {
       icon: (
@@ -116,13 +117,13 @@ export default function RestaurantWebsite() {
       ),
       title: "Lorem ipsum",
       description:
-        "LLorem Ipsum is simply dummy text of the printing and typesetting industry. ",
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
     },
     {
       icon: <LightbulbIcon className="w-6 h-6 text-amber-500" />,
       title: "Lorem ipsum",
       description:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. ",
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
     },
     {
       icon: (
@@ -171,7 +172,7 @@ export default function RestaurantWebsite() {
       ),
       title: "Lorem ipsum",
       description:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. ",
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
     },
   ];
 
@@ -261,7 +262,16 @@ export default function RestaurantWebsite() {
       return;
     }
 
-    const filtered = merchants.filter((merchant) =>
+    let filteredMerchants = merchants;
+
+    // Apply bank filter if a bank is selected from "Төрөл"
+    if (selectedBank) {
+      filteredMerchants = filteredMerchants.filter((merchant) =>
+        merchant.bank_name?.toLowerCase().includes(selectedBank.toLowerCase())
+      );
+    }
+
+    const filtered = filteredMerchants.filter((merchant) =>
       [
         merchant.name || "",
         merchant.phone || "",
@@ -274,7 +284,7 @@ export default function RestaurantWebsite() {
     );
 
     setHeaderResults(filtered.slice(0, 6)); // Limit to 6 results
-  }, [headerSearch, merchants]);
+  }, [headerSearch, merchants, selectedBank]);
 
   // Get unique bank names
   const uniqueBanks = Array.from(
@@ -289,11 +299,19 @@ export default function RestaurantWebsite() {
         );
 
   const categorizedMerchants = (() => {
-    let result = filteredMerchants;
+    let result = filteredMerchants; // Start with merchants filtered by activeTab
 
+    // Apply bank filter if a bank is selected from "Төрөл"
+    if (selectedBank) {
+      result = result.filter((merchant) =>
+        merchant.bank_name?.toLowerCase().includes(selectedBank.toLowerCase())
+      );
+    }
+
+    // If a specific merchant is selected, show only that merchant
     if (selectedMerchant) {
       result = [selectedMerchant];
-      if (selectedCategory) {
+      if (selectedCategory && searchQuery) {
         const value = (() => {
           switch (selectedCategory) {
             case "Нэр":
@@ -318,8 +336,9 @@ export default function RestaurantWebsite() {
       return result;
     }
 
-    if (selectedCategory) {
-      result = filteredMerchants.filter((merchant) => {
+    // Apply additional category-based search if a category is selected
+    if (selectedCategory && searchQuery) {
+      result = result.filter((merchant) => {
         const value = (() => {
           switch (selectedCategory) {
             case "Нэр":
@@ -334,8 +353,7 @@ export default function RestaurantWebsite() {
               return "";
           }
         })();
-
-        return value && value.toLowerCase().includes(searchQuery.toLowerCase());
+        return value?.toLowerCase().includes(searchQuery.toLowerCase());
       });
     }
 
@@ -344,7 +362,7 @@ export default function RestaurantWebsite() {
 
   const handleCategoryClick = (label: string) => {
     setSelectedCategory(label);
-    setSearchQuery("");
+    setSearchQuery(""); // Reset search query when changing category
   };
 
   const handleItemClick = (merchant: any) => {
@@ -398,6 +416,7 @@ export default function RestaurantWebsite() {
   };
 
   const handleBankClick = (bank: string) => {
+    setSelectedBank(bank === "Capitron Bank" ? "Capitron" : bank); // Change to "Capitron" if "Capitron Bank" is selected
     setSelectedCategory("Банк"); // Set category to "Банк"
     setSearchQuery(bank); // Filter by selected bank
     setShowBankDropdown(false); // Hide dropdown
@@ -447,8 +466,31 @@ export default function RestaurantWebsite() {
           priority
         />
       </div>
-
       <div className="relative z-10 flex flex-col min-h-screen">
+        {showAnnouncement && (
+          <div className="bg-[#2C2C2C] text-white w-full py-2 px-4 flex items-center justify-between">
+            <div className="flex-1 text-center text-sm md:text-base">
+              Novotel hotel - MoD/n Tok Restaurant - Хуримын урьдчилсан захиалга 20% хямдрал....
+            </div>
+            <button 
+              onClick={() => setShowAnnouncement(false)}
+              className="text-white hover:text-gray-300 p-1"
+              aria-label="Close announcement"
+            >
+              <svg 
+                className="w-4 h-4" 
+                fill="none" 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                strokeWidth="2" 
+                viewBox="0 0 24 24" 
+                stroke="currentColor"
+              >
+                <path d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+          </div>
+        )}
         <header className="py-4 px-6 bg-[#00000080] md:px-[100px]">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -467,7 +509,9 @@ export default function RestaurantWebsite() {
                 onClick={() => setShowBankDropdown(!showBankDropdown)}
                 className="flex cursor-pointer items-center gap-2 border-r border-gray-500 pr-2 relative"
               >
-                <span className="text-white text-sm cursor-pointer">Төрөл</span>
+                <span className="text-white text-sm cursor-pointer">
+                  {selectedBank || "Төрөл"}
+                </span>
                 <svg
                   className="w-4 h-4 text-white"
                   fill="none"
@@ -622,7 +666,7 @@ export default function RestaurantWebsite() {
             even
           </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4  rounded-lg overflow-hidden">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 rounded-lg overflow-hidden">
             {features.map((feature, index) => (
               <FeatureCard
                 key={index}
