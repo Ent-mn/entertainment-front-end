@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useMotionValue, motion, useMotionTemplate } from "framer-motion";
 import { useState, useRef } from "react";
 import { CanvasRevealEffect } from "@/components/ui/canvas-reveal-effect";
+import ThemeToggleDemo from "../theme/theme-toggle-demo";
 
 export default function FeaturesSection() {
   // State to track which card is being hovered and mouse position
@@ -60,8 +61,7 @@ export default function FeaturesSection() {
     <div
       ref={containerRef}
       className="relative w-full h-[1000px] flex flex-col justify-center bg-[#0A0A0A] overflow-hidden"
-      onMouseMove={handleMouseMove}
-    >
+      onMouseMove={handleMouseMove}>
       {/* Background with subtle gradient */}
       <div className="absolute inset-0 bg-gradient-to-b from-black to-[#111] opacity-80"></div>
 
@@ -72,8 +72,7 @@ export default function FeaturesSection() {
           backgroundColor: "#D4AF37", // Gold color
           opacity: hoveredCard !== null ? 0.35 : 0,
           maskImage: maskImage,
-        }}
-      >
+        }}>
         <CanvasRevealEffect
           animationSpeed={3}
           containerClassName="bg-transparent absolute inset-0 pointer-events-none"
@@ -104,8 +103,7 @@ export default function FeaturesSection() {
               key={index}
               className="relative overflow-hidden rounded-lg group"
               onMouseEnter={() => setHoveredCard(index)}
-              onMouseLeave={() => setHoveredCard(null)}
-            >
+              onMouseLeave={() => setHoveredCard(null)}>
               <div className="h-[400px] relative">
                 <Image
                   src={feature.image || "/placeholder.svg"}
