@@ -138,7 +138,7 @@ export default function ProductModal({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center p-4">
-      <div className="bg-gray-900 w-full max-w-2xl max-h-[90vh] rounded-lg overflow-hidden flex flex-col">
+      <div className="bg-[#191919] w-full max-w-2xl max-h-[90vh] rounded-lg overflow-hidden flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-800">
           <div className="flex items-center">
