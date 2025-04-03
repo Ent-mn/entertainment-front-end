@@ -1073,15 +1073,17 @@ function CartContent() {
 
             <div className="space-y-3 mb-6">
               <div className="flex justify-between">
-                <div className="text-gray-300">Менюны нийт үнэ</div>
+                <div className=" text-black dark:text-white">
+                  Менюны нийт үнэ
+                </div>
                 <div className="flex gap-8">
-                  <span className="w-20 text-right text-white">
+                  <span className="w-20 text-right  text-black dark:text-white">
                     {formatCurrency(bookingDetails.menuPrice)}
                   </span>
                   <span className="w-8 text-right text-white">
                     {bookingDetails.guestCount}
                   </span>
-                  <span className="w-24 text-right font-medium text-white">
+                  <span className="w-24 text-right font-medium  text-black dark:text-white">
                     {formatCurrency(subtotal)}
                   </span>
                 </div>
@@ -1091,7 +1093,7 @@ function CartContent() {
                 <div key={index} className="flex justify-between">
                   <div className="text-gray-300">{service.name}</div>
                   <div className="flex gap-8">
-                    <span className="w-20 text-right text-white">
+                    <span className="w-20 text-right text-black dark:text-white">
                       {service.price > 0 ? formatCurrency(service.price) : "-"}
                     </span>
                     <span className="w-8 text-right text-white">

@@ -31,7 +31,9 @@ export default function PriceDetails({
           </button>
           <div>
             <p className="text-green-500 font-medium">Боломжтой</p>
-            <p className="text-gray-400 text-sm">Тус цагт захиалга авах</p>
+            <p className=" text-black dark:text-white text-sm">
+              Тус цагт захиалга авах
+            </p>
           </div>
         </div>
 
@@ -39,23 +41,31 @@ export default function PriceDetails({
           <button
             className="flex items-center justify-center w-6 h-6 rounded border border-gray-400 mr-2 mt-0.5"
             onClick={() => setIsConfirmed(!isConfirmed)}>
-            {isConfirmed && <Check size={16} className="text-white" />}
+            {isConfirmed && (
+              <Check size={16} className=" text-black dark:text-white" />
+            )}
           </button>
           <div>
-            <p className="text-white font-medium">Баталгаажаагүй</p>
-            <p className="text-gray-400 text-sm">Захиалгын статус</p>
+            <p className=" text-black dark:text-white font-medium">
+              Баталгаажаагүй
+            </p>
+            <p className=" text-black dark:text-white text-sm">
+              Захиалгын статус
+            </p>
           </div>
         </div>
       </div>
 
       {/* Price Details header */}
       <div className="border-b border-gray-700 pb-2 mb-4">
-        <h2 className="text-white text-lg font-medium">Price Details</h2>
-        <p className="text-gray-400 text-sm">Үнийн задаргаа</p>
+        <h2 className=" text-black dark:text-white text-lg font-medium">
+          Price Details
+        </h2>
+        <p className=" text-black dark:text-white text-sm">Үнийн задаргаа</p>
       </div>
 
       {/* Table headers */}
-      <div className="grid grid-cols-4 text-gray-400 text-sm mb-2">
+      <div className="grid grid-cols-4 text-gray-600 dark:text-gray-400 text-sm mb-2">
         <div className="col-span-1"></div>
         <div className="col-span-1 text-right">Нэг бүр үнэ</div>
         <div className="col-span-1 text-right">Тоо ширхэг</div>
@@ -65,7 +75,9 @@ export default function PriceDetails({
       {/* Menu items */}
       <div className="space-y-3 mb-6">
         {menuItems.map((menu) => (
-          <div key={menu.id} className="grid grid-cols-4 text-white">
+          <div
+            key={menu.id}
+            className="grid grid-cols-4  text-black dark:text-white">
             <div className="col-span-1">{menu.title} нийт үнэ</div>
             <div className="col-span-1 text-right">{menu.price}</div>
             <div className="col-span-1 text-right">{menu.serves}</div>
@@ -91,28 +103,28 @@ export default function PriceDetails({
         )}
 
         {/* Additional services */}
-        <div className="grid grid-cols-4 text-white">
+        <div className="grid grid-cols-4  text-black dark:text-white">
           <div className="col-span-1">Цэгийн нэмэлт төлбөр</div>
           <div className="col-span-1 text-right">-</div>
           <div className="col-span-1 text-right">-</div>
           <div className="col-span-1 text-right">500,000 ₮</div>
         </div>
 
-        <div className="grid grid-cols-4 text-white">
+        <div className="grid grid-cols-4  text-black dark:text-white">
           <div className="col-span-1">Бусад төлбөр</div>
           <div className="col-span-1 text-right">-</div>
           <div className="col-span-1 text-right">-</div>
           <div className="col-span-1 text-right">-</div>
         </div>
 
-        <div className="grid grid-cols-4 text-white">
+        <div className="grid grid-cols-4  text-black dark:text-white">
           <div className="col-span-1">Нэмэлт хөгжмийн төлбөр</div>
           <div className="col-span-1 text-right">-</div>
           <div className="col-span-1 text-right">-</div>
           <div className="col-span-1 text-right">-</div>
         </div>
 
-        <div className="grid grid-cols-4 text-white">
+        <div className="grid grid-cols-4  text-black dark:text-white">
           <div className="col-span-1">Нэмэлт архины төлбөр</div>
           <div className="col-span-1 text-right">-</div>
           <div className="col-span-1 text-right">-</div>
@@ -122,19 +134,19 @@ export default function PriceDetails({
 
       {/* Totals */}
       <div className="border-t border-gray-700 pt-4 space-y-2">
-        <div className="grid grid-cols-2 text-white">
+        <div className="grid grid-cols-2  text-black dark:text-white">
           <div className="col-span-1 text-right font-medium">Нийт</div>
           <div className="col-span-1 text-right font-medium">
             {totalPrice.toLocaleString()} ₮
           </div>
         </div>
 
-        <div className="grid grid-cols-2 text-white">
+        <div className="grid grid-cols-2  text-black dark:text-white">
           <div className="col-span-1 text-right">НӨАТ</div>
           <div className="col-span-1 text-right">{vat.toLocaleString()} ₮</div>
         </div>
 
-        <div className="grid grid-cols-2 text-white">
+        <div className="grid grid-cols-2  text-black dark:text-white">
           <div className="col-span-1 text-right font-medium">БҮГД</div>
           <div className="col-span-1 text-right font-medium">
             {grandTotal.toLocaleString()} ₮
