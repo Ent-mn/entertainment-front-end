@@ -1,6 +1,5 @@
 "use client";
 import { LightbulbIcon } from "lucide-react";
-
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -30,13 +29,106 @@ import {
 } from "@/components/ui/dialog";
 import RestLogin from "../RestLogin";
 import { useUser } from "@/context/UserContext";
-import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
+import { useRouter, useSearchParams } from "next/navigation";
+
+interface VenueData {
+  id: number;
+  name?: string;
+  capacity?: number;
+  stars: number;
+  price: number;
+  date: string;
+  sale?: number;
+  image?: string;
+  type?: string;
+  phone?: string;
+  email?: string;
+  bank_name?: string;
+  account?: string;
+}
+
+const staticData = {
+  restaurants: [
+    {
+      id: 1001,
+      name: "Restaurant",
+      capacity: 2,
+      stars: 5,
+      price: 90000,
+      date: "2024-04-01",
+      sale: 20,
+      image: "/uul.jpg",
+      type: "Ресторан",
+    },
+    {
+      id: 1002,
+      name: "Restaurant",
+      capacity: 4,
+      stars: 4,
+      price: 120000,
+      date: "2024-04-02",
+      image: "/uul.jpg",
+      type: "Ресторан",
+    },
+  ],
+  eventHalls: [
+    {
+      id: 2001,
+      name: "Wedding Palace",
+      capacity: 300,
+      stars: 5,
+      price: 1500000,
+      date: "2024-04-01",
+      sale: 15,
+      image: "/uul.jpg",
+      type: "Event Hall",
+    },
+  ],
+  outdoorVenues: [
+    {
+      id: 3001,
+      name: "Тэрэлж Resort",
+      capacity: 100,
+      stars: 5,
+      price: 900000,
+      date: "2024-04-01",
+      sale: 10,
+      image: "/uul.jpg",
+      type: "Гэр Талбай",
+    },
+  ],
+  theaters: [
+    {
+      id: 4001,
+      name: "Драмын Театр",
+      capacity: 400,
+      stars: 5,
+      price: 1800000,
+      date: "2024-04-01",
+      sale: 20,
+      image: "/uul.jpg",
+      type: "Театр",
+    },
+  ],
+  complexes: [
+    {
+      id: 5001,
+      name: "Blue Sky Tower",
+      capacity: 1000,
+      stars: 5,
+      price: 3000000,
+      date: "2024-04-01",
+      sale: 10,
+      image: "/uul.jpg",
+      type: "Complex",
+    },
+  ],
+};
 
 function FeatureCard({ icon, title, description }: any) {
   return (
-    <div className="text-center px-6 py-8">
-      <div className="flex flex-row items-center justify-center mb-6">
+    <div className="text-center mt-12 px-6 py-8">
+      <div className="flex flex-col items-center justify-center mb-6">
         <div className="w-12 h-12 rounded-full bg-[#1A1A1A] flex items-center justify-center">
           {icon}
         </div>
@@ -52,209 +144,204 @@ function FeatureCard({ icon, title, description }: any) {
 }
 
 export default function RestaurantWebsite() {
+  const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState("all");
-  const [merchants, setMerchants] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [selectedMerchant, setSelectedMerchant] = useState<any | null>(null);
-  const [searchQuery, setSearchQuery] = useState(""); // Category search
-  const [headerSearch, setHeaderSearch] = useState(""); // Header search
-  const [headerResults, setHeaderResults] = useState<any[]>([]); // Header search results
-  const [showBankDropdown, setShowBankDropdown] = useState(false); // Toggle bank dropdown
-  const { data: session, status } = useSession();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedMerchant, setSelectedMerchant] = useState<any>(null);
+  const [showBankDropdown, setShowBankDropdown] = useState(false);
+  const [selectedBank, setSelectedBank] = useState<string | null>(null);
+  const [headerSearch, setHeaderSearch] = useState("");
+  const [headerResults, setHeaderResults] = useState<any[]>([]);
+  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
+  const [merchants, setMerchants] = useState<any[]>([]);
+  const [showAnnouncement, setShowAnnouncement] = useState(true);
 
-  const features = [
-    {
-      icon: <LightbulbIcon className="w-6 h-6 text-amber-500" />,
-      title: "Lorem ipsum",
-      description:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. ",
-    },
-    {
-      icon: (
-        <svg
-          className="w-6 h-6 text-amber-500"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M16 16V8H8V16H16Z"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <path
-            d="M12 20V16"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <path
-            d="M12 8V4"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <path
-            d="M16 12H20"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <path
-            d="M4 12H8"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      ),
-      title: "Lorem ipsum",
-      description:
-        "LLorem Ipsum is simply dummy text of the printing and typesetting industry. ",
-    },
-    {
-      icon: <LightbulbIcon className="w-6 h-6 text-amber-500" />,
-      title: "Lorem ipsum",
-      description:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. ",
-    },
-    {
-      icon: (
-        <svg
-          className="w-6 h-6 text-amber-500"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M16 16V8H8V16H16Z"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <path
-            d="M12 20V16"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <path
-            d="M12 8V4"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <path
-            d="M16 12H20"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <path
-            d="M4 12H8"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      ),
-      title: "Lorem ipsum",
-      description:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. ",
-    },
-  ];
-
-  const { user, isLoggedIn, login, logout } = useUser();
-  const router = useRouter();
-
-  const hardcodedToken =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.Q9eW!zD0EeL7@ANeyJ1c2VyX2lkIjoiMSIsImlhdCI6MTcxODU5OTU0NywiZXhwIjoxNzUwMTM1NTQ3fQ.muFJPyUNLrjjeHTVI4Vjj-wkHoGJ7YceHPIsDNuhlOQ";
+  // Initialize merchants data from staticData
+  useEffect(() => {
+    const allVenues = [
+      ...staticData.restaurants,
+      ...staticData.eventHalls,
+      ...staticData.outdoorVenues,
+      ...staticData.theaters,
+      ...staticData.complexes,
+    ];
+    setMerchants(allVenues);
+  }, []);
 
   const navLinks = [
-    { name: "Home", href: "#", active: true },
-    { name: "Restaurants", href: "#", active: false },
-    { name: "Event Hall", href: "#", active: false },
+    { name: "Захиалах", href: "#", active: true },
+    { name: "Түрээслэх", href: "#", active: false },
+    { name: "Зөвлөгөө", href: "#", active: false },
     { name: "Contact", href: "#", active: false },
-  ];
-
-  const reservationFields = [
-    {
-      icon: <Users className="w-5 h-5" />,
-      label: "Нэр",
-      placeholder: "Та хэдэн хүн бодож байна?",
-    },
-    {
-      icon: <Calendar className="w-5 h-5" />,
-      label: "дугаар",
-      placeholder: "Та хэзээ гэж бодож байна?",
-    },
-    {
-      icon: <Clock className="w-5 h-5" />,
-      label: "имэйл",
-      placeholder: "Та хэдэн хүн бодож байна?",
-    },
-    {
-      icon: <MapPin className="w-5 h-5" />,
-      label: "Банк",
-      placeholder: "Та хаана гэж бодож байна?",
-    },
   ];
 
   const tabOptions = [
     { value: "all", label: "Бүгд" },
     { value: "Ресторан", label: "Ресторан" },
     { value: "Event Hall", label: "Event Hall" },
-    { value: "Гадаа талбай", label: "Гадаа талбай" },
-    { value: "Голын цаад эрэг", label: "Голын цаад эрэг" },
+    { value: "Гэр Талбай", label: "Гэр Талбай" },
+    { value: "Театр", label: "Театр" },
+    { value: "Complex", label: "Complex" },
   ];
 
-  useEffect(() => {
-    const fetchMerchants = async () => {
-      try {
-        const customerId = user?.id || localStorage.getItem("user_id") || "8";
-        const { data } = await axios.post(
-          "/api",
-          {
-            sn: "merchant_list",
-            page_number: 1,
-            page_size: 50,
-            service_type_id: "204",
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${hardcodedToken}`,
-            },
-          }
-        );
-        if (data.status === "success") {
-          setMerchants(data.result);
-        } else {
-          setError(`Failed to fetch data: ${data.message || "Unknown error"}`);
-        }
-      } catch (err: any) {
-        setError(
-          `Error fetching data: ${err.response?.data?.message || err.message}`
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
+  const venueTypes = [
+    "Ресторан",
+    "Event Hall",
+    "Гэр Талбай",
+    "Театр",
+    "Complex",
+  ];
 
-    fetchMerchants();
-  }, [user]);
+  const features = [
+    {
+      icon: <LightbulbIcon className="w-6 h-6 text-amber-500" />,
+      title: "Хайлт & Шүүлт",
+      description:
+        "Хайлтын болон шүүлтийн систем ашиглан та өөрийн эвентэд яг тохирох газрыг олох боломжтой. ",
+    },
+    {
+      icon: (
+        <svg
+          className="w-6 h-6 text-amber-500"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M16 16V8H8V16H16Z"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M12 20V16"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M12 8V4"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M16 12H20"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M4 12H8"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      ),
+      title: "Бодит Календарь",
+      description:
+        "Таны захиалахыг хүссэн өдөр, цагт захиалга авах боломжтой байгаа эсэхийг 30секунд тутамд шалгаж танд харуулах болно. ",
+    },
+    {
+      icon: <LightbulbIcon className="w-6 h-6 text-amber-500" />,
+      title: "Онлайн захиалга",
+      description:
+        "Та заавал биеэр очилгүйгээр 100% онлайнаар тухайн газартай танилцаж, захиалгаа баталгаажуулах боломжтой.",
+    },
+    {
+      icon: (
+        <svg
+          className="w-6 h-6 text-amber-500"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M16 16V8H8V16H16Z"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M12 20V16"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M12 8V4"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M16 12H20"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M4 12H8"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      ),
+      title: "Гүйцэтгэлийн систем",
+      description:
+        "Таны Эвент болох хүртэл бэлтгэл ажлыг онлайнаар гүйцэтгэх, бүх зүйлсийг хяналттайгаар удирдах систем.",
+    },
+  ];
+
+  const { user, isLoggedIn, logout } = useUser();
+  const router = useRouter();
+
+  const reservationFields = [
+    {
+      icon: <Users className="w-5 h-5" />,
+      label: "Зочдын тоо",
+      placeholder: "Зочдын тоогоо оруулна уу.",
+    },
+    {
+      icon: <Calendar className="w-5 h-5" />,
+      label: "Өдөр",
+      placeholder: "Эвент болох өдөр",
+    },
+    {
+      icon: <Clock className="w-5 h-5" />,
+      label: "Цаг",
+      placeholder: "Эхлэх, үргэжлэх цаг",
+    },
+    {
+      icon: <MapPin className="w-5 h-5" />,
+      label: "Эвент",
+      placeholder: "Эвентийн төрлөө сонгоно уу.",
+    },
+  ];
+
+  // Get unique bank names
+  const uniqueBanks = Array.from(
+    new Set(merchants.map((m) => m.bank_name).filter(Boolean))
+  );
+
+  const handleBankClick = (type: string) => {
+    setSelectedBank(type);
+    setShowBankDropdown(false); // Hide dropdown
+    router.push(`/ordertest?type=${encodeURIComponent(type)}`);
+  };
 
   // Real-time header search filtering
   useEffect(() => {
@@ -263,90 +350,33 @@ export default function RestaurantWebsite() {
       return;
     }
 
-    const filtered = merchants.filter((merchant) =>
+    let filteredVenues = merchants;
+
+    // Apply bank filter if a bank is selected from "Төрөл"
+    if (selectedBank) {
+      filteredVenues = filteredVenues.filter((venue) =>
+        venue.type?.toLowerCase().includes(selectedBank.toLowerCase())
+      );
+    }
+
+    const filtered = filteredVenues.filter((venue) =>
       [
-        merchant.name || "",
-        merchant.phone || "",
-        merchant.email || "",
-        merchant.bank_name || "",
-        merchant.merchant_type_name || "",
+        venue.name || "",
+        venue.phone || "",
+        venue.email || "",
+        venue.bank_name || "",
+        venue.type || "",
       ].some((field) =>
         field.toLowerCase().includes(headerSearch.toLowerCase())
       )
     );
 
     setHeaderResults(filtered.slice(0, 6)); // Limit to 6 results
-  }, [headerSearch, merchants]);
-
-  // Get unique bank names
-  const uniqueBanks = Array.from(
-    new Set(merchants.map((m) => m.bank_name).filter(Boolean))
-  );
-
-  const filteredMerchants =
-    activeTab === "all"
-      ? merchants
-      : merchants.filter((merchant) =>
-          merchant.merchant_type_name?.includes(activeTab)
-        );
-
-  const categorizedMerchants = (() => {
-    let result = filteredMerchants;
-
-    if (selectedMerchant) {
-      result = [selectedMerchant];
-      if (selectedCategory) {
-        const value = (() => {
-          switch (selectedCategory) {
-            case "Нэр":
-              return selectedMerchant.name;
-            case "дугаар":
-              return selectedMerchant.phone;
-            case "имэйл":
-              return selectedMerchant.email;
-            case "Банк":
-              return selectedMerchant.bank_name;
-            default:
-              return "";
-          }
-        })();
-        if (
-          !value ||
-          !value.toLowerCase().includes(searchQuery.toLowerCase())
-        ) {
-          return [];
-        }
-      }
-      return result;
-    }
-
-    if (selectedCategory) {
-      result = filteredMerchants.filter((merchant) => {
-        const value = (() => {
-          switch (selectedCategory) {
-            case "Нэр":
-              return merchant.name;
-            case "дугаар":
-              return merchant.phone;
-            case "имэйл":
-              return merchant.email;
-            case "Банк":
-              return merchant.bank_name;
-            default:
-              return "";
-          }
-        })();
-
-        return value && value.toLowerCase().includes(searchQuery.toLowerCase());
-      });
-    }
-
-    return result.length > 0 ? result : [];
-  })();
+  }, [headerSearch, selectedBank]);
 
   const handleCategoryClick = (label: string) => {
     setSelectedCategory(label);
-    setSearchQuery("");
+    setSearchQuery(""); // Reset search query when changing category
   };
 
   const handleItemClick = (merchant: any) => {
@@ -354,17 +384,35 @@ export default function RestaurantWebsite() {
   };
 
   const handleSearchClick = () => {
-    if (selectedCategory && selectedMerchant) {
+    if (selectedCategory === "Зочдын тоо" && searchQuery) {
+      const searchNumber = parseInt(searchQuery);
+      if (!isNaN(searchNumber)) {
+        const filteredMerchants = merchants.filter((merchant) => {
+          if ("capacity" in merchant) {
+            return merchant.capacity >= searchNumber; // Filter for capacity >= searchQuery
+          }
+          return false;
+        });
+
+        router.push(
+          `/ordertest?category=${encodeURIComponent(
+            selectedCategory
+          )}&searchQuery=${encodeURIComponent(
+            searchQuery
+          )}&data=${encodeURIComponent(JSON.stringify(filteredMerchants))}`
+        );
+      }
+    } else if (selectedCategory && selectedMerchant) {
       router.push(
-        `/ordertest?category=${selectedCategory}&merchant=${encodeURIComponent(
-          JSON.stringify(selectedMerchant)
-        )}`
+        `/ordertest?category=${encodeURIComponent(
+          selectedCategory
+        )}&merchant=${encodeURIComponent(JSON.stringify(selectedMerchant))}`
       );
     } else if (selectedCategory) {
       router.push(
-        `/ordertest?category=${selectedCategory}&data=${encodeURIComponent(
-          JSON.stringify(categorizedMerchants)
-        )}`
+        `/ordertest?category=${encodeURIComponent(
+          selectedCategory
+        )}&data=${encodeURIComponent(JSON.stringify(merchants))}`
       );
     } else {
       router.push(
@@ -399,77 +447,29 @@ export default function RestaurantWebsite() {
     );
   };
 
-  const handleBankClick = (bank: string) => {
-    setSelectedCategory("Банк"); // Set category to "Банк"
-    setSearchQuery(bank); // Filter by selected bank
-    setShowBankDropdown(false); // Hide dropdown
-  };
-
-  const renderMerchantField = (merchant: any) => {
-    switch (selectedCategory) {
-      case "Нэр":
-        return (
-          <p className="text-xs text-gray-400">Нэр: {merchant.name || "N/A"}</p>
-        );
-      case "дугаар":
-        return (
-          <p className="text-xs text-gray-400">
-            Утас: {merchant.phone || "N/A"}
-          </p>
-        );
-      case "имэйл":
-        return (
-          <p className="text-xs text-gray-400">
-            Имэйл: {merchant.email || "N/A"}
-          </p>
-        );
-      case "Банк":
-        return (
-          <p className="text-xs text-gray-400">
-            Банк: {merchant.bank_name || "N/A"}
-          </p>
-        );
-      default:
-        return (
-          <p className="text-xs text-gray-400">
-            Банк: {merchant.bank_name || "N/A"}
-          </p>
-        );
-    }
-  };
-
+  // Add this useEffect to handle clicking outside the dropdown
   useEffect(() => {
-    if (session) {
-      const fetchData = async () => {
-        try {
-          const { data }: any = await axios.post("/api/api_open", {
-            sn: "customer_login_fb",
-            email: session?.user?.email,
-            customer_name: session?.user?.name,
-          });
-          if (data.result) {
-            setError("");
-            const user = data.result;
-            const token = data.token;
+    const handleClickOutside = (event: MouseEvent) => {
+      const button = document.getElementById("profile-button");
+      const dropdown = document.getElementById("profile-dropdown");
+      if (
+        button &&
+        dropdown &&
+        !button.contains(event.target as Node) &&
+        !dropdown.contains(event.target as Node)
+      ) {
+        setShowProfileDropdown(false);
+      }
+    };
 
-            login(user);
-            router.push("/restaurant");
-          } else {
-            console.log("false");
-            setError("Нэр эсвэл нууц үг буруу байна ");
-            console.log(data);
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      };
-
-      fetchData();
-    }
-  }, [session]);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
-    <div className="relative min-h-screen flex flex-col">
+    <div className="relative h-[1000px] flex flex-col">
       <div className="fixed inset-0 z-0">
         <Image
           src="/backround.jpg"
@@ -479,11 +479,35 @@ export default function RestaurantWebsite() {
           priority
         />
       </div>
-
       <div className="relative z-10 flex flex-col min-h-screen">
-        <header className="py-4 px-6 bg-[#00000080] md:px-[100px]">
+        {showAnnouncement && (
+          <div className="bg-[#2C2C2C] text-white w-full py-2 px-4 flex items-center justify-between">
+            <div className="flex-1 text-center text-sm md:text-base">
+              Novotel hotel - MoD/n Tok Restaurant - Хуримын урьдчилсан захиалга
+              20% хямдрал....
+            </div>
+            <button
+              onClick={() => setShowAnnouncement(false)}
+              className="text-white hover:text-gray-300 p-1"
+              aria-label="Close announcement"
+            >
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+          </div>
+        )}
+        <header className="py-4 px-6 md:px-[100px]">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
+            <Link href="/restaurant" className="flex items-center gap-2">
               <Image
                 alt="Restaurant logo"
                 width={30}
@@ -492,14 +516,16 @@ export default function RestaurantWebsite() {
                 src="/Logo.svg"
               />
               <span className="text-white font-medium">restaurant.mn</span>
-            </div>
+            </Link>
 
-            <div className="hidden md:flex items-center bg-[#333333]/80 rounded-md px-3 py-1 w-full max-w-[665px] mx-8 relative">
+            <div className="hidden md:flex items-center bg-[#333333]/80 rounded-md w-full max-w-[665px] mx-8 relative">
               <div
                 onClick={() => setShowBankDropdown(!showBankDropdown)}
-                className="flex cursor-pointer items-center gap-2 border-r border-gray-500 pr-2 relative"
+                className="flex bg-[#78787866] py-2 px-4 cursor-pointer rounded-l-md items-center gap-2 border-r border-gray-500 relative"
               >
-                <span className="text-white text-sm cursor-pointer">Төрөл</span>
+                <span className="text-white text-sm cursor-pointer">
+                  {selectedBank || "Төрөл"}
+                </span>
                 <svg
                   className="w-4 h-4 text-white"
                   fill="none"
@@ -515,19 +541,19 @@ export default function RestaurantWebsite() {
                 </svg>
                 {showBankDropdown && (
                   <div className="absolute top-full left-[-12px] border-[1px] border-black mt-4 w-48 bg-[#333333]/90 rounded-md shadow-lg z-20 max-h-70 overflow-y-auto">
-                    {uniqueBanks.map((bank) => (
+                    {venueTypes.map((type) => (
                       <div
-                        key={bank}
+                        key={type}
                         className="p-2 text-white hover:bg-amber-500/20 cursor-pointer text-sm"
-                        onClick={() => handleBankClick(bank)}
+                        onClick={() => handleBankClick(type)}
                       >
-                        {bank}
+                        {type}
                       </div>
                     ))}
                   </div>
                 )}
               </div>
-              <Search className="w-5 h-5 text-gray-400 mx-2" />
+              <Search className="w-5 h-5 text-gray-400 ml-2" />
               <Input
                 type="text"
                 placeholder="Хайлт"
@@ -545,7 +571,7 @@ export default function RestaurantWebsite() {
                     >
                       <p className="text-sm">{merchant.name || "N/A"}</p>
                       <p className="text-xs text-gray-400">
-                        {merchant.phone || "N/A"}
+                        {merchant.stars || "N/A"}
                       </p>
                     </div>
                   ))}
@@ -600,10 +626,11 @@ export default function RestaurantWebsite() {
                   </DialogContent>
                 </Dialog>
               ) : (
-                <div>
+                <div className="relative">
                   <div
+                    id="profile-button"
                     className="flex items-center gap-3 cursor-pointer"
-                    onClick={() => router.push("/profiletest")}
+                    onClick={() => setShowProfileDropdown(!showProfileDropdown)}
                   >
                     <img
                       src="bold.png"
@@ -611,17 +638,32 @@ export default function RestaurantWebsite() {
                       className="w-10 h-10 rounded-2xl"
                     />
                     <div>
-                      <p className="font-semibold text-sm">
+                      <p className="font-semibold text-sm text-white">
                         {user?.customer_name}
                       </p>
                     </div>
                   </div>
-                  <button
-                    onClick={logout}
-                    className="text-red-500 cursor-pointer"
-                  >
-                    Logout
-                  </button>
+                  {showProfileDropdown && (
+                    <div
+                      id="profile-dropdown"
+                      className="absolute right-0 mt-2 w-16 bg-[#333333] rounded-md shadow-lg py-1 z-50"
+                    >
+                      <Link href="/profiletest">
+                        <button className="w-full text-center px-2 py-2 text-sm text-white hover:bg-[#444444] transition-colors duration-150">
+                          Profile
+                        </button>
+                      </Link>
+                      <button
+                        onClick={() => {
+                          logout();
+                          setShowProfileDropdown(false);
+                        }}
+                        className="w-full text-center py-2 px-2 text-sm text-red-500 hover:bg-[#444444] transition-colors duration-150"
+                      >
+                        Logout
+                      </button>
+                    </div>
+                  )}
                 </div>
               )}
             </nav>
@@ -643,7 +685,6 @@ export default function RestaurantWebsite() {
             </button>
           </div>
         </header>
-
         <main className="flex-1 flex flex-col items-center justify-center text-center px-6 py-12 overflow-auto">
           <h1 className="text-4xl md:text-5xl mt-12 lg:text-[54px] font-bold text-white max-w-8xl mb-6">
             There are many variations of passages of{" "}
@@ -654,55 +695,50 @@ export default function RestaurantWebsite() {
             even
           </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4  rounded-lg overflow-hidden">
-            {features.map((feature, index) => (
-              <FeatureCard
-                key={index}
-                icon={feature.icon}
-                title={feature.title}
-                description={feature.description}
-              />
-            ))}
-          </div>
-
-          <div className="w-full max-w-4xl bg-[#222222]/90 rounded-lg p-6">
+          <div className="w-full max-w-4xl bg-gray-100/10 backdrop-blur-xl rounded-[24px] p-4 shadow-lg border border-white/10">
             <Tabs
               defaultValue="all"
               className="w-full"
               onValueChange={setActiveTab}
             >
-              <TabsList className="bg-transparent border-b border-gray-700 rounded-none w-full justify-start mb-6 gap-8">
+              <TabsList className="bg-transparent border-b border-white rounded-none w-full justify-start gap-8">
                 {tabOptions.map((tab) => (
                   <TabsTrigger
                     key={tab.value}
                     value={tab.value}
-                    className={`text-gray-400 data-[state=active]:text-amber-500 data-[state=active]:border-b-2 data-[state=active]:border-amber-500 rounded-none pb-2 px-0 mx-2`}
+                    className={`text-gray-400 data-[state=active]:text-amber-500 data-[state=active]:border-b-2 data-[state=active]:border-amber-500 rounded-none pb-3 px-0 mx-2`}
                   >
                     {tab.label}
                   </TabsTrigger>
                 ))}
               </TabsList>
 
-              <div className="grid grid-cols-1 md:flex justify-between">
+              <div className="grid grid-cols-1 mt-2 md:flex justify-between">
                 {reservationFields.map((field, index) => (
-                  <div
-                    key={index}
-                    className={`flex items-center gap-3 rounded-md p-3 cursor-pointer ${
-                      selectedCategory === field.label
-                        ? "bg-amber-500 text-white"
-                        : "text-gray-400"
-                    }`}
-                    onClick={() => handleCategoryClick(field.label)}
-                  >
-                    {field.icon}
-                    <div className="flex flex-col">
-                      <span className="text-xs">{field.label}</span>
-                      <span className="text-[7px]">{field.placeholder}</span>
+                  <div key={index} className="flex items-center">
+                    {index > 0 && (
+                      <div className="h-[50px] w-[1px] bg-gray-600 mx-2" />
+                    )}
+                    <div
+                      className={`flex items-center gap-3 rounded-md p-3 cursor-pointer ${
+                        selectedCategory === field.label
+                          ? "bg-amber-500 text-white"
+                          : "text-gray-400"
+                      }`}
+                      onClick={() => handleCategoryClick(field.label)}
+                    >
+                      {field.icon}
+                      <div className="flex text-start flex-col">
+                        <span className="text-xs text-white">
+                          {field.label}
+                        </span>
+                        <span className="text-[7px]">{field.placeholder}</span>
+                      </div>
                     </div>
                   </div>
                 ))}
                 <Button
-                  className="bg-gradient-to-b from-[#fd8e2e] to-[#f5be32] w-[67px] h-[67px] hover:opacity-80 text-white rounded-xl"
+                  className="bg-gradient-to-b from-[#fd8e2e] to-[#f5be32] w-[56px] h-[56px] hover:opacity-80 text-white rounded-xl"
                   onClick={handleSearchClick}
                 >
                   <Search className="w-5 h-5" />
@@ -723,39 +759,20 @@ export default function RestaurantWebsite() {
             )}
           </div>
 
-          <div className="w-full max-w-4xl mt-8 min-h-[300px]">
-            {loading ? (
-              <p className="text-white">Loading data...</p>
-            ) : error ? (
-              <p className="text-red-500">{error}</p>
-            ) : selectedCategory || selectedMerchant ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {categorizedMerchants.length > 0 ? (
-                  categorizedMerchants.map((merchant) => (
-                    <div
-                      key={merchant.id}
-                      className={`bg-[#333333]/80 p-4 rounded-lg text-white cursor-pointer ${
-                        selectedMerchant?.id === merchant.id
-                          ? "border-2 border-amber-500"
-                          : ""
-                      }`}
-                      onClick={() => handleItemClick(merchant)}
-                    >
-                      {renderMerchantField(merchant)}
-                    </div>
-                  ))
-                ) : (
-                  <p className="text-gray-400">No merchants found</p>
-                )}
-              </div>
-            ) : (
-              <p className="text-gray-400"></p>
-            )}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 mt-24 rounded-lg overflow-hidden">
+            {features.map((feature, index) => (
+              <FeatureCard
+                key={index}
+                icon={feature.icon}
+                title={feature.title}
+                description={feature.description}
+              />
+            ))}
           </div>
         </main>
       </div>
 
-      <div className="fixed right-6 top-1/2 -translate-y-1/2 flex flex-col gap-4 z-20">
+      <div className="fixed right-6 top-1/2 -translate-y-1/2 flex flex-col gap-4 z-20 bg-gray-100/5 backdrop-blur-xl rounded-[24px] px-2 py-4 shadow-lg border border-white/10">
         <Button
           variant="outline"
           size="icon"
