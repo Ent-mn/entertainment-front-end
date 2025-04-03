@@ -9,6 +9,16 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import RestLogin from "./RestLogin";
 
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import TermsPage from "./TermsPage";
+
 const RestRegister = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -231,12 +241,23 @@ const RestRegister = () => {
                       onCheckedChange={(checked) => setAgreed(checked === true)}
                       className="h-5 w-5 border-[#828282] cursor-pointer data-[state=checked]:bg-[#fa742a] data-[state=checked]:border-[#fa742a]"
                     />
-                    <label
-                      htmlFor="termsRegister"
-                      className="text-[#676767] cursor-pointer text-xs"
-                    >
-                      {langToggle ? text.mn.text1 : text.en.text1}
-                    </label>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button variant="outline">
+                          <div className="text-[#676767] cursor-pointer text-xs">
+                            {langToggle ? text.mn.text1 : text.en.text1}
+                          </div>
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="p-0 border-none w-auto sm:max-w-auto">
+                        <TermsPage />
+
+                        <DialogHeader>
+                          <DialogTitle></DialogTitle>
+                          <DialogDescription></DialogDescription>
+                        </DialogHeader>
+                      </DialogContent>
+                    </Dialog>
                   </div>
                 </div>
                 <div className="flex flex-col mt-3 items-center">

@@ -1,5 +1,6 @@
 "use client";
 import { LightbulbIcon } from "lucide-react";
+
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -30,6 +31,7 @@ import {
 import RestLogin from "../RestLogin";
 import { useUser } from "@/context/UserContext";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 function FeatureCard({ icon, title, description }: any) {
   return (
@@ -60,16 +62,14 @@ export default function RestaurantWebsite() {
   const [headerSearch, setHeaderSearch] = useState(""); // Header search
   const [headerResults, setHeaderResults] = useState<any[]>([]); // Header search results
   const [showBankDropdown, setShowBankDropdown] = useState(false); // Toggle bank dropdown
-  const [selectedBank, setSelectedBank] = useState<string | null>(null); // Track selected bank
-  const [showAnnouncement, setShowAnnouncement] = useState<boolean>(true);
-  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
+  const { data: session, status } = useSession();
 
   const features = [
     {
       icon: <LightbulbIcon className="w-6 h-6 text-amber-500" />,
       title: "Lorem ipsum",
       description:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. ",
     },
     {
       icon: (
@@ -118,13 +118,13 @@ export default function RestaurantWebsite() {
       ),
       title: "Lorem ipsum",
       description:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+        "LLorem Ipsum is simply dummy text of the printing and typesetting industry. ",
     },
     {
       icon: <LightbulbIcon className="w-6 h-6 text-amber-500" />,
       title: "Lorem ipsum",
       description:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. ",
     },
     {
       icon: (
@@ -173,20 +173,20 @@ export default function RestaurantWebsite() {
       ),
       title: "Lorem ipsum",
       description:
-        "Lorem Ipsum is simply dummy text of the printing and typesetting industry.",
+        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. ",
     },
   ];
 
-  const { user, isLoggedIn, logout } = useUser();
+  const { user, isLoggedIn, login, logout } = useUser();
   const router = useRouter();
 
   const hardcodedToken =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.Q9eW!zD0EeL7@ANeyJ1c2VyX2lkIjoiMSIsImlhdCI6MTcxODU5OTU0NywiZXhwIjoxNzUwMTM1NTQ3fQ.muFJPyUNLrjjeHTVI4Vjj-wkHoGJ7YceHPIsDNuhlOQ";
 
   const navLinks = [
-    { name: "Захиалах", href: "#", active: true },
-    { name: "Түрээслэх", href: "#", active: false },
-    { name: "Зөвлөгөө", href: "#", active: false },
+    { name: "Home", href: "#", active: true },
+    { name: "Restaurants", href: "#", active: false },
+    { name: "Event Hall", href: "#", active: false },
     { name: "Contact", href: "#", active: false },
   ];
 
@@ -263,16 +263,7 @@ export default function RestaurantWebsite() {
       return;
     }
 
-    let filteredMerchants = merchants;
-
-    // Apply bank filter if a bank is selected from "Төрөл"
-    if (selectedBank) {
-      filteredMerchants = filteredMerchants.filter((merchant) =>
-        merchant.bank_name?.toLowerCase().includes(selectedBank.toLowerCase())
-      );
-    }
-
-    const filtered = filteredMerchants.filter((merchant) =>
+    const filtered = merchants.filter((merchant) =>
       [
         merchant.name || "",
         merchant.phone || "",
@@ -285,7 +276,7 @@ export default function RestaurantWebsite() {
     );
 
     setHeaderResults(filtered.slice(0, 6)); // Limit to 6 results
-  }, [headerSearch, merchants, selectedBank]);
+  }, [headerSearch, merchants]);
 
   // Get unique bank names
   const uniqueBanks = Array.from(
@@ -300,19 +291,11 @@ export default function RestaurantWebsite() {
         );
 
   const categorizedMerchants = (() => {
-    let result = filteredMerchants; // Start with merchants filtered by activeTab
+    let result = filteredMerchants;
 
-    // Apply bank filter if a bank is selected from "Төрөл"
-    if (selectedBank) {
-      result = result.filter((merchant) =>
-        merchant.bank_name?.toLowerCase().includes(selectedBank.toLowerCase())
-      );
-    }
-
-    // If a specific merchant is selected, show only that merchant
     if (selectedMerchant) {
       result = [selectedMerchant];
-      if (selectedCategory && searchQuery) {
+      if (selectedCategory) {
         const value = (() => {
           switch (selectedCategory) {
             case "Нэр":
@@ -337,9 +320,8 @@ export default function RestaurantWebsite() {
       return result;
     }
 
-    // Apply additional category-based search if a category is selected
-    if (selectedCategory && searchQuery) {
-      result = result.filter((merchant) => {
+    if (selectedCategory) {
+      result = filteredMerchants.filter((merchant) => {
         const value = (() => {
           switch (selectedCategory) {
             case "Нэр":
@@ -354,7 +336,8 @@ export default function RestaurantWebsite() {
               return "";
           }
         })();
-        return value?.toLowerCase().includes(searchQuery.toLowerCase());
+
+        return value && value.toLowerCase().includes(searchQuery.toLowerCase());
       });
     }
 
@@ -363,7 +346,7 @@ export default function RestaurantWebsite() {
 
   const handleCategoryClick = (label: string) => {
     setSelectedCategory(label);
-    setSearchQuery(""); // Reset search query when changing category
+    setSearchQuery("");
   };
 
   const handleItemClick = (merchant: any) => {
@@ -417,7 +400,6 @@ export default function RestaurantWebsite() {
   };
 
   const handleBankClick = (bank: string) => {
-    setSelectedBank(bank === "Capitron Bank" ? "Capitron" : bank); // Change to "Capitron" if "Capitron Bank" is selected
     setSelectedCategory("Банк"); // Set category to "Банк"
     setSearchQuery(bank); // Filter by selected bank
     setShowBankDropdown(false); // Hide dropdown
@@ -456,24 +438,35 @@ export default function RestaurantWebsite() {
     }
   };
 
-  // Add this useEffect to handle clicking outside the dropdown
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const dropdown = document.getElementById("profile-dropdown");
-      const button = document.getElementById("profile-button");
-      if (
-        dropdown &&
-        button &&
-        !dropdown.contains(event.target as Node) &&
-        !button.contains(event.target as Node)
-      ) {
-        setShowProfileDropdown(false);
-      }
-    };
+    if (session) {
+      const fetchData = async () => {
+        try {
+          const { data }: any = await axios.post("/api/api_open", {
+            sn: "customer_login_fb",
+            email: session?.user?.email,
+            customer_name: session?.user?.name,
+          });
+          if (data.result) {
+            setError("");
+            const user = data.result;
+            const token = data.token;
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+            login(user);
+            router.push("/restaurant");
+          } else {
+            console.log("false");
+            setError("Нэр эсвэл нууц үг буруу байна ");
+            console.log(data);
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      };
+
+      fetchData();
+    }
+  }, [session]);
 
   return (
     <div className="relative min-h-screen flex flex-col">
@@ -486,32 +479,8 @@ export default function RestaurantWebsite() {
           priority
         />
       </div>
+
       <div className="relative z-10 flex flex-col min-h-screen">
-        {showAnnouncement && (
-          <div className="bg-[#2C2C2C] text-white w-full py-2 px-4 flex items-center justify-between">
-            <div className="flex-1 text-center text-sm md:text-base">
-              Novotel hotel - MoD/n Tok Restaurant - Хуримын урьдчилсан захиалга
-              20% хямдрал....
-            </div>
-            <button
-              onClick={() => setShowAnnouncement(false)}
-              className="text-white hover:text-gray-300 p-1"
-              aria-label="Close announcement"
-            >
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path d="M6 18L18 6M6 6l12 12"></path>
-              </svg>
-            </button>
-          </div>
-        )}
         <header className="py-4 px-6 bg-[#00000080] md:px-[100px]">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -530,9 +499,7 @@ export default function RestaurantWebsite() {
                 onClick={() => setShowBankDropdown(!showBankDropdown)}
                 className="flex cursor-pointer items-center gap-2 border-r border-gray-500 pr-2 relative"
               >
-                <span className="text-white text-sm cursor-pointer">
-                  {selectedBank || "Төрөл"}
-                </span>
+                <span className="text-white text-sm cursor-pointer">Төрөл</span>
                 <svg
                   className="w-4 h-4 text-white"
                   fill="none"
@@ -633,11 +600,10 @@ export default function RestaurantWebsite() {
                   </DialogContent>
                 </Dialog>
               ) : (
-                <div className="relative">
+                <div>
                   <div
-                    id="profile-button"
                     className="flex items-center gap-3 cursor-pointer"
-                    onClick={() => setShowProfileDropdown(!showProfileDropdown)}
+                    onClick={() => router.push("/profiletest")}
                   >
                     <img
                       src="bold.png"
@@ -645,32 +611,17 @@ export default function RestaurantWebsite() {
                       className="w-10 h-10 rounded-2xl"
                     />
                     <div>
-                      <p className="font-semibold text-sm text-white">
+                      <p className="font-semibold text-sm">
                         {user?.customer_name}
                       </p>
                     </div>
                   </div>
-                  {showProfileDropdown && (
-                    <div
-                      id="profile-dropdown"
-                      className="absolute right-0 mt-2 w-16 bg-[#333333] rounded-md shadow-lg py-1 z-50"
-                    >
-                      <Link href="/profiletest">
-                        <button className="w-full text-center px-2 py-2 text-sm text-white hover:bg-[#444444] transition-colors duration-150">
-                          Profile
-                        </button>
-                      </Link>
-                      <button
-                        onClick={() => {
-                          logout();
-                          setShowProfileDropdown(false);
-                        }}
-                        className="w-full text-center py-2 px-2 text-sm text-red-500 hover:bg-[#444444] transition-colors duration-150"
-                      >
-                        Logout
-                      </button>
-                    </div>
-                  )}
+                  <button
+                    onClick={logout}
+                    className="text-red-500 cursor-pointer"
+                  >
+                    Logout
+                  </button>
                 </div>
               )}
             </nav>
@@ -703,7 +654,7 @@ export default function RestaurantWebsite() {
             even
           </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 rounded-lg overflow-hidden">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4  rounded-lg overflow-hidden">
             {features.map((feature, index) => (
               <FeatureCard
                 key={index}

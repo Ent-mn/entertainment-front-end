@@ -92,28 +92,32 @@ export default function FeaturesSection() {
           <h2 className="text-amber-500 font-serif italic text-2xl mb-6">
             Why Choose Us
           </h2>
-          <p className="text-white text-3xl md:text-4xl font-medium max-w-4xl mx-auto leading-relaxed">
-            Lorem Ipsum is simply dummy
+          <p className="text-white font-lato text-3xl md:text-4xl font-medium max-w-4xl mx-auto leading-relaxed">
+            Эрэлттэй эвентүүдээр шүүж <br /> хайх
           </p>
         </div>
 
         {/* Features grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 rounded-xl lg:grid-cols-4 gap-6">
           {features.map((feature, index) => (
             <div
               key={index}
-              className="relative overflow-hidden rounded-lg group"
+              className="relative  rounded-xl group"
               onMouseEnter={() => setHoveredCard(index)}
               onMouseLeave={() => setHoveredCard(null)}
             >
-              <div className="h-[400px] relative">
+              <div className="h-[500px] relative">
                 <Image
                   src={feature.image || "/placeholder.svg"}
                   alt={feature.title}
                   fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-110"
+                  className="transition-all rounded-xl duration-500 grayscale group-hover:grayscale-0 group-hover:scale-110"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+                <div
+                  onMouseEnter={() => setHoveredCard(index)}
+                  onMouseLeave={() => setHoveredCard(null)}
+                  className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent transition-all duration-500 grayscale group-hover:grayscale-0 group-hover:scale-110 "
+                ></div>
               </div>
               <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
                 <h3 className="text-xl font-medium mb-2">{feature.title}</h3>

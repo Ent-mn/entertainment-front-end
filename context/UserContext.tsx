@@ -1,4 +1,5 @@
 "use client";
+import { signOut } from "next-auth/react";
 import {
   createContext,
   useContext,
@@ -57,6 +58,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const logout = () => {
+    signOut();
     setUser(null);
     setIsLoggedIn(false);
     // Remove user data from localStorage
