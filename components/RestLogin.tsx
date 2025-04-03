@@ -1,8 +1,7 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Facebook } from "lucide-react";
 import { useUser } from "@/context/UserContext";
 import { useRouter } from "next/navigation";
 import axios from "axios";
@@ -81,6 +80,10 @@ const RestLogin = () => {
     };
 
     fetchData();
+  };
+
+  const handleFb = async () => {
+    await signIn("facebook");
   };
 
   return (
@@ -210,7 +213,7 @@ const RestLogin = () => {
                     <div className="grid grid-cols-2 gap-4 pt-4">
                       <button
                         type="button"
-                        onClick={() => signIn("facebook")}
+                        onClick={handleFb}
                         className="flex items-center justify-center gap-2 p-3 border border-[#e0e0e0] rounded-xl bg-white"
                       >
                         <svg

@@ -31,6 +31,7 @@ import {
 import RestLogin from "../RestLogin";
 import { useUser } from "@/context/UserContext";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 function FeatureCard({ icon, title, description }: any) {
   return (
@@ -61,6 +62,7 @@ export default function RestaurantWebsite() {
   const [headerSearch, setHeaderSearch] = useState(""); // Header search
   const [headerResults, setHeaderResults] = useState<any[]>([]); // Header search results
   const [showBankDropdown, setShowBankDropdown] = useState(false); // Toggle bank dropdown
+  const { data: session, status } = useSession();
 
   const features = [
     {
@@ -175,7 +177,7 @@ export default function RestaurantWebsite() {
     },
   ];
 
-  const { user, isLoggedIn, logout } = useUser();
+  const { user, isLoggedIn, login, logout } = useUser();
   const router = useRouter();
 
   const hardcodedToken =
@@ -435,6 +437,36 @@ export default function RestaurantWebsite() {
         );
     }
   };
+
+  useEffect(() => {
+    if (session) {
+      const fetchData = async () => {
+        try {
+          const { data }: any = await axios.post("/api/api_open", {
+            sn: "customer_login_fb",
+            email: session?.user?.email,
+            customer_name: session?.user?.name,
+          });
+          if (data.result) {
+            setError("");
+            const user = data.result;
+            const token = data.token;
+
+            login(user);
+            router.push("/restaurant");
+          } else {
+            console.log("false");
+            setError("Нэр эсвэл нууц үг буруу байна ");
+            console.log(data);
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      };
+
+      fetchData();
+    }
+  }, [session]);
 
   return (
     <div className="relative min-h-screen flex flex-col">
