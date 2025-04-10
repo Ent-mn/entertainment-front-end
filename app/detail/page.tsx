@@ -5,7 +5,7 @@ import DetailActive from "@/components/checkout/detail/DetailActive";
 import ThemeToggleDemo from "@/components/theme/theme-toggle-demo";
 import { Headphones, Heart, ShoppingCart } from "lucide-react";
 import MainDetail from "@/components/checkout/detail/MainDetail";
-aa;
+
 import { Button } from "@/components/ui/button";
 import React, { Suspense } from "react";
 
@@ -14,7 +14,7 @@ const Detail = () => {
     <div>
       <Suspense
         fallback={
-          <div className="flex justify-center items-center">Loading...</div>
+          <div className="flex justify-center items-center">Loading......</div>
         }>
         <DetailHeader />
         <MainDetail />

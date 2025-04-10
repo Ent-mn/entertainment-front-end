@@ -5,7 +5,6 @@ import Image from "next/image";
 import { useState, useRef } from "react";
 import { useMotionValue, motion, useMotionTemplate } from "framer-motion";
 import { CanvasRevealEffect } from "@/components/ui/canvas-reveal-effect";
-import PaymentModal from "./PaymentModal";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface Feature {
@@ -14,7 +13,7 @@ interface Feature {
   description: string;
 }
 
-export default function FeaturesSection() {
+export default function CheckoutMain() {
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const mouseX = useMotionValue(0);
@@ -299,14 +298,14 @@ export default function FeaturesSection() {
           🛒 {cart.length}
         </button>
 
-        <PaymentModal
-        // isOpen={isOpen}
-        // onClose={() => setIsOpen(false)}
-        // data={mockData}
-        // onClose={handleClose}
-        />
+        {/* <PaymentModal
+          isOpen={isOpen}
+          onClose={() => setIsOpen(false)}
+          data={mockData}
+          onClose={handleClose}
+        /> */}
         {/* 🛒 Cart Popup */}
-        {/* {isCartOpen && (
+        {isCartOpen && (
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -334,7 +333,7 @@ export default function FeaturesSection() {
               Төлбөр төлөх
             </button>
           </motion.div>
-        )} */}
+        )}
       </div>
     </div>
   );
