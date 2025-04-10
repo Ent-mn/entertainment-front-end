@@ -206,8 +206,7 @@ export default function RestaurantWebsite() {
           className="w-6 h-6 text-amber-500"
           viewBox="0 0 24 24"
           fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
+          xmlns="http://www.w3.org/2000/svg">
           <path
             d="M16 16V8H8V16H16Z"
             stroke="currentColor"
@@ -261,8 +260,7 @@ export default function RestaurantWebsite() {
           className="w-6 h-6 text-amber-500"
           viewBox="0 0 24 24"
           fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
+          xmlns="http://www.w3.org/2000/svg">
           <path
             d="M16 16V8H8V16H16Z"
             stroke="currentColor"
@@ -489,8 +487,7 @@ export default function RestaurantWebsite() {
             <button
               onClick={() => setShowAnnouncement(false)}
               className="text-white hover:text-gray-300 p-1"
-              aria-label="Close announcement"
-            >
+              aria-label="Close announcement">
               <svg
                 className="w-4 h-4"
                 fill="none"
@@ -498,8 +495,7 @@ export default function RestaurantWebsite() {
                 strokeLinejoin="round"
                 strokeWidth="2"
                 viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
+                stroke="currentColor">
                 <path d="M6 18L18 6M6 6l12 12"></path>
               </svg>
             </button>
@@ -521,8 +517,7 @@ export default function RestaurantWebsite() {
             <div className="hidden md:flex items-center bg-[#333333]/80 rounded-md w-full max-w-[665px] mx-8 relative">
               <div
                 onClick={() => setShowBankDropdown(!showBankDropdown)}
-                className="flex bg-[#78787866] py-2 px-4 cursor-pointer rounded-l-md items-center gap-2 border-r border-gray-500 relative"
-              >
+                className="flex bg-[#78787866] py-2 px-4 cursor-pointer rounded-l-md items-center gap-2 border-r border-gray-500 relative">
                 <span className="text-white text-sm cursor-pointer">
                   {selectedBank || "Төрөл"}
                 </span>
@@ -530,8 +525,7 @@ export default function RestaurantWebsite() {
                   className="w-4 h-4 text-white"
                   fill="none"
                   viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
+                  stroke="currentColor">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -545,8 +539,7 @@ export default function RestaurantWebsite() {
                       <div
                         key={type}
                         className="p-2 text-white hover:bg-amber-500/20 cursor-pointer text-sm"
-                        onClick={() => handleBankClick(type)}
-                      >
+                        onClick={() => handleBankClick(type)}>
                         {type}
                       </div>
                     ))}
@@ -567,8 +560,7 @@ export default function RestaurantWebsite() {
                     <div
                       key={merchant.id}
                       className="p-3 text-white hover:bg-amber-500/20 cursor-pointer"
-                      onClick={() => handleHeaderResultClick(merchant)}
-                    >
+                      onClick={() => handleHeaderResultClick(merchant)}>
                       <p className="text-sm">{merchant.name || "N/A"}</p>
                       <p className="text-xs text-gray-400">
                         {merchant.stars || "N/A"}
@@ -589,8 +581,7 @@ export default function RestaurantWebsite() {
                     <Button
                       variant="outline"
                       className="w-full mt-2 text-amber-500 border-amber-500 hover:bg-amber-500/20"
-                      onClick={handleSeeMore}
-                    >
+                      onClick={handleSeeMore}>
                       See More
                     </Button>
                   )}
@@ -605,8 +596,7 @@ export default function RestaurantWebsite() {
                   href={link.href}
                   className={`text-white text-sm ${
                     link.active ? "border-b-2 border-amber-500 pb-1" : ""
-                  }`}
-                >
+                  }`}>
                   {link.name}
                 </Link>
               ))}
@@ -630,8 +620,9 @@ export default function RestaurantWebsite() {
                   <div
                     id="profile-button"
                     className="flex items-center gap-3 cursor-pointer"
-                    onClick={() => setShowProfileDropdown(!showProfileDropdown)}
-                  >
+                    onClick={() =>
+                      setShowProfileDropdown(!showProfileDropdown)
+                    }>
                     <img
                       src="bold.png"
                       alt="User profile"
@@ -646,8 +637,7 @@ export default function RestaurantWebsite() {
                   {showProfileDropdown && (
                     <div
                       id="profile-dropdown"
-                      className="absolute right-0 mt-2 w-16 bg-[#333333] rounded-md shadow-lg py-1 z-50"
-                    >
+                      className="absolute right-0 mt-2 w-16 bg-[#333333] rounded-md shadow-lg py-1 z-50">
                       <Link href="/profiletest">
                         <button className="w-full text-center px-2 py-2 text-sm text-white hover:bg-[#444444] transition-colors duration-150">
                           Profile
@@ -658,8 +648,7 @@ export default function RestaurantWebsite() {
                           logout();
                           setShowProfileDropdown(false);
                         }}
-                        className="w-full text-center py-2 px-2 text-sm text-red-500 hover:bg-[#444444] transition-colors duration-150"
-                      >
+                        className="w-full text-center py-2 px-2 text-sm text-red-500 hover:bg-[#444444] transition-colors duration-150">
                         Logout
                       </button>
                     </div>
@@ -673,8 +662,7 @@ export default function RestaurantWebsite() {
                 className="w-6 h-6"
                 fill="none"
                 viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
+                stroke="currentColor">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -699,15 +687,13 @@ export default function RestaurantWebsite() {
             <Tabs
               defaultValue="all"
               className="w-full"
-              onValueChange={setActiveTab}
-            >
+              onValueChange={setActiveTab}>
               <TabsList className="bg-transparent border-b border-white rounded-none w-full justify-start gap-8">
                 {tabOptions.map((tab) => (
                   <TabsTrigger
                     key={tab.value}
                     value={tab.value}
-                    className={`text-gray-400 data-[state=active]:text-amber-500 data-[state=active]:border-b-2 data-[state=active]:border-amber-500 rounded-none pb-3 px-0 mx-2`}
-                  >
+                    className={`text-gray-400 data-[state=active]:text-amber-500 data-[state=active]:border-b-2 data-[state=active]:border-amber-500 rounded-none pb-3 px-0 mx-2`}>
                     {tab.label}
                   </TabsTrigger>
                 ))}
@@ -725,8 +711,7 @@ export default function RestaurantWebsite() {
                           ? "bg-amber-500 text-white"
                           : "text-gray-400"
                       }`}
-                      onClick={() => handleCategoryClick(field.label)}
-                    >
+                      onClick={() => handleCategoryClick(field.label)}>
                       {field.icon}
                       <div className="flex text-start flex-col">
                         <span className="text-xs text-white">
@@ -739,8 +724,7 @@ export default function RestaurantWebsite() {
                 ))}
                 <Button
                   className="bg-gradient-to-b from-[#fd8e2e] to-[#f5be32] w-[56px] h-[56px] hover:opacity-80 text-white rounded-xl"
-                  onClick={handleSearchClick}
-                >
+                  onClick={handleSearchClick}>
                   <Search className="w-5 h-5" />
                 </Button>
               </div>
@@ -776,29 +760,25 @@ export default function RestaurantWebsite() {
         <Button
           variant="outline"
           size="icon"
-          className="bg-[#333333] border-0 text-amber-500 rounded-full w-10 h-10"
-        >
+          className="bg-[#333333] border-0 text-amber-500 rounded-full w-10 h-10">
           <Sun className="w-5 h-5" />
         </Button>
         <Button
           variant="outline"
           size="icon"
-          className="bg-[#333333] border-0 text-white rounded-full w-10 h-10"
-        >
+          className="bg-[#333333] border-0 text-white rounded-full w-10 h-10">
           <ShoppingCart className="w-5 h-5" />
         </Button>
         <Button
           variant="outline"
           size="icon"
-          className="bg-[#333333] border-0 text-white rounded-full w-10 h-10"
-        >
+          className="bg-[#333333] border-0 text-white rounded-full w-10 h-10">
           <Heart className="w-5 h-5" />
         </Button>
         <Button
           variant="outline"
           size="icon"
-          className="bg-[#333333] border-0 text-white rounded-full w-10 h-10"
-        >
+          className="bg-[#333333] border-0 text-white rounded-full w-10 h-10">
           <Headphones className="w-5 h-5" />
         </Button>
       </div>
