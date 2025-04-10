@@ -3,13 +3,13 @@ import { Button } from "@/components/ui/button";
 
 export default function DetailHome1() {
   return (
-    <main className="min-h-screen dark:bg-[#121212] bg-[#F3F3F3] text-[#121212] dark:text-white px-52 py-28">
+    <main className="min-h-screen dark:bg-[#121212] bg-[#F3F3F3] text-[#121212] dark:text-[#F3F3F3] px-52 py-28">
       {/* Header */}
       <div className=" pt-16 pb-8">
         <div className="flex flex-col items-center mb-12">
           <h2 className="text-2xl md:text-3xl font-medium mb-6 relative  flex flex-col gap-2 justify-center items-center">
             <img src="/detail/image copy 3.png" alt="" className="h-7" />
-            <span className="relative z-10 px-4 bg-[#121212] text-[#FEFEFE]">
+            <span className="relative z-10 px-4 dark:bg-[#121212] bg-[#F3F3F3] text-[#121212] dark:text-[#F3F3F3]">
               Lorem Ipsum is simply dummy
             </span>
           </h2>
@@ -64,12 +64,16 @@ export default function DetailHome1() {
               />
             </div> */}
             <div className="absolute pl-6 text-left">
-              <h3 className="text-lg font-medium text-white">TITLE IS HERE</h3>
-              <p className="text-sm text-gray-300 mb-2">Description is here</p>
+              <h3 className="text-lg font-medium dark:bg-[#121212] bg-[#F3F3F3] text-[#121212] dark:text-[#F3F3F3]">
+                TITLE IS HERE
+              </h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400  mb-2">
+                Description is here
+              </p>
               {/* <span className="border-t-2 border-[#F5BE32] bg-[#F5BE32]"></span> */}
               <span className="block w-[118px] border-t mb-4 mt-4 border-[#F5BE32] bg-[#F5BE32]"></span>
 
-              <p className="text-xs text-gray-400 max-w-[300px]">
+              <p className="text-xs text-gray-600 dark:text-gray-400 max-w-[300px]">
                 Тэгээд одоо яахав дээ гоё юм чинь үнэтэй шдээ. Үнэтэй юманд
                 дуртай лаг юманд дуртай л биз дээ.
               </p>
@@ -88,12 +92,16 @@ export default function DetailHome1() {
         <div className="flex gap-16">
           {/* Text Section */}
           <div className=" text-left">
-            <h3 className="text-lg font-medium text-white">TITLE IS HERE</h3>
-            <p className="text-sm text-gray-300 mb-2">Description is here</p>
+            <h3 className="text-lg font-medium text-[#121212] dark:text-[#F3F3F3]">
+              TITLE IS HERE
+            </h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+              Description is here
+            </p>
             {/* <span className="border-t-2 border-[#F5BE32] bg-[#F5BE32]"></span> */}
             <span className="block w-[118px] border-t mb-4 mt-4 border-[#F5BE32] bg-[#F5BE32]"></span>
 
-            <p className="text-xs text-gray-400 max-w-[348px]">
+            <p className="text-xs text-gray-600 dark:text-gray-400 max-w-[348px]">
               Тэгээд одоо яахав дээ гоё юм чинь үнэтэй шдээ. Үнэтэй юманд дуртай
               лаг юманд дуртай л биз дээ.
             </p>

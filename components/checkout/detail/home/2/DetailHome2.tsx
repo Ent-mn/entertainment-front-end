@@ -41,9 +41,9 @@ export default function DetailHome2() {
   return (
     <div
       ref={containerRef}
-      className="w-full h-[700px] flex flex-col justify-center bg-[#121212] overflow-hidden px-52">
+      className="w-full h-[700px] flex flex-col justify-center dark:bg-[#121212] bg-[#F3F3F3] text-[#121212] dark:text-[#F3F3F3] overflow-hidden px-52">
       {/* Background with subtle gradient */}
-      <div className=" bg-gradient-to-b from-black to-[#111] opacity-80"></div>
+      <div className=" bg-gradient-to-b dark:bg-[#121212] bg-[#F3F3F3] text-[#121212] dark:text-[#F3F3F3] opacity-80"></div>
 
       {/* Features horizontal layout */}
       <div className=" w-full h-full flex">

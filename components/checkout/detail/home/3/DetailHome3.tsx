@@ -52,8 +52,8 @@ export default function DetailHome3() {
   return (
     <div
       ref={containerRef}
-      className="   py-28 px-0 justify-center bg-[#121212]  overflow-hidden relative z-0 flex flex-col min-h-screen">
-      <div className="  bg-gradient-to-b from-black to-[#111] opacity-80"></div>
+      className="   py-28 px-0 justify-center dark:bg-[#121212] bg-[#F3F3F3] text-[#121212] dark:text-[#F3F3F3]  overflow-hidden relative z-0 flex flex-col min-h-screen">
+      <div className="  bg-gradient-to-b dark:bg-[#121212] bg-[#F3F3F3] text-[#121212] dark:text-[#F3F3F3] opacity-80"></div>
       <div className="">
         <div className="relative w-full h-screen flex items-center">
           <div className="absolute inset-0">
@@ -81,7 +81,7 @@ export default function DetailHome3() {
             </AnimatePresence>
           </div>
 
-          <div className="relative z-20 w-1/2 p-8 pl-24 text-white overflow-hidden">
+          <div className="relative z-20 w-1/2 p-8 pl-24  text-[#F3F3F3] overflow-hidden">
             <div className="h-16 relative overflow-hidden mb-4">
               <AnimatePresence initial={false}>
                 <motion.h2
@@ -148,7 +148,9 @@ export default function DetailHome3() {
                   className="absolute inset-0 w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-black/30 flex items-end p-2">
-                  <p className="text-white text-xs">TRIPPLE EVENT-HALL</p>
+                  <p className="dark:bg-[#121212] bg-[#F3F3F3] text-[#121212] dark:text-[#F3F3F3] text-xs">
+                    TRIPPLE EVENT-HALL
+                  </p>
                 </div>
                 <div
                   className={`absolute inset-0 bg-black/30 ${

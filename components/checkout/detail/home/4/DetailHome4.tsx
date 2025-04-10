@@ -103,13 +103,13 @@ export default function DetailHome4() {
   }, [manualSlide]);
 
   return (
-    <main className="min-h-screen bg-[#121212] text-white">
+    <main className="min-h-screen dark:bg-[#121212] bg-[#F3F3F3] text-[#121212] dark:text-[#F3F3F3]">
       {/* Header */}
       <div className=" pt-16 pb-8">
         <div className="flex flex-col items-center mb-12">
           <h2 className="text-2xl md:text-3xl font-medium mb-6 relative  flex flex-col gap-2 justify-center items-center">
             <img src="/detail/image copy 3.png" alt="" className="h-7" />
-            <span className="relative z-10 px-4 bg-[#121212] text-[#FEFEFE]">
+            <span className="relative z-10 px-4 dark:bg-[#121212] bg-[#F3F3F3] text-[#121212] dark:text-[#F3F3F3]">
               Lorem Ipsum is simply dummy
             </span>
           </h2>
@@ -133,7 +133,7 @@ export default function DetailHome4() {
                 />
               </div>
               <div className="mt-3 text-start">
-                <h3 className="text-sm font-extrabold text-white">
+                <h3 className="text-sm font-extrabold  text-[#121212] dark:text-[#F3F3F3]">
                   {image.info}
                 </h3>
                 <p className="text-xs font-normal text-[#9A9A9A]">
