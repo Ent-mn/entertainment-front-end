@@ -5,6 +5,7 @@ import DetailActive from "@/components/checkout/detail/DetailActive";
 import ThemeToggleDemo from "@/components/theme/theme-toggle-demo";
 import { Headphones, Heart, ShoppingCart } from "lucide-react";
 import MainDetail from "@/components/checkout/detail/MainDetail";
+
 import { Button } from "@/components/ui/button";
 import React, { Suspense } from "react";
 

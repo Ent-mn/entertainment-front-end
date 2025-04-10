@@ -2,7 +2,7 @@
 
 import { Eye } from "lucide-react";
 import { Input } from "./ui/input";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Checkbox } from "./ui/checkbox";
 import { Button } from "./ui/button";
 import axios from "axios";
@@ -18,6 +18,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import TermsPage from "./TermsPage";
+import VerificationCodeModal from "./Verification";
 
 const RestRegister = () => {
   const [email, setEmail] = useState("");
@@ -26,7 +27,7 @@ const RestRegister = () => {
   const [agreed, setAgreed] = useState(false);
   const [error, setError] = useState("");
   const [eye, setEye] = useState(false);
-
+  const [isopen, setIsopen] = useState(false);
   const [login, setLogin] = useState(false);
 
   const [langToggle, setLangToggle] = useState(true);
@@ -37,6 +38,18 @@ const RestRegister = () => {
     setError("");
   };
 
+  const [id, setId] = useState("");
+  const emailCHeker = async () => {
+    try {
+      const { data }: any = await axios.post("/api/api_open", {
+        sn: "customer_email_check",
+        id: id,
+      });
+      setIsopen(true);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const onSubmit = () => {
     if (repassword === password) {
       const fetchData = async () => {
@@ -51,11 +64,12 @@ const RestRegister = () => {
             setError("");
             const user = data.result;
             const token = data.token;
-
-            router.push("/restaurant");
+            setId(data.new_id);
+            emailCHeker();
           } else {
             setError(`${data.message}`);
             console.log(data);
+            setIsopen(false);
           }
         } catch (error) {
           console.log(error);
@@ -64,7 +78,7 @@ const RestRegister = () => {
 
       fetchData();
     } else {
-      setError("nuuts ug tarahgui baina");
+      setError("нууц үг таарахгүй байна ");
     }
   };
 
@@ -72,6 +86,7 @@ const RestRegister = () => {
     mn: {
       mn: "mn",
       head: " Бүртгүүлэх",
+      headTseg: " .",
       description1: "Бүртгэлтэй бол",
       description2: "Нэвтрэх",
       inputText1: "Овог",
@@ -86,6 +101,7 @@ const RestRegister = () => {
     en: {
       en: "en",
       head: " Create new account",
+      headTseg: ".",
       description1: "Already have an account?",
       description2: "Log in",
       inputText1: "Last name",
@@ -129,6 +145,9 @@ const RestRegister = () => {
                 </div>
                 <h1 className="text-2xl mt-[50px] font-medium text-[#161616]">
                   {langToggle ? text.mn.head : text.en.head}
+                  <span className="text-[#F5BE32] font-medium">
+                    {langToggle ? text.mn.headTseg : text.en.headTseg}
+                  </span>
                 </h1>
               </div>
               <div className="text-[#9A9A9A] mt-3 font-normal text-sm flex gap-2">
@@ -169,7 +188,7 @@ const RestRegister = () => {
                     id="emailRegister"
                     type="text"
                     placeholder={
-                      langToggle ? text.mn.inputText2 : text.en.inputText2
+                      langToggle ? text.mn.inputText3 : text.en.inputText3
                     }
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -182,7 +201,7 @@ const RestRegister = () => {
                     id="passwordRegister"
                     type="password"
                     placeholder={
-                      langToggle ? text.mn.inputText3 : text.en.inputText3
+                      langToggle ? text.mn.inputText4 : text.en.inputText4
                     }
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -197,7 +216,7 @@ const RestRegister = () => {
                         id="repassword1"
                         type="text"
                         placeholder={
-                          langToggle ? text.mn.inputText4 : text.en.inputText4
+                          langToggle ? text.mn.inputText5 : text.en.inputText5
                         }
                         value={repassword}
                         onChange={(e) => setRepassword(e.target.value)}
@@ -262,14 +281,15 @@ const RestRegister = () => {
                 </div>
                 <div className="flex flex-col mt-3 items-center">
                   {agreed ? (
-                    <Button
-                      onClick={() => {
-                        onSubmit();
-                      }}
-                      className="w-72 h-10 cursor-pointer rounded-xl text-white text-base font-normal bg-gradient-to-r from-[#EAC947] to-[#F6A253] hover:opacity-90"
-                    >
+                    <div className="w-72 h-10 cursor-pointer rounded-xl text-white text-base font-normal bg-gradient-to-r from-[#EAC947] to-[#F6A253] hover:opacity-90">
+                      <VerificationCodeModal
+                        isopen={isopen}
+                        setIsopen={setIsopen}
+                        userId={id}
+                        onSubmit={onSubmit}
+                      />
                       {langToggle ? text.mn.button : text.en.button}
-                    </Button>
+                    </div>
                   ) : (
                     <Button
                       disabled

@@ -17,9 +17,7 @@ const RestForgetPass = () => {
   const [agreed, setAgreed] = useState(false);
   const [error, setError] = useState("");
   const [repassword, setRepassword] = useState("");
-  const [eye, setEye] = useState(false);
-
-  const { login, isLoggedIn } = useUser();
+  const [load, setLoad] = useState(true);
 
   const handleChange = () => {
     setError("");
@@ -28,24 +26,22 @@ const RestForgetPass = () => {
   const router = useRouter();
 
   const onSubmit = () => {
+    setLoad(false);
     const fetchData = async () => {
       try {
         const { data }: any = await axios.post("/api/api_open", {
-          sn: "customer_login",
-          phone: email,
-          password: password,
+          sn: "customer_password_reset",
+          phone: "80509832",
+          email: email,
         });
-        if (data.result) {
-          setError("");
-          const user = data.result;
-          const token = data.token;
-
-          login(user);
-          router.push("/");
+        if (data.status == "success") {
+          setError("шинэ нууц үг таны и-мэйл хаяглуу илгээгдлээ");
+          setLoad(false);
         } else {
           console.log("false");
-          setError("Нэр эсвэл нууц үг буруу байна ");
+          setError("Алдаа гарлаа дахин оролдоно уу");
           console.log(data);
+          setLoad(true);
         }
       } catch (error) {
         console.log(error);
@@ -80,57 +76,6 @@ const RestForgetPass = () => {
               />
             </div>
 
-            <div className="space-y-2" onChange={handleChange}>
-              <label htmlFor="password" className="text-[#727272] text-lg">
-                Password
-              </label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="h-14 rounded-md border-[#e0e0e0] bg-[#ECECEC] px-4 text-lg placeholder:text-[#ababab]"
-              />
-            </div>
-            <label htmlFor="password" className="text-[#727272] text-lg">
-              Re-enter Password
-            </label>
-            <div className="relative items-center">
-              {eye ? (
-                <Input
-                  id="repassword1"
-                  type="text"
-                  placeholder="Password"
-                  value={repassword}
-                  onChange={(e) => setRepassword(e.target.value)}
-                  className="h-14 rounded-md border-[#e0e0e0] bg-[#ECECEC] px-4 text-lg placeholder:text-[#ababab]"
-                />
-              ) : (
-                <Input
-                  id="repassword2"
-                  type="password"
-                  placeholder="Password"
-                  value={repassword}
-                  onChange={(e) => setRepassword(e.target.value)}
-                  className="h-14 rounded-md border-[#e0e0e0] bg-[#ECECEC] px-4 text-lg placeholder:text-[#ababab]"
-                />
-              )}
-              <button
-                onMouseDown={() => {
-                  setEye(true);
-                }}
-                onMouseUp={() => {
-                  setEye(false);
-                }}
-                onMouseLeave={() => {
-                  setEye(false);
-                }}
-                className="absolute cursor-pointer right-3 top-1/2 transform -translate-y-1/2 text-[#828282]"
-              >
-                <Eye size={20} />
-              </button>
-            </div>
             <p className="text-sm text-red-500">{error}</p>
 
             <div className="flex items-center  space-x-2">
@@ -147,7 +92,7 @@ const RestForgetPass = () => {
                 I agree to the
               </label>
             </div>
-            {agreed ? (
+            {agreed && load ? (
               <Button
                 onClick={() => {
                   onSubmit();
