@@ -13,7 +13,7 @@ const Detail = () => {
     <div>
       <Suspense
         fallback={
-          <div className="flex justify-center items-center">Loading...</div>
+          <div className="flex justify-center items-center">Loading......</div>
         }>
         <DetailHeader />
         <MainDetail />
