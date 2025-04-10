@@ -1,22 +1,3 @@
-// import EventCard from "@/components/checkout/CartHeader";
-// import MenuSelection from "@/components/checkout/MenuSelection";
-// import ThemeToggleDemo from "@/components/theme/theme-toggle-demo";
-
-// const checkoutPage = () => {
-//   return (
-//     <div className="flex flex-col gap-5 justify-center items-center py-10">
-//       <ThemeToggleDemo />
-//       {/* <CartButton /> */}
-
-//       <div className=" w-[1510px] border border-gray-700 rounded-md flex flex-col dark:bg-[#121212] bg-[#F3F3F3] dark:text-white text-[#121212]">
-//         <EventCard />
-//         <MenuSelection />
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default checkoutPage;
 "use client";
 import { useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";

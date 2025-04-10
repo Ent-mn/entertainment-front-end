@@ -4,8 +4,6 @@ import type React from "react";
 import Image from "next/image";
 import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Fullscreen } from "lucide-react";
-
 interface Feature {
   image: string;
   title: string;

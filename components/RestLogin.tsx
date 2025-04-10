@@ -104,8 +104,7 @@ const RestLogin = () => {
                       onClick={() => {
                         setLangToggle((prev) => !prev);
                       }}
-                      className="flex items-center cursor-pointer justify-center h-7 gap-1"
-                    >
+                      className="flex items-center cursor-pointer justify-center h-7 gap-1">
                       <img src="/login/Vector.png" alt="" />
                       <div className="text-[#5C5C5C] text-2xl w-9 ">
                         {langToggle ? text.mn.mn : text.en.en}
@@ -122,8 +121,7 @@ const RestLogin = () => {
                     onClick={() => {
                       setRegister(true);
                     }}
-                    className="underline cursor-pointer"
-                  >
+                    className="underline cursor-pointer">
                     {langToggle ? text.mn.description2 : text.en.description2}
                   </div>
                 </div>
@@ -160,8 +158,7 @@ const RestLogin = () => {
                     className="text-center cursor-pointer"
                     onClick={() => {
                       setForget(true);
-                    }}
-                  >
+                    }}>
                     <div className="text-[#7e7e7e] text-base hover:underline">
                       {langToggle ? text.mn.text1 : text.en.text1}
                     </div>
@@ -172,8 +169,7 @@ const RestLogin = () => {
                       onClick={() => {
                         onSubmit();
                       }}
-                      className="w-full  h-14 cursor-pointer rounded-xl text-white text-lg font-medium bg-gradient-to-r from-[#EAC947] to-[#F6A253] hover:opacity-90"
-                    >
+                      className="w-full  h-14 cursor-pointer rounded-xl text-white text-lg font-medium bg-gradient-to-r from-[#EAC947] to-[#F6A253] hover:opacity-90">
                       {langToggle ? text.mn.button : text.en.button}
                     </Button>
                     {langToggle ? (
@@ -214,15 +210,13 @@ const RestLogin = () => {
                       <button
                         type="button"
                         onClick={handleFb}
-                        className="flex items-center justify-center gap-2 p-3 border border-[#e0e0e0] rounded-xl bg-white"
-                      >
+                        className="flex items-center justify-center gap-2 p-3 border border-[#e0e0e0] rounded-xl bg-white">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width="20"
                           height="20"
                           viewBox="0 0 24 24"
-                          fill="#1577f2"
-                        >
+                          fill="#1577f2">
                           <path d="M12 2.04C6.5 2.04 2 6.53 2 12.06C2 17.06 5.66 21.21 10.44 21.96V14.96H7.9V12.06H10.44V9.85C10.44 7.34 11.93 5.96 14.22 5.96C15.31 5.96 16.45 6.15 16.45 6.15V8.62H15.19C13.95 8.62 13.56 9.39 13.56 10.18V12.06H16.34L15.89 14.96H13.56V21.96C18.34 21.21 22 17.06 22 12.06C22 6.53 17.5 2.04 12 2.04Z" />
                         </svg>
                         <span className="text-[#8c8c8c] text-xs">
@@ -235,15 +229,13 @@ const RestLogin = () => {
                             disabled
                             onClick={() => signIn("google")}
                             type="button"
-                            className="flex items-center justify-center gap-2 p-3 border border-[#e0e0e0] rounded-xl bg-white"
-                          >
+                            className="flex items-center justify-center gap-2 p-3 border border-[#e0e0e0] rounded-xl bg-white">
                             <div className="mr-2 flex h-5 w-5 items-center justify-center">
                               <svg
                                 width="18"
                                 height="18"
                                 xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24"
-                              >
+                                viewBox="0 0 24 24">
                                 <path
                                   d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
                                   fill="#4285F4"
@@ -270,15 +262,13 @@ const RestLogin = () => {
                           <button
                             onClick={() => signIn("google")}
                             type="button"
-                            className="flex items-center justify-center gap-2 p-3 border border-[#e0e0e0] rounded-xl bg-white"
-                          >
+                            className="flex items-center justify-center gap-2 p-3 border border-[#e0e0e0] rounded-xl bg-white">
                             <div className="mr-2 flex h-5 w-5 items-center justify-center">
                               <svg
                                 width="18"
                                 height="18"
                                 xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24"
-                              >
+                                viewBox="0 0 24 24">
                                 <path
                                   d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
                                   fill="#4285F4"

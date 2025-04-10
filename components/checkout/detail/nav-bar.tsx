@@ -1,7 +1,6 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { useTheme } from "next-themes";
 
 interface NavBarProps {
   activeSection: string;
@@ -9,7 +8,7 @@ interface NavBarProps {
 }
 
 export function NavBar({ activeSection, setActiveSection }: NavBarProps) {
-  const { theme } = useTheme();
+  // const { theme } = useTheme();
 
   const navItems = [
     { id: "home", label: "HOME" },
