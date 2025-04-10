@@ -29,8 +29,7 @@ export default function VerificationCodeModal({
       <Dialog open={isopen}>
         <Button
           onClick={onSubmit}
-          className="w-72  h-10 cursor-pointer rounded-xl text-white text-base font-normal bg-gradient-to-r from-[#EAC947] to-[#F6A253] hover:opacity-90"
-        >
+          className="w-72  h-10 cursor-pointer rounded-xl text-white text-base font-normal bg-gradient-to-r from-[#EAC947] to-[#F6A253] hover:opacity-90">
           Бүртгүүлэх
         </Button>
 
@@ -110,8 +109,7 @@ function VerificationCode({
         <button
           onClick={() => setIsopen(false)}
           type="button"
-          className="text-[#656565] mb-8"
-        >
+          className="text-[#656565] mb-8">
           <ChevronLeft size={28} />
         </button>
       </DialogClose>
@@ -130,7 +128,9 @@ function VerificationCode({
           .map((_, index) => (
             <input
               key={index}
-              ref={(el) => (inputRefs.current[index] = el)}
+              ref={(el) => {
+                inputRefs.current[index] = el;
+              }}
               type="text"
               maxLength={1}
               value={code[index]}
@@ -152,8 +152,7 @@ function VerificationCode({
         onClick={() => {
           console.log(userId);
         }}
-        className="w-full py-4 px-6 rounded-full text-white font-medium text-lg bg-gradient-to-r from-yellow-400 to-orange-400 hover:from-yellow-500 hover:to-orange-500"
-      >
+        className="w-full py-4 px-6 rounded-full text-white font-medium text-lg bg-gradient-to-r from-yellow-400 to-orange-400 hover:from-yellow-500 hover:to-orange-500">
         Баталгаажуулах
       </button>
     </div>
