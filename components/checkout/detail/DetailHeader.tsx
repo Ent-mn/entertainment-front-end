@@ -206,7 +206,8 @@ const DetailHeader = () => {
           className="w-6 h-6 text-amber-500"
           viewBox="0 0 24 24"
           fill="none"
-          xmlns="http://www.w3.org/2000/svg">
+          xmlns="http://www.w3.org/2000/svg"
+        >
           <path
             d="M16 16V8H8V16H16Z"
             stroke="currentColor"
@@ -260,7 +261,8 @@ const DetailHeader = () => {
           className="w-6 h-6 text-amber-500"
           viewBox="0 0 24 24"
           fill="none"
-          xmlns="http://www.w3.org/2000/svg">
+          xmlns="http://www.w3.org/2000/svg"
+        >
           <path
             d="M16 16V8H8V16H16Z"
             stroke="currentColor"
@@ -467,7 +469,7 @@ const DetailHeader = () => {
   }, []);
   return (
     <div>
-      <header className="py-4 px-6 md:px-[100px] fixed inset-0 z-30 h-16 ">
+      <header className="py-4 px-6 md:px-[100px]  bg-[#121212]/50 backdrop-blur-xl fixed inset-0 z-30 h-16 ">
         <div className="flex items-center justify-between">
           <Link href="/restaurant" className="flex items-center gap-2">
             <Image
@@ -483,7 +485,8 @@ const DetailHeader = () => {
           <div className="hidden md:flex items-center bg-[#333333]/80 rounded-md w-full max-w-[665px] mx-8 relative">
             <div
               onClick={() => setShowBankDropdown(!showBankDropdown)}
-              className="flex bg-[#78787866] py-2 px-4 cursor-pointer rounded-l-md items-center gap-2 border-r border-gray-500 relative">
+              className="flex bg-[#78787866] py-2 px-4 cursor-pointer rounded-l-md items-center gap-2 border-r border-gray-500 relative"
+            >
               <span className="text-white text-sm cursor-pointer">
                 {selectedBank || "Төрөл"}
               </span>
@@ -491,7 +494,8 @@ const DetailHeader = () => {
                 className="w-4 h-4 text-white"
                 fill="none"
                 viewBox="0 0 24 24"
-                stroke="currentColor">
+                stroke="currentColor"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -505,7 +509,8 @@ const DetailHeader = () => {
                     <div
                       key={type}
                       className="p-2 text-white hover:bg-amber-500/20 cursor-pointer text-sm"
-                      onClick={() => handleBankClick(type)}>
+                      onClick={() => handleBankClick(type)}
+                    >
                       {type}
                     </div>
                   ))}
@@ -526,7 +531,8 @@ const DetailHeader = () => {
                   <div
                     key={merchant.id}
                     className="p-3 text-white hover:bg-amber-500/20 cursor-pointer"
-                    onClick={() => handleHeaderResultClick(merchant)}>
+                    onClick={() => handleHeaderResultClick(merchant)}
+                  >
                     <p className="text-sm">{merchant.name || "N/A"}</p>
                     <p className="text-xs text-gray-400">
                       {merchant.stars || "N/A"}
@@ -547,7 +553,8 @@ const DetailHeader = () => {
                   <Button
                     variant="outline"
                     className="w-full mt-2 text-amber-500 border-amber-500 hover:bg-amber-500/20"
-                    onClick={handleSeeMore}>
+                    onClick={handleSeeMore}
+                  >
                     See More
                   </Button>
                 )}
@@ -562,7 +569,8 @@ const DetailHeader = () => {
                 href={link.href}
                 className={`text-white text-sm ${
                   link.active ? "border-b-2 border-amber-500 pb-1" : ""
-                }`}>
+                }`}
+              >
                 {link.name}
               </Link>
             ))}
@@ -586,7 +594,8 @@ const DetailHeader = () => {
                 <div
                   id="profile-button"
                   className="flex items-center gap-3 cursor-pointer"
-                  onClick={() => setShowProfileDropdown(!showProfileDropdown)}>
+                  onClick={() => setShowProfileDropdown(!showProfileDropdown)}
+                >
                   <img
                     src="bold.png"
                     alt="User profile"
@@ -601,7 +610,8 @@ const DetailHeader = () => {
                 {showProfileDropdown && (
                   <div
                     id="profile-dropdown"
-                    className="absolute right-0 mt-2 w-16 bg-[#333333] rounded-md shadow-lg py-1 z-50">
+                    className="absolute right-0 mt-2 w-16 bg-[#333333] rounded-md shadow-lg py-1 z-50"
+                  >
                     <Link href="/profiletest">
                       <button className="w-full text-center px-2 py-2 text-sm text-white hover:bg-[#444444] transition-colors duration-150">
                         Profile
@@ -612,7 +622,8 @@ const DetailHeader = () => {
                         logout();
                         setShowProfileDropdown(false);
                       }}
-                      className="w-full text-center py-2 px-2 text-sm text-red-500 hover:bg-[#444444] transition-colors duration-150">
+                      className="w-full text-center py-2 px-2 text-sm text-red-500 hover:bg-[#444444] transition-colors duration-150"
+                    >
                       Logout
                     </button>
                   </div>
@@ -626,7 +637,8 @@ const DetailHeader = () => {
               className="w-6 h-6"
               fill="none"
               viewBox="0 0 24 24"
-              stroke="currentColor">
+              stroke="currentColor"
+            >
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"

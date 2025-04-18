@@ -1054,7 +1054,7 @@ function OrderTestContent() {
     <div className="relative min-h-screen w-full bg-[#141414] flex flex-col">
       <div className="relative z-10 flex flex-col min-h-screen">
         {showAnnouncement && (
-          <div className="bg-[#2C2C2C] text-white w-full py-2 px-4 flex items-center justify-between">
+          <div className="bg-[#2C2C2C]/50 text-white w-full py-2 px-4 flex items-center justify-between">
             <div className="flex-1 text-center text-sm md:text-base">
               Novotel hotel - MoD/n Tok Restaurant - Хуримын урьдчилсан захиалга
               20% хямдрал....
@@ -1078,7 +1078,7 @@ function OrderTestContent() {
             </button>
           </div>
         )}
-        <header className="py-4 md:px-[100px] px-6">
+        <header className="py-4 md:px-[240px] px-6">
           <div className="flex items-center justify-between">
             <Link href="/restaurant" className="flex items-center gap-2">
               <Image

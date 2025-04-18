@@ -11,10 +11,10 @@ export const Header = () => {
 
   return (
     <div className="w-screen flex flex-col">
-      <header className="flex items-center justify-between px-6 py-3 bg-white border-b border-gray-200">
-        <div className="flex items-center gap-2">
-          <div className="bg-[#fb752b] rounded p-1"></div>
-          <span className="text-lg font-semibold">Entertainment.mn</span>
+      <header className="flex items-center justify-between px-6 py-4 bg-white border-b border-gray-200 h-16">
+        <div className="flex items-center gap-3">
+          <div className="bg-[#fb752b] rounded p-1.5"></div>
+          <span className="text-xl font-semibold">Entertainment.mn</span>
         </div>
 
         <div className="flex-1 max-w-xl mx-12">
@@ -26,7 +26,7 @@ export const Header = () => {
         <div className="flex items-center gap-6">
           {!isLoggedIn ? (
             <Link href="/login">
-              <div className="cursor-pointer">Login</div>
+              <div className="cursor-pointer text-base">Login</div>
             </Link>
           ) : (
             <div>
@@ -42,11 +42,11 @@ export const Header = () => {
                   className="w-10 h-10 rounded-2xl"
                 />
                 <div>
-                  <p className="font-semibold text-sm">{user?.customer_name}</p>
-                  <p className="text-xs text-gray-500">{user?.org_name}</p>
+                  <p className="font-semibold text-base">{user?.customer_name}</p>
+                  <p className="text-sm text-gray-500">{user?.org_name}</p>
                 </div>
               </div>
-              <button onClick={logout} className="text-red-500 cursor-pointer">
+              <button onClick={logout} className="text-red-500 cursor-pointer text-sm">
                 Logout
               </button>
             </div>
@@ -54,9 +54,9 @@ export const Header = () => {
         </div>
       </header>
 
-      <div className="bg-gradient-to-r from-[#FF7324] via-[#FF4E93] to-[#B84EFF] py-4">
+      <div className="bg-gradient-to-r from-[#FF7324] via-[#FF4E93] to-[#B84EFF] py-3">
         <div className="container mx-auto px-4">
-          <p className="text-white text-center">
+          <p className="text-white text-center text-base">
             Хуримын урьдчилсан захиалга 20% off. Дэлгэрэнгүй.
           </p>
         </div>
