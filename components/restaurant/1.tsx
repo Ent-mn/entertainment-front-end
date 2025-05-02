@@ -162,6 +162,14 @@ export default function RestaurantWebsite() {
   const [merchants, setMerchants] = useState<any[]>([]);
   const [showAnnouncement, setShowAnnouncement] = useState(true);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [initialProfileView, setInitialProfileView] = useState<
+    "favorites" | "orders" | "inbox" | "profile"
+  >("profile");
+
+  const { user, isLoggedIn, logout } = useUser();
+  const router = useRouter();
+
+  console.log("User data:", user);
 
   // Initialize merchants data from staticData
   useEffect(() => {
@@ -311,9 +319,6 @@ export default function RestaurantWebsite() {
         "Таны Эвент болох хүртэл бэлтгэл ажлыг онлайнаар гүйцэтгэх, бүх зүйлсийг хяналттайгаар удирдах систем.",
     },
   ];
-
-  const { user, isLoggedIn, logout } = useUser();
-  const router = useRouter();
 
   const reservationFields = [
     {
@@ -658,6 +663,7 @@ export default function RestaurantWebsite() {
                     >
                       <button
                         onClick={() => {
+                          setInitialProfileView("profile");
                           setIsProfileModalOpen(true);
                           setShowProfileDropdown(false);
                         }}
@@ -670,12 +676,17 @@ export default function RestaurantWebsite() {
                         <Heart className="w-4 h-4" />
                         Таалагдсан
                       </button>
-                      <Link href="/orders" className="w-full">
-                        <button className="w-full text-start py-2 px-2 text-sm text-white rounded-lg transition-all duration-300 hover:bg-gradient-to-r hover:from-amber-500/20 hover:to-transparent flex items-center gap-2">
-                          <ShoppingCart className="w-4 h-4" />
-                          Миний захиалгууд
-                        </button>
-                      </Link>
+                      <button
+                        onClick={() => {
+                          setInitialProfileView("orders");
+                          setIsProfileModalOpen(true);
+                          setShowProfileDropdown(false);
+                        }}
+                        className="w-full text-start py-2 px-2 text-sm text-white rounded-lg transition-all duration-300 hover:bg-gradient-to-r hover:from-amber-500/20 hover:to-transparent flex items-center gap-2"
+                      >
+                        <ShoppingCart className="w-4 h-4" />
+                        Миний захиалгууд
+                      </button>
                       <Link href="/business" className="w-full">
                         <button className="w-full text-start py-2 px-2 text-sm text-white rounded-lg transition-all duration-300 hover:bg-gradient-to-r hover:from-amber-500/20 hover:to-transparent flex items-center gap-2">
                           <Briefcase className="w-4 h-4" />
@@ -851,12 +862,13 @@ export default function RestaurantWebsite() {
         isOpen={isProfileModalOpen}
         onClose={() => setIsProfileModalOpen(false)}
         profile={{
-          firstName: user?.customer_name || "",
-          lastName: "",
+          customer_name: user?.customer_name || "",
+          org_name: user?.org_name || "",
           email: user?.email || "",
           phone: user?.phone || "",
-          coverImage: "/5cover1.jpg"
+          coverImage: "/5cover1.jpg",
         }}
+        initialView={initialProfileView}
       />
     </div>
   );

@@ -21,6 +21,7 @@ interface User {
   code_sms: string;
   created_at: string;
   customer_type_id: number;
+  coverImage?: string;
 }
 
 interface UserContextType {

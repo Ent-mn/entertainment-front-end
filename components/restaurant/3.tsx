@@ -21,21 +21,21 @@ export default function FeaturesSection() {
   // Feature data
   const features: Feature[] = [
     {
-      image: "/video.mp4",
+      image: "/uul.jpg",
       title: "ASDASDASADA",
       description:
         "asdasdasda sdasdoidhgoihgoweiurghwoier ghowierghoweirghweiogheworiu ghpweorghoe iwurghiweur gheiowrghweoirug",
       buttonText: "ДЭЛГЭРЭНГҮЙ",
     },
     {
-      image: "/video1.mp4",
+      image: "/5cover1.jpg",
       title: "ASDADASD",
       description:
         "УЛААНБААТАР ХОТЫН ХАМГИЙН ТАНСАГ ЗААЛЫГ ТАНД ЗОРИУЛЖ БЭЛТГЭЛЭЭ. Ballroom 202: ОНЫ ХУРЫМЫН УЛИРЛЫГ УРДЧИЛСАН ЗАХИАЛГА АВЧ БАЙНА.",
       buttonText: "ДЭЛГЭРЭНГҮЙ",
     },
     {
-      image: "/video2.mp4",
+      image: "/uul.jpg",
       title: "ASDASDASD",
       description:
         "testttrgjwetoprw gjwre[gwerg[ewjweo irgjweorigkweorigmwe ogrirjtokfepltriokeptijfkorep lwtjigrkofelpritgjgrke lopdoritgjhgkorfe",
@@ -62,7 +62,7 @@ export default function FeaturesSection() {
 
       <div className="relative z-10">
         <div className="relative w-full h-screen flex items-center">
-          {/* Background Videos with Cross-fade */}
+          {/* Background Images with Cross-fade */}
           <div className="absolute inset-0">
             <AnimatePresence initial={false}>
               <motion.div
@@ -76,13 +76,11 @@ export default function FeaturesSection() {
                 }}
                 className="absolute inset-0"
               >
-                <video
+                <Image
                   src={features[currentSlide].image}
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  className="absolute inset-0 w-full h-full object-cover"
+                  alt={features[currentSlide].title}
+                  fill
+                  className="absolute inset-0 object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
               </motion.div>
@@ -149,16 +147,14 @@ export default function FeaturesSection() {
                   duration: 0.4,
                   ease: "easeInOut",
                 }}
-                className="relative w-[750px] h-[400px] rounded-lg overflow-x-hidden cursor-pointer"
+                className="relative w-[750px] h-[400px] rounded-lg overflow-hidden cursor-pointer"
                 onClick={() => setCurrentSlide(index)}
               >
-                <video
+                <Image
                   src={feature.image}
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  className="absolute inset-0 w-full h-full object-cover"
+                  alt={feature.title}
+                  fill
+                  className="absolute inset-0 object-cover"
                 />
                 <div className="absolute inset-0 bg-black/30 flex items-end p-2">
                   <p className="text-white text-xs">TRIPPLE EVENT-HALL</p>

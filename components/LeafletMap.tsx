@@ -128,7 +128,10 @@ function MapController({ selectedVenue }: { selectedVenue: Venue | null }) {
 
   useEffect(() => {
     if (selectedVenue && selectedVenue.location) {
-      map.setView(selectedVenue.location, 15);
+      map.flyTo(selectedVenue.location, 16, {
+        duration: 0.5,
+        easeLinearity: 0.25,
+      });
     }
   }, [selectedVenue, map]);
 
@@ -191,6 +194,12 @@ export default function LeafletMap({
 }: LeafletMapProps) {
   const markerRefs = useRef<Record<number, any>>({});
 
+  useEffect(() => {
+    if (selectedVenue && markerRefs.current[selectedVenue.id]) {
+      markerRefs.current[selectedVenue.id].openPopup();
+    }
+  }, [selectedVenue]);
+
   return (
     <MapContainer center={center} zoom={zoom} style={style} zoomControl={false}>
       <TileLayer
@@ -203,7 +212,7 @@ export default function LeafletMap({
         <Marker
           key={venue.id}
           position={venue.location}
-          icon={createCustomIcon(venue.type, venueTypeConfig)} // Pass venueTypeConfig
+          icon={createCustomIcon(venue.type, venueTypeConfig)}
           ref={(ref) => {
             if (ref) {
               markerRefs.current[venue.id] = ref;

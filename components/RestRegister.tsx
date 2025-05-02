@@ -58,7 +58,7 @@ const RestRegister = () => {
             sn: "customer_add",
             phone: email,
             password: password,
-            email: `${email}@yahoo.com`,
+            email: `${email}`,
           });
           if (data.status == "success") {
             setError("");
