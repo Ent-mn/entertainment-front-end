@@ -1,5 +1,5 @@
 "use client";
-import { LightbulbIcon } from "lucide-react";
+import { LightbulbIcon, Wallet } from "lucide-react";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -15,6 +15,10 @@ import {
   Clock,
   MapPin,
   Users,
+  Briefcase,
+  Receipt,
+  HelpCircle,
+  LogOut,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,6 +34,7 @@ import {
 import RestLogin from "../RestLogin";
 import { useUser } from "@/context/UserContext";
 import { useRouter, useSearchParams } from "next/navigation";
+import { ProfileSettingsModal } from "@/components/modals/ProfileSettingsModal";
 
 interface VenueData {
   id: number;
@@ -156,6 +161,15 @@ export default function RestaurantWebsite() {
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const [merchants, setMerchants] = useState<any[]>([]);
   const [showAnnouncement, setShowAnnouncement] = useState(true);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [initialProfileView, setInitialProfileView] = useState<
+    "favorites" | "orders" | "inbox" | "profile"
+  >("profile");
+
+  const { user, isLoggedIn, logout } = useUser();
+  const router = useRouter();
+
+  console.log("User data:", user);
 
   // Initialize merchants data from staticData
   useEffect(() => {
@@ -206,7 +220,8 @@ export default function RestaurantWebsite() {
           className="w-6 h-6 text-amber-500"
           viewBox="0 0 24 24"
           fill="none"
-          xmlns="http://www.w3.org/2000/svg">
+          xmlns="http://www.w3.org/2000/svg"
+        >
           <path
             d="M16 16V8H8V16H16Z"
             stroke="currentColor"
@@ -260,7 +275,8 @@ export default function RestaurantWebsite() {
           className="w-6 h-6 text-amber-500"
           viewBox="0 0 24 24"
           fill="none"
-          xmlns="http://www.w3.org/2000/svg">
+          xmlns="http://www.w3.org/2000/svg"
+        >
           <path
             d="M16 16V8H8V16H16Z"
             stroke="currentColor"
@@ -303,9 +319,6 @@ export default function RestaurantWebsite() {
         "Таны Эвент болох хүртэл бэлтгэл ажлыг онлайнаар гүйцэтгэх, бүх зүйлсийг хяналттайгаар удирдах систем.",
     },
   ];
-
-  const { user, isLoggedIn, logout } = useUser();
-  const router = useRouter();
 
   const reservationFields = [
     {
@@ -470,7 +483,7 @@ export default function RestaurantWebsite() {
     <div className="relative h-[1000px] flex flex-col">
       <div className="fixed inset-0 z-0">
         <Image
-          src="/backround.jpg"
+          src="/5cover1.jpg"
           alt="Restaurant interior"
           fill
           className="object-cover brightness-[0.8]"
@@ -479,7 +492,7 @@ export default function RestaurantWebsite() {
       </div>
       <div className="relative z-10 flex flex-col min-h-screen">
         {showAnnouncement && (
-          <div className="bg-[#2C2C2C] text-white w-full py-2 px-4 flex items-center justify-between">
+          <div className="bg-[#2C2C2C]/70 text-white w-full py-2 px-4 flex items-center justify-between">
             <div className="flex-1 text-center text-sm md:text-base">
               Novotel hotel - MoD/n Tok Restaurant - Хуримын урьдчилсан захиалга
               20% хямдрал....
@@ -487,7 +500,8 @@ export default function RestaurantWebsite() {
             <button
               onClick={() => setShowAnnouncement(false)}
               className="text-white hover:text-gray-300 p-1"
-              aria-label="Close announcement">
+              aria-label="Close announcement"
+            >
               <svg
                 className="w-4 h-4"
                 fill="none"
@@ -495,15 +509,16 @@ export default function RestaurantWebsite() {
                 strokeLinejoin="round"
                 strokeWidth="2"
                 viewBox="0 0 24 24"
-                stroke="currentColor">
+                stroke="currentColor"
+              >
                 <path d="M6 18L18 6M6 6l12 12"></path>
               </svg>
             </button>
           </div>
         )}
-        <header className="py-4 px-6 md:px-[100px]">
+        <header className="py-4 md:px-[180px] px-6 border-b border-gray-800 shrink-0">
           <div className="flex items-center justify-between">
-            <Link href="/restaurant" className="flex items-center gap-2">
+            <Link href="/restaurant" className="flex items-center gap-4">
               <Image
                 alt="Restaurant logo"
                 width={30}
@@ -511,13 +526,16 @@ export default function RestaurantWebsite() {
                 priority
                 src="/Logo.svg"
               />
-              <span className="text-white font-medium">restaurant.mn</span>
+              <span className="text-white text-lg font-medium">
+                Restaurant.mn
+              </span>
             </Link>
 
-            <div className="hidden md:flex items-center bg-[#333333]/80 rounded-md w-full max-w-[665px] mx-8 relative">
+            <div className="hidden md:flex items-center bg-[#333333]/80 rounded-md   w-full max-w-[665px] mx-8 relative">
               <div
                 onClick={() => setShowBankDropdown(!showBankDropdown)}
-                className="flex bg-[#78787866] py-2 px-4 cursor-pointer rounded-l-md items-center gap-2 border-r border-gray-500 relative">
+                className="flex bg-[#78787866] py-2 px-4 cursor-pointer rounded-l-md items-center gap-2 border-r border-gray-500 relative"
+              >
                 <span className="text-white text-sm cursor-pointer">
                   {selectedBank || "Төрөл"}
                 </span>
@@ -525,7 +543,8 @@ export default function RestaurantWebsite() {
                   className="w-4 h-4 text-white"
                   fill="none"
                   viewBox="0 0 24 24"
-                  stroke="currentColor">
+                  stroke="currentColor"
+                >
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -535,12 +554,13 @@ export default function RestaurantWebsite() {
                 </svg>
                 {showBankDropdown && (
                   <div className="absolute top-full left-[-12px] border-[1px] border-black mt-4 w-48 bg-[#333333]/90 rounded-md shadow-lg z-20 max-h-70 overflow-y-auto">
-                    {venueTypes.map((type) => (
+                    {uniqueBanks.map((bank) => (
                       <div
-                        key={type}
+                        key={bank}
                         className="p-2 text-white hover:bg-amber-500/20 cursor-pointer text-sm"
-                        onClick={() => handleBankClick(type)}>
-                        {type}
+                        onClick={() => handleBankClick(bank)}
+                      >
+                        {bank}
                       </div>
                     ))}
                   </div>
@@ -560,10 +580,11 @@ export default function RestaurantWebsite() {
                     <div
                       key={merchant.id}
                       className="p-3 text-white hover:bg-amber-500/20 cursor-pointer"
-                      onClick={() => handleHeaderResultClick(merchant)}>
+                      onClick={() => handleHeaderResultClick(merchant)}
+                    >
                       <p className="text-sm">{merchant.name || "N/A"}</p>
                       <p className="text-xs text-gray-400">
-                        {merchant.stars || "N/A"}
+                        {merchant.phone || "N/A"}
                       </p>
                     </div>
                   ))}
@@ -581,7 +602,8 @@ export default function RestaurantWebsite() {
                     <Button
                       variant="outline"
                       className="w-full mt-2 text-amber-500 border-amber-500 hover:bg-amber-500/20"
-                      onClick={handleSeeMore}>
+                      onClick={handleSeeMore}
+                    >
                       See More
                     </Button>
                   )}
@@ -594,9 +616,10 @@ export default function RestaurantWebsite() {
                 <Link
                   key={link.name}
                   href={link.href}
-                  className={`text-white text-sm ${
+                  className={`text-white text-lg ${
                     link.active ? "border-b-2 border-amber-500 pb-1" : ""
-                  }`}>
+                  }`}
+                >
                   {link.name}
                 </Link>
               ))}
@@ -620,13 +643,12 @@ export default function RestaurantWebsite() {
                   <div
                     id="profile-button"
                     className="flex items-center gap-3 cursor-pointer"
-                    onClick={() =>
-                      setShowProfileDropdown(!showProfileDropdown)
-                    }>
+                    onClick={() => setShowProfileDropdown(!showProfileDropdown)}
+                  >
                     <img
                       src="bold.png"
                       alt="User profile"
-                      className="w-10 h-10 rounded-2xl"
+                      className="w-7 h-7 rounded-full"
                     />
                     <div>
                       <p className="font-semibold text-sm text-white">
@@ -637,20 +659,64 @@ export default function RestaurantWebsite() {
                   {showProfileDropdown && (
                     <div
                       id="profile-dropdown"
-                      className="absolute right-0 mt-2 w-16 bg-[#333333] rounded-md shadow-lg py-1 z-50">
-                      <Link href="/profiletest">
-                        <button className="w-full text-center px-2 py-2 text-sm text-white hover:bg-[#444444] transition-colors duration-150">
-                          Profile
-                        </button>
-                      </Link>
+                      className="absolute p-8 flex flex-col items-start justify-between w-[300px] h-[340px] right-[-82px] mt-2  bg-gray-200/20 backdrop-blur-[12px] rounded-3xl shadow-lg z-50"
+                    >
                       <button
                         onClick={() => {
-                          logout();
+                          setInitialProfileView("profile");
+                          setIsProfileModalOpen(true);
                           setShowProfileDropdown(false);
                         }}
-                        className="w-full text-center py-2 px-2 text-sm text-red-500 hover:bg-[#444444] transition-colors duration-150">
-                        Logout
+                        className="w-full text-start px-2 py-2 text-sm text-white rounded-lg transition-all duration-300 hover:bg-gradient-to-r hover:from-amber-500/20 hover:to-transparent flex items-center gap-2"
+                      >
+                        <User className="w-4 h-4" />
+                        Profile
                       </button>
+                      <button className="w-full text-start py-2 px-2 text-sm text-white rounded-lg transition-all duration-300 hover:bg-gradient-to-r hover:from-amber-500/20 hover:to-transparent flex items-center gap-2">
+                        <Heart className="w-4 h-4" />
+                        Таалагдсан
+                      </button>
+                      <button
+                        onClick={() => {
+                          setInitialProfileView("orders");
+                          setIsProfileModalOpen(true);
+                          setShowProfileDropdown(false);
+                        }}
+                        className="w-full text-start py-2 px-2 text-sm text-white rounded-lg transition-all duration-300 hover:bg-gradient-to-r hover:from-amber-500/20 hover:to-transparent flex items-center gap-2"
+                      >
+                        <ShoppingCart className="w-4 h-4" />
+                        Миний захиалгууд
+                      </button>
+                      <Link href="/business" className="w-full">
+                        <button className="w-full text-start py-2 px-2 text-sm text-white rounded-lg transition-all duration-300 hover:bg-gradient-to-r hover:from-amber-500/20 hover:to-transparent flex items-center gap-2">
+                          <Briefcase className="w-4 h-4" />
+                          My business
+                        </button>
+                      </Link>
+                      <Link href="/wallet" className="w-full">
+                        <button className="w-full text-start py-2 px-2 text-sm text-white rounded-lg transition-all duration-300 hover:bg-gradient-to-r hover:from-amber-500/20 hover:to-transparent flex items-center gap-2">
+                          <Wallet className="w-4 h-4" />
+                          Миний хэтэвч
+                        </button>
+                      </Link>
+                      <div className="flex flex-col gap-[1px] mt-4 w-full">
+                        <Link href="/help" className="w-full">
+                          <button className="w-full text-start py-2 px-2 text-sm text-white rounded-lg transition-all duration-300 hover:bg-gradient-to-r hover:from-amber-500/20 hover:to-transparent flex items-center gap-2">
+                            <HelpCircle className="w-4 h-4" />
+                            Тусламж
+                          </button>
+                        </Link>
+                        <button
+                          onClick={() => {
+                            logout();
+                            setShowProfileDropdown(false);
+                          }}
+                          className="w-full text-start py-2 px-2 text-sm text-white rounded-lg transition-all duration-300 hover:bg-gradient-to-r hover:from-amber-500/20 hover:to-transparent flex items-center gap-2"
+                        >
+                          <LogOut className="w-4 h-4" />
+                          Sign out
+                        </button>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -662,7 +728,8 @@ export default function RestaurantWebsite() {
                 className="w-6 h-6"
                 fill="none"
                 viewBox="0 0 24 24"
-                stroke="currentColor">
+                stroke="currentColor"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -683,17 +750,19 @@ export default function RestaurantWebsite() {
             even
           </p>
 
-          <div className="w-full max-w-4xl bg-gray-100/10 backdrop-blur-xl rounded-[24px] p-4 shadow-lg border border-white/10">
+          <div className="w-full max-w-4xl bg-gray-200/20 backdrop-blur-[12px] rounded-[24px] p-4 shadow-lg border border-white/10">
             <Tabs
               defaultValue="all"
               className="w-full"
-              onValueChange={setActiveTab}>
+              onValueChange={setActiveTab}
+            >
               <TabsList className="bg-transparent border-b border-white rounded-none w-full justify-start gap-8">
                 {tabOptions.map((tab) => (
                   <TabsTrigger
                     key={tab.value}
                     value={tab.value}
-                    className={`text-gray-400 data-[state=active]:text-amber-500 data-[state=active]:border-b-2 data-[state=active]:border-amber-500 rounded-none pb-3 px-0 mx-2`}>
+                    className={`text-gray-400 data-[state=active]:text-amber-500 data-[state=active]:border-b-2 data-[state=active]:border-amber-500 rounded-none pb-3 px-0 mx-2`}
+                  >
                     {tab.label}
                   </TabsTrigger>
                 ))}
@@ -711,7 +780,8 @@ export default function RestaurantWebsite() {
                           ? "bg-amber-500 text-white"
                           : "text-gray-400"
                       }`}
-                      onClick={() => handleCategoryClick(field.label)}>
+                      onClick={() => handleCategoryClick(field.label)}
+                    >
                       {field.icon}
                       <div className="flex text-start flex-col">
                         <span className="text-xs text-white">
@@ -724,7 +794,8 @@ export default function RestaurantWebsite() {
                 ))}
                 <Button
                   className="bg-gradient-to-b from-[#fd8e2e] to-[#f5be32] w-[56px] h-[56px] hover:opacity-80 text-white rounded-xl"
-                  onClick={handleSearchClick}>
+                  onClick={handleSearchClick}
+                >
                   <Search className="w-5 h-5" />
                 </Button>
               </div>
@@ -756,32 +827,49 @@ export default function RestaurantWebsite() {
         </main>
       </div>
 
-      <div className="fixed right-6 top-1/2 -translate-y-1/2 flex flex-col gap-4 z-20 bg-gray-100/5 backdrop-blur-xl rounded-[24px] px-2 py-4 shadow-lg border border-white/10">
+      <div className="fixed right-6 top-1/2 -translate-y-1/2 flex flex-col gap-4 z-20 bg-gray-200/20 backdrop-blur-[12px] rounded-[24px] px-2 py-4 shadow-lg border border-white/10">
         <Button
           variant="outline"
           size="icon"
-          className="bg-[#333333] border-0 text-amber-500 rounded-full w-10 h-10">
+          className="bg-[#333333] border-0 text-amber-500 rounded-full w-10 h-10"
+        >
           <Sun className="w-5 h-5" />
         </Button>
         <Button
           variant="outline"
           size="icon"
-          className="bg-[#333333] border-0 text-white rounded-full w-10 h-10">
+          className="bg-[#333333] border-0 text-white rounded-full w-10 h-10"
+        >
           <ShoppingCart className="w-5 h-5" />
         </Button>
         <Button
           variant="outline"
           size="icon"
-          className="bg-[#333333] border-0 text-white rounded-full w-10 h-10">
+          className="bg-[#333333] border-0 text-white rounded-full w-10 h-10"
+        >
           <Heart className="w-5 h-5" />
         </Button>
         <Button
           variant="outline"
           size="icon"
-          className="bg-[#333333] border-0 text-white rounded-full w-10 h-10">
+          className="bg-[#333333] border-0 text-white rounded-full w-10 h-10"
+        >
           <Headphones className="w-5 h-5" />
         </Button>
       </div>
+
+      <ProfileSettingsModal
+        isOpen={isProfileModalOpen}
+        onClose={() => setIsProfileModalOpen(false)}
+        profile={{
+          customer_name: user?.customer_name || "",
+          org_name: user?.org_name || "",
+          email: user?.email || "",
+          phone: user?.phone || "",
+          coverImage: "/5cover1.jpg",
+        }}
+        initialView={initialProfileView}
+      />
     </div>
   );
 }

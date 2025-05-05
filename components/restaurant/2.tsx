@@ -61,7 +61,8 @@ export default function FeaturesSection() {
     <div
       ref={containerRef}
       className="relative w-full h-[1000px] flex flex-col justify-center bg-[#0A0A0A] overflow-hidden"
-      onMouseMove={handleMouseMove}>
+      onMouseMove={handleMouseMove}
+    >
       {/* Background with subtle gradient */}
       <div className="absolute inset-0 bg-gradient-to-b from-black to-[#111] opacity-80"></div>
 
@@ -72,7 +73,8 @@ export default function FeaturesSection() {
           backgroundColor: "#D4AF37", // Gold color
           opacity: hoveredCard !== null ? 0.35 : 0,
           maskImage: maskImage,
-        }}>
+        }}
+      >
         <CanvasRevealEffect
           animationSpeed={3}
           containerClassName="bg-transparent absolute inset-0 pointer-events-none"
@@ -103,8 +105,9 @@ export default function FeaturesSection() {
               key={index}
               className="relative  rounded-xl group"
               onMouseEnter={() => setHoveredCard(index)}
-              onMouseLeave={() => setHoveredCard(null)}>
-              <div className="h-[400px] relative">
+              onMouseLeave={() => setHoveredCard(null)}
+            >
+              <div className="h-[500px] rounded-xl relative">
                 <Image
                   src={feature.image || "/placeholder.svg"}
                   alt={feature.title}
@@ -114,11 +117,16 @@ export default function FeaturesSection() {
                 <div
                   onMouseEnter={() => setHoveredCard(index)}
                   onMouseLeave={() => setHoveredCard(null)}
-                  className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent transition-all duration-500 grayscale group-hover:grayscale-0 group-hover:scale-110 "></div>
+                  className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent transition-all duration-500 grayscale group-hover:grayscale-0 group-hover:scale-110 rounded-xl"
+                ></div>
               </div>
               <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-                <h3 className="text-xl font-medium mb-2">{feature.title}</h3>
-                <p className="text-sm text-gray-200">{feature.description}</p>
+                <h3 className="text-xl font-medium mb-2 transition-all duration-500 group-hover:scale-110">
+                  {feature.title}
+                </h3>
+                <p className="text-sm text-gray-200 transition-all duration-500 group-hover:scale-110">
+                  {feature.description}
+                </p>
               </div>
             </div>
           ))}

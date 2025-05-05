@@ -20,7 +20,7 @@ export function NavBar({ activeSection, setActiveSection }: NavBarProps) {
   ];
 
   return (
-    <nav className="sticky top-[68px] z-10 bg-[#121212]/40 backdrop-blur-xl dark:bg-[#121212] bg-[#F3F3F3] text-[#121212] dark:text-[#F3F3F3]">
+    <nav className="sticky top-[62px] z-10 bg-[#121212]/50 backdrop-blur-xl text-[#121212] dark:text-[#F3F3F3]">
       <div className="container mx-auto">
         <ul className="flex flex-wrap">
           {navItems.map((item) => (
@@ -34,7 +34,8 @@ export function NavBar({ activeSection, setActiveSection }: NavBarProps) {
                     : "hover:text-yellow-500",
                   activeSection === item.id &&
                     "after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-yellow-500"
-                )}>
+                )}
+              >
                 {item.label}
               </button>
             </li>

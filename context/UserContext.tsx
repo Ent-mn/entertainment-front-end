@@ -21,6 +21,7 @@ interface User {
   code_sms: string;
   created_at: string;
   customer_type_id: number;
+  coverImage?: string;
 }
 
 interface UserContextType {
@@ -37,32 +38,28 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const userId = window.localStorage.getItem("user_id");
-      if (userId) {
-        // Restore user from localStorage if an ID is found
-        const storedUser = JSON.parse(
-          window.localStorage.getItem("user") || "{}"
-        );
-        setUser(storedUser);
-        setIsLoggedIn(true);
-      }
+    // Try to restore user data from localStorage on mount
+    const storedUser = localStorage.getItem('userData');
+    if (storedUser) {
+      const userData = JSON.parse(storedUser);
+      setUser(userData);
+      setIsLoggedIn(true);
     }
   }, []);
 
-  const login = (user: User) => {
-    setUser(user);
+  const login = (userData: User) => {
+    setUser(userData);
     setIsLoggedIn(true);
-    // Store the user's ID instead of a token
-    window.localStorage.setItem("user_id", user.id);
+    // Store the complete user data in localStorage
+    localStorage.setItem('userData', JSON.stringify(userData));
   };
 
   const logout = () => {
     signOut();
     setUser(null);
     setIsLoggedIn(false);
-    // Remove user data from localStorage
-    window.localStorage.removeItem("user_id");
+    // Clear user data from localStorage
+    localStorage.removeItem('userData');
   };
 
   return (

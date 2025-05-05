@@ -1,40 +1,69 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
-import { Heart } from "lucide-react";
+import { Heart, Sun, ShoppingCart, Headphones } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useUser } from "@/context/UserContext";
+import { ProfileSettingsModal } from "@/components/modals/ProfileSettingsModal";
+
+interface Venue {
+  id: number;
+  name: string;
+  location: string;
+  rating: number;
+  image: string;
+}
 
 export default function VenueGallery() {
-  // State to track which venues are favorited
-  const [favorites, setFavorites] = useState<Record<number, boolean>>({});
+  const { user } = useUser();
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [favorites, setFavorites] = useState<Venue[]>([]);
+
+  // Load favorites from localStorage on component mount
+  useEffect(() => {
+    const savedFavorites = localStorage.getItem("venue-favorites");
+    if (savedFavorites) {
+      setFavorites(JSON.parse(savedFavorites));
+    }
+  }, []);
 
   // Toggle favorite status for a venue
-  const toggleFavorite = (id: number) => {
-    setFavorites((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
+  const toggleFavorite = (venue: Venue) => {
+    setFavorites((prev) => {
+      const isFavorited = prev.some((fav) => fav.id === venue.id);
+      const newFavorites = isFavorited
+        ? prev.filter((fav) => fav.id !== venue.id)
+        : [...prev, venue];
+
+      // Save to localStorage
+      localStorage.setItem("venue-favorites", JSON.stringify(newFavorites));
+      return newFavorites;
+    });
   };
 
   // Sample venue data
-  const venues = [
+  const venues: Venue[] = [
     {
       id: 1,
       name: "Shangrilla Restaurant",
       location: "Grand Ball Room",
       rating: 4.5,
+      image: "/5cover1.jpg",
     },
     {
       id: 2,
       name: "Shangrilla Restaurant",
       location: "Grand Ball Room",
       rating: 4.5,
+      image: "/5cover1.jpg",
     },
     {
       id: 3,
       name: "Shangrilla Restaurant",
       location: "Grand Ball Room",
       rating: 4.5,
+      image: "/5cover1.jpg",
     },
   ];
 
@@ -74,12 +103,12 @@ export default function VenueGallery() {
             >
               {/* Favorite Button */}
               <button
-                onClick={() => toggleFavorite(venue.id)}
-                className="absolute top-3 right-3 z-10 p-2 rounded-full bg-black/30 backdrop-blur-sm transition-colors"
+                onClick={() => toggleFavorite(venue)}
+                className="absolute top-3 right-3 z-10 p-2 rounded-full bg-black/30 backdrop-blur-sm transition-colors hover:bg-black/50"
               >
                 <Heart
                   className={`w-5 h-5 transition-colors ${
-                    favorites[venue.id]
+                    favorites.some((fav) => fav.id === venue.id)
                       ? "fill-amber-500 text-amber-500"
                       : "text-white"
                   }`}
@@ -89,7 +118,7 @@ export default function VenueGallery() {
               {/* Venue Image */}
               <div className="relative h-64 w-full">
                 <Image
-                  src="/5cover1.jpg"
+                  src={venue.image}
                   alt={venue.name}
                   fill
                   className="object-cover"
@@ -112,7 +141,61 @@ export default function VenueGallery() {
             </div>
           ))}
         </div>
+
+        {/* Fixed Sidebar */}
+        <div className="fixed right-6 top-1/2 -translate-y-1/2 flex flex-col gap-4 z-20 bg-gray-200/20 backdrop-blur-[12px] rounded-[24px] px-2 py-4 shadow-lg border border-white/10">
+          <Button
+            variant="outline"
+            size="icon"
+            className="bg-[#333333] border-0 text-amber-500 rounded-full w-10 h-10"
+          >
+            <Sun className="w-5 h-5" />
+          </Button>
+          <Button
+            variant="outline"
+            size="icon"
+            className="bg-[#333333] border-0 text-white rounded-full w-10 h-10"
+          >
+            <ShoppingCart className="w-5 h-5" />
+          </Button>
+          <div className="relative">
+            <Button
+              variant="outline"
+              size="icon"
+              className="bg-[#333333] border-0 text-white rounded-full w-10 h-10"
+              onClick={() => setIsProfileModalOpen(true)}
+            >
+              <Heart className="w-5 h-5" />
+            </Button>
+            {favorites.length > 0 && (
+              <span className="absolute -top-2 -right-2 bg-amber-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                {favorites.length}
+              </span>
+            )}
+          </div>
+          <Button
+            variant="outline"
+            size="icon"
+            className="bg-[#333333] border-0 text-white rounded-full w-10 h-10"
+          >
+            <Headphones className="w-5 h-5" />
+          </Button>
+        </div>
       </div>
+
+      {/* Profile Modal */}
+      <ProfileSettingsModal
+        isOpen={isProfileModalOpen}
+        onClose={() => setIsProfileModalOpen(false)}
+        profile={{
+          customer_name: user?.customer_name || "",
+          org_name: user?.org_name || "",
+          email: user?.email || "",
+          phone: user?.phone || "",
+          coverImage: "/5cover1.jpg",
+        }}
+        initialView="favorites"
+      />
     </div>
   );
 }
