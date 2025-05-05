@@ -59,8 +59,7 @@ export default function SiteHeader() {
           <div className="md:flex items-center gap-6 hidden">
             <Link
               href="#"
-              className="flex items-center gap-2 text-sm hover:text-purple-600"
-            >
+              className="flex items-center gap-2 text-sm hover:text-purple-600">
               <Headphones className="w-5 h-5" />
               <div className="flex flex-col">
                 <span>24/7</span>
@@ -75,8 +74,7 @@ export default function SiteHeader() {
             </Link>
             <Link
               href="#"
-              className="relative flex gap-3 items-center hover:text-purple-600"
-            >
+              className="relative flex gap-3 items-center hover:text-purple-600">
               <ShoppingCart className="w-6 h-6" />
               <span className="absolute top-1 right-10 flex h-4 w-4 items-center justify-center rounded-full bg-purple-600 text-[10px] text-white">
                 2
@@ -88,8 +86,7 @@ export default function SiteHeader() {
             </Link>
             <Link
               href="#"
-              className="flex items-center gap-2 text-sm hover:text-purple-600"
-            >
+              className="flex items-center gap-2 text-sm hover:text-purple-600">
               <User className="w-5 h-5" />
               <div className="flex flex-col">
                 <span>Login</span>
@@ -114,8 +111,7 @@ export default function SiteHeader() {
           <li>
             <Link
               href="#"
-              className="flex items-center gap-2 hover:text-purple-600"
-            >
+              className="flex items-center gap-2 hover:text-purple-600">
               <User className="w-4 h-4" />
               Үйлчилгээ
             </Link>
@@ -123,8 +119,7 @@ export default function SiteHeader() {
           <li>
             <Link
               href="#"
-              className="flex items-center gap-2 hover:text-purple-600"
-            >
+              className="flex items-center gap-2 hover:text-purple-600">
               <ShoppingCart className="w-4 h-4" />
               Бүтээгдэхүүн
             </Link>
@@ -132,8 +127,7 @@ export default function SiteHeader() {
           <li>
             <Link
               href="#"
-              className="flex items-center gap-2 hover:text-purple-600"
-            >
+              className="flex items-center gap-2 hover:text-purple-600">
               <Calendar className="w-4 h-4" />
               Эвент захиалах
             </Link>
@@ -141,8 +135,7 @@ export default function SiteHeader() {
           <li>
             <Link
               href="#"
-              className="flex items-center gap-2 hover:text-purple-600"
-            >
+              className="flex items-center gap-2 hover:text-purple-600">
               <ShoppingBag className="w-4 h-4" />
               Тасалбар авах
             </Link>
@@ -150,8 +143,7 @@ export default function SiteHeader() {
           <li>
             <Link
               href="#"
-              className="flex items-center gap-2 hover:text-purple-600"
-            >
+              className="flex items-center gap-2 hover:text-purple-600">
               <Store className="w-4 h-4" />
               Урлагийн сургалт, багш захиалах
             </Link>
@@ -159,8 +151,7 @@ export default function SiteHeader() {
           <li>
             <Link
               href="#"
-              className="flex items-center gap-2 hover:text-purple-600"
-            >
+              className="flex items-center gap-2 hover:text-purple-600">
               <UtensilsCrossed className="w-4 h-4" />
               Ресторан захиалах
             </Link>

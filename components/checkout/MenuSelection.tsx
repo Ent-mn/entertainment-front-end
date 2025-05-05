@@ -446,15 +446,15 @@ export default function MenuSelection() {
           </div>
         ))}
 
-        {/* Add new menu button */}
+        {/* Products & Services button */}
         <div className="flex flex-col items-center justify-center text-center text-gray-500 py-4">
           <button
-            onClick={createNewMenu}
+            onClick={() => openModal(0)}
             className="w-10 h-10 rounded-full border border-gray-700 flex items-center justify-center mb-2 hover:bg-gray-800 transition-colors">
             <Plus size={20} />
           </button>
           <button
-            onClick={createNewMenu}
+            onClick={() => openModal(0)}
             className="text-xs hover:text-gray-300 transition-colors">
             <p>Бүтээгдэхүүн, үйлчилгээ</p>
             <p>сонгох</p>

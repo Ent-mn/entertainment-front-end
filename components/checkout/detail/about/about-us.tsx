@@ -1,3 +1,4 @@
+
 import Image from "next/image";
 import {
   ThumbsUp,
@@ -12,6 +13,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
+
 
 export function AboutUs() {
   const [scrollPosition, setScrollPosition] = useState(0);

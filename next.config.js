@@ -13,7 +13,7 @@ const nextConfig = {
     ];
   },
   images: {
-    domains: ["www.usatoday.com"], // zurag oruulahdaa iishee hiisen
+
   },
 };
 

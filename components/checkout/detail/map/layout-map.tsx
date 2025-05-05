@@ -1,25 +1,6 @@
-import {
-  Users,
-  Calendar,
-  Clock,
-  MapPin,
-  MonitorPlay,
-  Table2,
-  Speaker,
-  Eye,
-  Heart,
-  CheckCircle,
-  LayoutGrid,
-  Columns,
-  Grid3X3,
-  Grid2X2,
-} from "lucide-react";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
-import { useState } from "react";
-import { CapacitySearchModal } from "./capacity-search-modal";
-import { LayoutDetailsModal } from "./layout-details-modal";
-import Image from "next/image";
-import { divIcon } from "leaflet";
+
+"use client";
+
 
 export function LayoutMap() {
   const [showCapacityModal, setShowCapacityModal] = useState(false);

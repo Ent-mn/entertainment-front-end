@@ -155,8 +155,14 @@ export default function PriceDetails({
       </div>
 
       {/* Pay button */}
-      <button className="w-full bg-yellow-400 text-black font-medium py-3 rounded-md mt-6 hover:bg-yellow-500 transition-colors">
-        Төлбөр төлөх
+      <button 
+        className="w-full bg-yellow-400 text-black font-medium py-4 rounded-md mt-6 hover:bg-yellow-500 transition-colors text-lg flex items-center justify-center gap-2 shadow-lg"
+        onClick={() => {
+          // Here you would typically redirect to a payment gateway or checkout page
+          alert("Төлбөр төлөх хэсэг рүү шилжиж байна...");
+        }}>
+        <span>Төлбөр төлөх</span>
+        <span className="font-bold">{grandTotal.toLocaleString()} ₮</span>
       </button>
     </div>
   );
