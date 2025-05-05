@@ -36,9 +36,8 @@ const CheckoutPage = () => {
   };
 
   return (
-    <div className="flex flex-col gap-5 justify-center items-center py-28 dark:bg-stone-800 bg-stone-300 min-h-screen">
-      <div className="w-[1510px] rounded-md flex flex-col dark:bg-[#121212] bg-[#F3F3F3] dark:text-white text-[#121212] relative">
-        {/* Chevron icon шар хүрээтэй */}
+    <div className="flex flex-col gap-5 justify-center items-center pb-20 absolute top-0 left-0 w-full h-full bg-[#F3F3F3] dark:bg-[#121212] ">
+      <div className="w-[1510px] rounded-md flex flex-col  dark:bg-[#121212] bg-[#1a1717] dark:text-white text-[#121212] relative">
         <div className="absolute  top-[-65px] flex justify-between gap-4 bg-yellow-400  border-yellow-600 rounded-xl p-2 cursor-pointer shadow-md w-[1510px]">
           <div className="flex justify-between items-center gap-4">
             <button
@@ -48,7 +47,6 @@ const CheckoutPage = () => {
             </button>
             <div>ЗАХИАЛГА </div>
           </div>
-
           <ThemeToggleDemo />
         </div>
 

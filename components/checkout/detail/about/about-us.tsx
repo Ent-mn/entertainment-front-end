@@ -1,3 +1,5 @@
+"use client";
+
 export function AboutUs() {
   return (
     <div className="space-y-6">

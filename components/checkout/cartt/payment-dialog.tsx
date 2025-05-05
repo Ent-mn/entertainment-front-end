@@ -1,10 +1,17 @@
 "use client";
 
-import { CreditCard, CheckCircle2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { useState } from "react";
+import { X, CheckCircle, CreditCard, Loader2 } from "lucide-react";
 import { formatCurrency } from "./cart-data";
-import { PaymentDialogProps } from "./types";
+
+interface PaymentDialogProps {
+  isOpen: boolean;
+  onOpenChange: (open: boolean) => void;
+  isProcessing: boolean;
+  isPaymentComplete: boolean;
+  grandTotal: number;
+  onPayment: () => void;
+}
 
 export default function PaymentDialog({
   isOpen,
@@ -14,148 +21,112 @@ export default function PaymentDialog({
   grandTotal,
   onPayment,
 }: PaymentDialogProps) {
+  if (!isOpen) return null;
+
+  const handleClose = () => {
+    if (!isProcessing) {
+      onOpenChange(false);
+    }
+  };
+
   return (
-    <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-[#121212]">
-        {!isProcessing && !isPaymentComplete ? (
-          <div>
-            <div className="space-y-6">
-              <h2 className="text-xl font-bold text-white">Төлбөр төлөх</h2>
+    <div className="fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center p-4">
+      <div className="bg-[#191919] w-full max-w-md rounded-lg overflow-hidden flex flex-col">
+        {/* Header */}
+        <div className="flex items-center justify-between p-4 border-b border-gray-800">
+          <h2 className="text-white font-medium text-xl">Төлбөр</h2>
+          <button 
+            onClick={handleClose} 
+            className="text-gray-400 hover:text-white"
+            disabled={isProcessing}
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
 
-              <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="border rounded-md p-4 flex flex-col items-center justify-center cursor-pointer bg-[#121212] ">
-                    <div className="w-12 h-12 bg-[#121212] dark:bg-blue-900 rounded-full flex items-center justify-center mb-2">
-                      <CreditCard className="h-6 w-6 text-blue-600 dark:text-blue-400" />
-                    </div>
-                    <span className="text-sm font-medium text-white">
-                      Картаар төлөх
-                    </span>
-                  </div>
-                  <div className="border rounded-md p-4 flex flex-col items-center justify-center cursor-pointer dark:border-gray-700">
-                    <div className="w-12 h-12 bg-[#121212] rounded-full flex items-center justify-center mb-2">
-                      <svg
-                        className="h-6 w-6 text-gray-400"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path
-                          d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                        <path
-                          d="M8 12L11 15L16 10"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    </div>
-                    <span className="text-sm font-medium text-white">
-                      QR кодоор төлөх
-                    </span>
-                  </div>
+        {/* Payment Content */}
+        <div className="p-6">
+          {isPaymentComplete ? (
+            <div className="flex flex-col items-center justify-center py-8">
+              <CheckCircle className="w-16 h-16 text-green-500 mb-4" />
+              <h3 className="text-white text-xl font-medium mb-2">Амжилттай төлөгдлөө</h3>
+              <p className="text-gray-400 text-center mb-6">
+                Таны захиалга амжилттай бүртгэгдлээ. Бид танд удахгүй холбогдох болно.
+              </p>
+              <button
+                className="w-full bg-yellow-500 text-black py-3 rounded-lg font-medium hover:bg-yellow-600 transition-colors"
+                onClick={handleClose}
+              >
+                Үргэлжлүүлэх
+              </button>
+            </div>
+          ) : (
+            <>
+              <div className="mb-6">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-gray-400">Нийт төлөх дүн:</span>
+                  <span className="text-white font-bold text-2xl">{formatCurrency(grandTotal)}</span>
                 </div>
+                <p className="text-gray-400 text-sm">
+                  Төлбөр хийхдээ таны картын мэдээллийг аюулгүй байдлын шалгалтад оруулна.
+                </p>
+              </div>
 
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-white">
-                    Картын дугаар
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full px-3 py-2 border rounded-md bg-[#121212] dark:border-gray-700 text-white"
-                    placeholder="1234 5678 9012 3456"
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-white">
-                      Хүчинтэй хугацаа
-                    </label>
+              <div className="space-y-4 mb-6">
+                <div className="bg-[#232323] p-4 rounded-lg">
+                  <div className="flex items-center gap-3 mb-3">
+                    <CreditCard className="w-5 h-5 text-gray-400" />
+                    <span className="text-white font-medium">Картын мэдээлэл</span>
+                  </div>
+                  <div className="space-y-3">
                     <input
                       type="text"
-                      className="w-full px-3 py-2 border rounded-md bg-[#121212] dark:border-gray-700 text-white"
-                      placeholder="MM/YY"
+                      placeholder="Картын дугаар"
+                      className="w-full bg-[#191919] text-white px-3 py-2 rounded border border-gray-700 focus:outline-none focus:border-yellow-500"
+                      disabled={isProcessing}
                     />
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-white">
-                      CVV
-                    </label>
+                    <div className="grid grid-cols-2 gap-3">
+                      <input
+                        type="text"
+                        placeholder="Сар/Он (MM/YY)"
+                        className="w-full bg-[#191919] text-white px-3 py-2 rounded border border-gray-700 focus:outline-none focus:border-yellow-500"
+                        disabled={isProcessing}
+                      />
+                      <input
+                        type="text"
+                        placeholder="CVV"
+                        className="w-full bg-[#191919] text-white px-3 py-2 rounded border border-gray-700 focus:outline-none focus:border-yellow-500"
+                        disabled={isProcessing}
+                      />
+                    </div>
                     <input
                       type="text"
-                      className="w-full px-3 py-2 border rounded-md bg-[#121212] dark:border-gray-700 text-white"
-                      placeholder="123"
+                      placeholder="Карт эзэмшигчийн нэр"
+                      className="w-full bg-[#191919] text-white px-3 py-2 rounded border border-gray-700 focus:outline-none focus:border-yellow-500"
+                      disabled={isProcessing}
                     />
                   </div>
                 </div>
-
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-white">
-                    Картын эзэмшигчийн нэр
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full px-3 py-2 border rounded-md bg-[#121212] dark:border-gray-700 text-white"
-                    placeholder="BOLDBAATAR DORJ"
-                  />
-                </div>
               </div>
 
-              <div className="bg-[#121212] border-gray-700 border-2 p-4 rounded-md">
-                <div className="flex justify-between mb-2">
-                  <span className="text-white">Нийт дүн:</span>
-                  <span className="font-bold text-white">
-                    {formatCurrency(grandTotal)}
-                  </span>
-                </div>
-                <div className="text-xs text-gray-400">
-                  "Төлбөр төлөх" товчийг дарснаар та манай үйлчилгээний нөхцөл
-                  болон хувийн мэдээллийн бодлогыг хүлээн зөвшөөрч байна.
-                </div>
-              </div>
-
-              <div className="flex justify-end gap-2">
-                <Button
-                  variant="outline"
-                  onClick={() => onOpenChange(false)}
-                  className="dark:border-gray-700 text-white">
-                  Цуцлах
-                </Button>
-                <Button
-                  className="bg-amber-500 hover:bg-amber-600 text-white"
-                  onClick={onPayment}>
-                  Төлбөр төлөх
-                </Button>
-              </div>
-            </div>
-          </div>
-        ) : isProcessing ? (
-          <div className="flex flex-col items-center justify-center py-8">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-500 mb-4"></div>
-            <p className="text-lg font-medium text-white">
-              Төлбөр гүйцэтгэж байна...
-            </p>
-            <p className="text-sm text-gray-400">
-              Энэ үйлдэл хэдэн секунд үргэлжилнэ
-            </p>
-          </div>
-        ) : (
-          <div className="flex flex-col items-center justify-center py-8">
-            <div className="bg-green-100 dark:bg-green-900 p-3 rounded-full mb-4">
-              <CheckCircle2 className="h-12 w-12 text-green-600 dark:text-green-400" />
-            </div>
-            <p className="text-lg font-medium text-white">Төлбөр амжилттай!</p>
-            <p className="text-sm text-gray-400">Таны захиалга баталгаажлаа</p>
-          </div>
-        )}
-      </DialogContent>
-    </Dialog>
+              <button
+                className="w-full bg-yellow-500 text-black py-3 rounded-lg font-medium hover:bg-yellow-600 transition-colors flex items-center justify-center"
+                onClick={onPayment}
+                disabled={isProcessing}
+              >
+                {isProcessing ? (
+                  <>
+                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                    <span>Төлбөр хийж байна...</span>
+                  </>
+                ) : (
+                  "Төлбөр хийх"
+                )}
+              </button>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }
