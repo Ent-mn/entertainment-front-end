@@ -117,15 +117,24 @@ const RestLogin = () => {
         {showMenu && (
           <div className="absolute top-14 right-0 w-48 bg-white border border-gray-200 rounded-xl shadow-lg z-50">
             <div className="px-4 py-3 text-sm text-gray-700 border-b">
-              {Object.entries(session.user || {}).map(([key, value]) => (
-                <div
-                  key={key}
-                  className="px-4 py-2 text-sm text-gray-700 border-b"
-                >
-                  <span className="font-medium capitalize">{key}:</span>{" "}
-                  {String(value)}
-                </div>
-              ))}
+              {Object.entries(session.user || {}).map(([key, value]) => {
+                // Skip null or undefined values to keep it clean
+                if (value === null || value === undefined) return null;
+
+                return (
+                  <div
+                    key={key}
+                    className="px-4 py-2 text-sm text-gray-700 border-b break-words"
+                  >
+                    <span className="font-medium capitalize">
+                      {key.replace(/_/g, " ")}:
+                    </span>{" "}
+                    {typeof value === "string" || typeof value === "number"
+                      ? value
+                      : JSON.stringify(value)}
+                  </div>
+                );
+              })}
             </div>
             <button
               onClick={() => {
