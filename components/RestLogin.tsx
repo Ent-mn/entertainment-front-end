@@ -21,6 +21,11 @@ const RestLogin = () => {
   const router = useRouter();
   const { data: session, status } = useSession();
 
+  console.log(session, status);
+  useEffect(() => {
+    console.log("SESSION DATA", session);
+  }, [session]);
+
   const text = {
     mn: {
       mn: "mn",
@@ -112,7 +117,15 @@ const RestLogin = () => {
         {showMenu && (
           <div className="absolute top-14 right-0 w-48 bg-white border border-gray-200 rounded-xl shadow-lg z-50">
             <div className="px-4 py-3 text-sm text-gray-700 border-b">
-              {session.user?.email}
+              {Object.entries(session.user || {}).map(([key, value]) => (
+                <div
+                  key={key}
+                  className="px-4 py-2 text-sm text-gray-700 border-b"
+                >
+                  <span className="font-medium capitalize">{key}:</span>{" "}
+                  {String(value)}
+                </div>
+              ))}
             </div>
             <button
               onClick={() => {
