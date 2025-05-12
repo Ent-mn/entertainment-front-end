@@ -1,6 +1,24 @@
-
 "use client";
 
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Calendar,
+  CheckCircle,
+  Clock,
+  Eye,
+  Grid2X2,
+  Grid3X3,
+  Heart,
+  MapPin,
+  MonitorPlay,
+  Speaker,
+  Table2,
+  Users,
+} from "lucide-react";
+import Image from "next/image";
+import { useState } from "react";
+import { CapacitySearchModal } from "./capacity-search-modal";
+import { LayoutDetailsModal } from "./layout-details-modal";
 
 export function LayoutMap() {
   const [showCapacityModal, setShowCapacityModal] = useState(false);
