@@ -80,31 +80,51 @@ const RestLogin = () => {
   if (status === "loading") return null;
 
   if (session) {
-    return (
-      <div className="flex items-center gap-3 relative">
-        <img
-          src={session.user?.image || "/default-profile.png"}
-          alt="Profile"
-          className="w-10 h-10 rounded-full border"
-        />
-        <div className="relative group">
-          <button className="text-sm font-medium text-gray-800">
-            {session.user?.name || "User"}
-          </button>
+    const [showMenu, setShowMenu] = useState(false);
 
-          {/* Dropdown menu */}
-          <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-md shadow-md hidden group-hover:block z-10">
-            <div className="px-4 py-2 text-sm text-gray-700 border-b">
+    useEffect(() => {
+      const handleClickOutside = (e: MouseEvent) => {
+        const target = e.target as HTMLElement;
+        if (!target.closest(".profile-menu")) {
+          setShowMenu(false);
+        }
+      };
+      document.addEventListener("click", handleClickOutside);
+      return () => document.removeEventListener("click", handleClickOutside);
+    }, []);
+
+    return (
+      <div className="relative profile-menu">
+        <button
+          onClick={() => setShowMenu((prev) => !prev)}
+          className="flex items-center gap-2 rounded-full p-1 border border-gray-300 hover:shadow-sm"
+        >
+          <img
+            src={session.user?.image || "/default-profile.png"}
+            alt="Profile"
+            className="w-10 h-10 rounded-full object-cover"
+          />
+          <span className="text-sm font-medium text-gray-800">
+            {session.user?.name || "User"}
+          </span>
+        </button>
+
+        {showMenu && (
+          <div className="absolute top-14 right-0 w-48 bg-white border border-gray-200 rounded-xl shadow-lg z-50">
+            <div className="px-4 py-3 text-sm text-gray-700 border-b">
               {session.user?.email}
             </div>
             <button
-              onClick={() => signOut()}
+              onClick={() => {
+                signOut();
+                setShowMenu(false);
+              }}
               className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
             >
               Logout
             </button>
           </div>
-        </div>
+        )}
       </div>
     );
   }
