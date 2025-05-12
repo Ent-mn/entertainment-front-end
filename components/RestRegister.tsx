@@ -31,14 +31,14 @@ const RestRegister = () => {
   const [eye, setEye] = useState(false);
   const [isopen, setIsopen] = useState(false);
   const [login, setLogin] = useState(false);
-
   const [langToggle, setLangToggle] = useState(true);
+  const [registerMethod, setRegisterMethod] = useState<"email" | "phone">(
+    "email"
+  );
 
   const router = useRouter();
 
-  const handleChange = () => {
-    setError("");
-  };
+  const handleChange = () => setError("");
 
   const [id, setId] = useState("");
   const emailCHeker = async () => {
@@ -52,8 +52,9 @@ const RestRegister = () => {
       console.log(error);
     }
   };
+
   const onSubmit = () => {
-    const contactInfo = email || phone;
+    const contactInfo = registerMethod === "email" ? email : phone;
 
     if (!contactInfo) {
       setError("И-мэйл эсвэл утасны дугаараа оруулна уу.");
@@ -65,9 +66,9 @@ const RestRegister = () => {
         try {
           const { data }: any = await axios.post("/api/api_open", {
             sn: "customer_add",
-            phone: phone,
-            email: email,
-            password: password,
+            phone: registerMethod === "phone" ? phone : "",
+            email: registerMethod === "email" ? email : "",
+            password,
           });
           if (data.status === "success") {
             setError("");
@@ -127,11 +128,10 @@ const RestRegister = () => {
       {login ? (
         <RestLogin />
       ) : (
-        <div className="flex w-[1059px] rounded-3xl h-[696px]  bg-[#f3f3f3]">
-          {/* Left Panel */}
-          <div className="hidden md:flex md:w-1/2 pl-12 py-[45px]  flex-col items-center justify-between p-12 text-white">
+        <div className="flex w-[1059px] rounded-3xl h-[696px] bg-[#f3f3f3]">
+          <div className="hidden md:flex md:w-1/2 pl-12 py-[45px] flex-col items-center justify-between p-12 text-white">
             <div className="w-full max-w-md">
-              <div className="text-start ">
+              <div className="text-start">
                 <div className="flex justify-between">
                   <img
                     className="w-[160px] h-[25px]"
@@ -139,13 +139,11 @@ const RestRegister = () => {
                     alt=""
                   />
                   <div
-                    onClick={() => {
-                      setLangToggle((prev) => !prev);
-                    }}
+                    onClick={() => setLangToggle((prev) => !prev)}
                     className="flex items-center cursor-pointer justify-center h-7 gap-1"
                   >
                     <img src="/login/Vector.png" alt="" />
-                    <div className="text-[#5C5C5C] text-2xl w-9 ">
+                    <div className="text-[#5C5C5C] text-2xl w-9">
                       {langToggle ? text.mn.mn : text.en.en}
                     </div>
                   </div>
@@ -160,156 +158,148 @@ const RestRegister = () => {
               <div className="text-[#9A9A9A] mt-3 font-normal text-sm flex gap-2">
                 {langToggle ? text.mn.description1 : text.en.description1}
                 <div
-                  onClick={() => {
-                    setLogin(true);
-                  }}
+                  onClick={() => setLogin(true)}
                   className="underline cursor-pointer"
                 >
                   {langToggle ? text.mn.description2 : text.en.description2}
                 </div>
               </div>
 
-              <div className=" flex mt-7 flex-col gap-4">
-                <div className="flex w-full justify-between ">
-                  <div onChange={handleChange}>
-                    <Input
-                      id="ovog"
-                      type="text"
-                      placeholder={
-                        langToggle ? text.mn.inputText1 : text.en.inputText1
-                      }
-                      className="h-10 rounded-md w-52 text-black  border-[#e0e0e0] bg-[#ECECEC] px-4 text-lg placeholder:text-[#ababab]"
-                    />
-                  </div>
-                  <div onChange={handleChange}>
-                    <Input
-                      id="ner"
-                      type="text"
-                      placeholder="Нэр"
-                      className="h-10 rounded-md w-52 text-black  border-[#e0e0e0] bg-[#ECECEC] px-4 text-lg placeholder:text-[#ababab]"
-                    />
-                  </div>
-                </div>
-                <div className="flex gap-4">
-                  {!phone && (
-                    <Input
-                      id="emailRegister"
-                      type="email"
-                      placeholder={langToggle ? "И-мэйл" : "Email"}
-                      value={email}
-                      onChange={(e) => {
-                        const val = e.target.value;
-                        setEmail(val);
-                        if (val !== "") setPhone("");
-                      }}
-                      className="h-10 w-full rounded-md text-black border-[#e0e0e0] bg-[#ECECEC] px-4 text-lg placeholder:text-[#ababab]"
-                    />
-                  )}
-
-                  {!email && (
-                    <Input
-                      id="phoneRegister"
-                      type="tel"
-                      placeholder={
-                        langToggle ? "Утасны дугаар" : "Phone number"
-                      }
-                      value={phone}
-                      onChange={(e) => {
-                        const val = e.target.value;
-                        // allow only numbers
-                        if (/^\d*$/.test(val)) {
-                          setPhone(val);
-                          if (val !== "") setEmail("");
-                        }
-                      }}
-                      className="h-10 w-full rounded-md text-black border-[#e0e0e0] bg-[#ECECEC] px-4 text-lg placeholder:text-[#ababab]"
-                    />
-                  )}
-                </div>
-
-                <div onChange={handleChange}>
+              <div className="flex mt-7 flex-col gap-4">
+                <div className="flex w-full justify-between">
                   <Input
-                    id="passwordRegister"
-                    type="password"
+                    id="ovog"
+                    type="text"
                     placeholder={
-                      langToggle ? text.mn.inputText4 : text.en.inputText4
+                      langToggle ? text.mn.inputText1 : text.en.inputText1
                     }
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="h-10 rounded-md text-black border-[#e0e0e0] bg-[#ECECEC] px-4 text-lg placeholder:text-[#ababab]"
+                    className="h-10 rounded-md w-52 text-black border-[#e0e0e0] bg-[#ECECEC] px-4 text-lg placeholder:text-[#ababab]"
+                  />
+                  <Input
+                    id="ner"
+                    type="text"
+                    placeholder={
+                      langToggle ? text.mn.inputText2 : text.en.inputText2
+                    }
+                    className="h-10 rounded-md w-52 text-black border-[#e0e0e0] bg-[#ECECEC] px-4 text-lg placeholder:text-[#ababab]"
                   />
                 </div>
 
-                <div onChange={handleChange}>
-                  <div className="relative">
-                    {eye ? (
-                      <Input
-                        id="repassword1"
-                        type="text"
-                        placeholder={
-                          langToggle ? text.mn.inputText5 : text.en.inputText5
-                        }
-                        value={repassword}
-                        onChange={(e) => setRepassword(e.target.value)}
-                        className="h-10 rounded-md text-black border-[#e0e0e0] bg-[#ECECEC] px-4 text-lg placeholder:text-[#ababab]"
-                      />
-                    ) : (
-                      <Input
-                        id="repassword2"
-                        type="password"
-                        placeholder={
-                          langToggle ? text.mn.inputText5 : text.en.inputText5
-                        }
-                        value={repassword}
-                        onChange={(e) => setRepassword(e.target.value)}
-                        className="h-10 rounded-md text-black border-[#e0e0e0] bg-[#ECECEC] px-4 text-lg placeholder:text-[#ababab]"
-                      />
-                    )}
-                    <button
-                      onMouseDown={() => {
-                        setEye(true);
-                      }}
-                      onMouseUp={() => {
-                        setEye(false);
-                      }}
-                      onMouseLeave={() => {
-                        setEye(false);
-                      }}
-                      type="button"
-                      className="absolute cursor-pointer right-3 top-1/2 transform -translate-y-1/2 text-[#828282]"
-                    >
-                      <Eye size={20} />
-                    </button>
-                  </div>
+                {/* Email/Phone Toggle */}
+                <div className="flex gap-4">
+                  <button
+                    type="button"
+                    onClick={() => setRegisterMethod("email")}
+                    className={`w-1/2 py-2 rounded-xl border text-sm ${
+                      registerMethod === "email"
+                        ? "bg-[#F6A253] text-white"
+                        : "bg-white text-black"
+                    }`}
+                  >
+                    Email-р бүртгүүлэх
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setRegisterMethod("phone")}
+                    className={`w-1/2 py-2 rounded-xl border text-sm ${
+                      registerMethod === "phone"
+                        ? "bg-[#F6A253] text-white"
+                        : "bg-white text-black"
+                    }`}
+                  >
+                    Утсаар бүртгүүлэх
+                  </button>
                 </div>
-                <div>
-                  <p className="text-sm text-red-500">{error}</p>
-                  <div className="flex items-center  space-x-2">
-                    <Checkbox
-                      id="termsRegister"
-                      checked={agreed}
-                      onCheckedChange={(checked) => setAgreed(checked === true)}
-                      className="h-5 w-5 border-[#828282] cursor-pointer data-[state=checked]:bg-[#fa742a] data-[state=checked]:border-[#fa742a]"
-                    />
-                    <Dialog>
-                      <DialogTrigger asChild>
-                        <Button variant="outline">
-                          <div className="text-[#676767] cursor-pointer text-xs">
-                            {langToggle ? text.mn.text1 : text.en.text1}
-                          </div>
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent className="p-0 border-none w-auto sm:max-w-auto">
-                        <TermsPage />
 
-                        <DialogHeader>
-                          <DialogTitle></DialogTitle>
-                          <DialogDescription></DialogDescription>
-                        </DialogHeader>
-                      </DialogContent>
-                    </Dialog>
-                  </div>
+                {registerMethod === "email" && (
+                  <Input
+                    id="emailRegister"
+                    type="email"
+                    placeholder={langToggle ? "И-мэйл" : "Email"}
+                    value={email}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      setPhone("");
+                      handleChange();
+                    }}
+                    className="h-10 w-full rounded-md text-black border-[#e0e0e0] bg-[#ECECEC] px-4 text-lg placeholder:text-[#ababab]"
+                  />
+                )}
+
+                {registerMethod === "phone" && (
+                  <Input
+                    id="phoneRegister"
+                    type="tel"
+                    placeholder={langToggle ? "Утасны дугаар" : "Phone number"}
+                    value={phone}
+                    onChange={(e) => {
+                      if (/^\d*$/.test(e.target.value)) {
+                        setPhone(e.target.value);
+                        setEmail("");
+                        handleChange();
+                      }
+                    }}
+                    className="h-10 w-full rounded-md text-black border-[#e0e0e0] bg-[#ECECEC] px-4 text-lg placeholder:text-[#ababab]"
+                  />
+                )}
+
+                <Input
+                  id="passwordRegister"
+                  type="password"
+                  placeholder={
+                    langToggle ? text.mn.inputText4 : text.en.inputText4
+                  }
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="h-10 rounded-md text-black border-[#e0e0e0] bg-[#ECECEC] px-4 text-lg placeholder:text-[#ababab]"
+                />
+
+                <div className="relative">
+                  <Input
+                    id="repassword"
+                    type={eye ? "text" : "password"}
+                    placeholder={
+                      langToggle ? text.mn.inputText5 : text.en.inputText5
+                    }
+                    value={repassword}
+                    onChange={(e) => setRepassword(e.target.value)}
+                    className="h-10 rounded-md text-black border-[#e0e0e0] bg-[#ECECEC] px-4 text-lg placeholder:text-[#ababab]"
+                  />
+                  <button
+                    onMouseDown={() => setEye(true)}
+                    onMouseUp={() => setEye(false)}
+                    onMouseLeave={() => setEye(false)}
+                    type="button"
+                    className="absolute cursor-pointer right-3 top-1/2 transform -translate-y-1/2 text-[#828282]"
+                  >
+                    <Eye size={20} />
+                  </button>
                 </div>
+
+                <p className="text-sm text-red-500">{error}</p>
+
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="termsRegister"
+                    checked={agreed}
+                    onCheckedChange={(checked) => setAgreed(checked === true)}
+                    className="h-5 w-5 border-[#828282] cursor-pointer data-[state=checked]:bg-[#fa742a] data-[state=checked]:border-[#fa742a]"
+                  />
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button variant="outline">
+                        <div className="text-[#676767] cursor-pointer text-xs">
+                          {langToggle ? text.mn.text1 : text.en.text1}
+                        </div>
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="p-0 border-none w-auto sm:max-w-auto">
+                      <TermsPage />
+                      <DialogHeader />
+                    </DialogContent>
+                  </Dialog>
+                </div>
+
                 <div className="flex flex-col mt-3 items-center">
                   {agreed ? (
                     <div className="w-72 h-10 cursor-pointer rounded-xl text-white text-base font-normal bg-gradient-to-r from-[#EAC947] to-[#F6A253] hover:opacity-90">
@@ -324,15 +314,13 @@ const RestRegister = () => {
                   ) : (
                     <Button
                       disabled
-                      onClick={() => {
-                        onSubmit();
-                      }}
-                      className="w-72  h-10 cursor-pointer rounded-xl text-white text-base font-normal bg-gradient-to-r from-[#EAC947] to-[#F6A253] hover:opacity-90"
+                      className="w-72 h-10 rounded-xl text-white text-base font-normal bg-gradient-to-r from-[#EAC947] to-[#F6A253] hover:opacity-90"
                     >
                       {langToggle ? text.mn.button : text.en.button}
                     </Button>
                   )}
                 </div>
+
                 <div className="w-[433.5px] flex flex-col items-center">
                   <div className="flex w-72 items-center flex-col">
                     <div className="flex justify-between w-64 items-center">
@@ -342,7 +330,7 @@ const RestRegister = () => {
                         alt=""
                       />
                       <div className="text-[#676767] text-xs">
-                        {langToggle ? text.mn.text2 : text.mn.text2}
+                        {langToggle ? text.mn.text2 : text.en.text2}
                       </div>
                       <img
                         className="h-[1px] w-[95px]"
@@ -358,6 +346,7 @@ const RestRegister = () => {
                         }
                         className="flex items-center justify-center h-9 px-1 border border-[#e0e0e0] rounded-xl bg-white"
                       >
+                        {/* Facebook SVG */}
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width="25"
@@ -379,6 +368,7 @@ const RestRegister = () => {
                         }
                         className="flex items-center justify-center h-9 gap-1 px-1 border border-[#e0e0e0] rounded-xl bg-white"
                       >
+                        {/* Google SVG */}
                         <svg
                           width="18"
                           height="18"
@@ -414,7 +404,7 @@ const RestRegister = () => {
           </div>
 
           {/* Right Panel */}
-          <div className="w-full md:w-1/2 flex flex-col  items-center justify-center">
+          <div className="w-full md:w-1/2 flex flex-col items-center justify-center">
             <img
               className="h-full rounded-r-3xl"
               src="/login/image.png"
@@ -426,4 +416,5 @@ const RestRegister = () => {
     </div>
   );
 };
+
 export default RestRegister;
