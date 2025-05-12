@@ -23,6 +23,7 @@ import VerificationCodeModal from "./Verification";
 
 const RestRegister = () => {
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [repassword, setRepassword] = useState("");
   const [agreed, setAgreed] = useState(false);
@@ -52,16 +53,23 @@ const RestRegister = () => {
     }
   };
   const onSubmit = () => {
+    const contactInfo = email || phone;
+
+    if (!contactInfo) {
+      setError("И-мэйл эсвэл утасны дугаараа оруулна уу.");
+      return;
+    }
+
     if (repassword === password) {
       const fetchData = async () => {
         try {
           const { data }: any = await axios.post("/api/api_open", {
             sn: "customer_add",
-            phone: email,
+            phone: phone,
+            email: email,
             password: password,
-            email: `${email}`,
           });
-          if (data.status == "success") {
+          if (data.status === "success") {
             setError("");
             const user = data.result;
             const token = data.token;
@@ -69,14 +77,12 @@ const RestRegister = () => {
             emailCHeker();
           } else {
             setError(`${data.message}`);
-            console.log(data);
             setIsopen(false);
           }
         } catch (error) {
           console.log(error);
         }
       };
-
       fetchData();
     } else {
       setError("нууц үг таарахгүй байна ");
@@ -184,17 +190,41 @@ const RestRegister = () => {
                     />
                   </div>
                 </div>
-                <div onChange={handleChange}>
-                  <Input
-                    id="emailRegister"
-                    type="text"
-                    placeholder={
-                      langToggle ? text.mn.inputText3 : text.en.inputText3
-                    }
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="h-10 rounded-md text-black  border-[#e0e0e0] bg-[#ECECEC] px-4 text-lg placeholder:text-[#ababab]"
-                  />
+                <div className="flex gap-4">
+                  {!phone && (
+                    <Input
+                      id="emailRegister"
+                      type="email"
+                      placeholder={langToggle ? "И-мэйл" : "Email"}
+                      value={email}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setEmail(val);
+                        if (val !== "") setPhone("");
+                      }}
+                      className="h-10 w-full rounded-md text-black border-[#e0e0e0] bg-[#ECECEC] px-4 text-lg placeholder:text-[#ababab]"
+                    />
+                  )}
+
+                  {!email && (
+                    <Input
+                      id="phoneRegister"
+                      type="tel"
+                      placeholder={
+                        langToggle ? "Утасны дугаар" : "Phone number"
+                      }
+                      value={phone}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        // allow only numbers
+                        if (/^\d*$/.test(val)) {
+                          setPhone(val);
+                          if (val !== "") setEmail("");
+                        }
+                      }}
+                      className="h-10 w-full rounded-md text-black border-[#e0e0e0] bg-[#ECECEC] px-4 text-lg placeholder:text-[#ababab]"
+                    />
+                  )}
                 </div>
 
                 <div onChange={handleChange}>
