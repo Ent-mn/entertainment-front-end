@@ -5,11 +5,10 @@ import { Input } from "./ui/input";
 import { useEffect, useState, useRef } from "react";
 import { Checkbox } from "./ui/checkbox";
 import { Button } from "./ui/button";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import { useRouter } from "next/navigation";
 import RestLogin from "./RestLogin";
 import { signIn } from "next-auth/react";
-
 import {
   Dialog,
   DialogContent,
@@ -21,8 +20,46 @@ import {
 import TermsPage from "./TermsPage";
 import VerificationCodeModal from "./Verification";
 
-// Disabled input for name/contact
-const DisabledInput = ({ value }: { value: string }) => (
+// Type definitions for translation text
+interface TranslationText {
+  mn: {
+    mn: string;
+    head: string;
+    headTseg: string;
+    description1: string;
+    description2: string;
+    inputText1: string;
+    inputText2: string;
+    inputText3: string;
+    inputText4: string;
+    inputText5: string;
+    text1: string;
+    button: string;
+    text2: string;
+  };
+  en: {
+    en: string;
+    head: string;
+    headTseg: string;
+    description1: string;
+    description2: string;
+    inputText1: string;
+    inputText2: string;
+    inputText3: string;
+    inputText4: string;
+    inputText5: string;
+    text1: string;
+    button: string;
+    text2: string;
+  };
+}
+
+// DisabledInput component
+interface DisabledInputProps {
+  value: string;
+}
+
+const DisabledInput: React.FC<DisabledInputProps> = ({ value }) => (
   <input
     type="text"
     value={value}
@@ -31,25 +68,29 @@ const DisabledInput = ({ value }: { value: string }) => (
   />
 );
 
-// OTP Input
-const OtpInput = ({
-  value,
-  onChange,
-}: {
+// OtpInput component
+interface OtpInputProps {
   value: string;
   onChange: (v: string) => void;
-}) => {
-  const inputs = useRef<(HTMLInputElement | null)[]>([]);
+}
+
+const OtpInput: React.FC<OtpInputProps> = ({ value, onChange }) => {
+  const inputs = useRef<(HTMLInputElement | null)[]>(Array(6).fill(null));
+
   useEffect(() => {
-    if (inputs.current[0]) inputs.current[0].focus();
+    const firstInput = inputs.current[0];
+    if (firstInput) {
+      firstInput.focus();
+    }
   }, []);
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     idx: number
   ) => {
-    let val = e.target.value.replace(/[^0-9]/g, "");
+    const val = e.target.value.replace(/[^0-9]/g, "");
     if (!val) return;
-    let arr = value.split("");
+    const arr = value.split("");
     arr[idx] = val;
     const newValue = arr.join("").slice(0, 6);
     onChange(newValue);
@@ -57,17 +98,19 @@ const OtpInput = ({
       inputs.current[idx + 1]?.focus();
     }
   };
+
   const handleKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
     idx: number
   ) => {
     if (e.key === "Backspace" && !value[idx] && idx > 0) {
-      let arr = value.split("");
+      const arr = value.split("");
       arr[idx - 1] = "";
       onChange(arr.join("").slice(0, 6));
       inputs.current[idx - 1]?.focus();
     }
   };
+
   return (
     <div className="flex gap-2 py-2">
       {[...Array(6)].map((_, i) => (
@@ -75,7 +118,9 @@ const OtpInput = ({
           key={i}
           type="text"
           maxLength={1}
-          ref={(el) => (inputs.current[i] = el)}
+          ref={(el) => {
+            inputs.current[i] = el;
+          }}
           value={value[i] || ""}
           onChange={(e) => handleChange(e, i)}
           onKeyDown={(e) => handleKeyDown(e, i)}
@@ -86,8 +131,12 @@ const OtpInput = ({
   );
 };
 
-// Social login buttons
-const SocialLogin = ({ signIn }: { signIn: any }) => (
+// SocialLogin component
+interface SocialLoginProps {
+  signIn: typeof signIn;
+}
+
+const SocialLogin: React.FC<SocialLoginProps> = ({ signIn }) => (
   <div className="w-[433.5px] flex flex-col items-center">
     <div className="flex w-72 items-center flex-col">
       <div className="flex justify-between w-68 items-center">
@@ -151,198 +200,26 @@ const SocialLogin = ({ signIn }: { signIn: any }) => (
   </div>
 );
 
-// Step 2
-const Step2 = ({
-  lastName,
-  firstName,
-  contactInfo,
-  confirmationCode,
-  setConfirmationCode,
-  error,
-  setStep,
-  isEmail,
-  timer,
-  onResend,
-  langToggle,
-  text,
-  signIn,
-}: any) => (
-  <div className="flex w-[1059px] rounded-3xl h-[696px]  bg-[#f3f3f3]">
-    <div className="hidden md:flex md:w-1/2 pl-12 py-[45px]  flex-col items-center justify-center p-12 text-white">
-      <div className="w-full max-w-md">
-        <div className="text-start ">
-          <div className="flex justify-between">
-            <img
-              className="w-[160px] h-[25px]"
-              src="/login/login-logo.png"
-              alt=""
-            />
-            <div
-              onClick={() => {
-                setLangToggle((prev: boolean) => !prev);
-              }}
-              className="flex items-center cursor-pointer justify-center h-7 gap-1"
-            >
-              <img src="/login/Vector.png" alt="" />
-              <div className="text-[#5C5C5C] text-2xl w-9 ">
-                {langToggle ? text.mn.mn : text.en.en}
-              </div>
-            </div>
-          </div>
-          <h1 className="text-2xl mt-[50px] font-medium text-[#161616]">
-            {langToggle ? text.mn.head : text.en.head}
-            <span className="text-[#F5BE32] font-medium">
-              {langToggle ? text.mn.headTseg : text.en.headTseg}
-            </span>
-          </h1>
-        </div>
-        <div className="text-[#9A9A9A] py-4 font-normal text-sm flex gap-2">
-          {langToggle ? text.mn.description1 : text.en.description1}
-          <div
-            onClick={() => {
-              setStep(0); // or setLogin(true) if you want to go to login
-            }}
-            className="underline cursor-pointer"
-          >
-            {langToggle ? text.mn.description2 : text.en.description2}
-          </div>
-        </div>
-        <div className="mb-4">
-          <div className="flex gap-4">
-            <DisabledInput value={lastName} />
-            <DisabledInput value={firstName} />
-          </div>
-          <DisabledInput value={contactInfo} />
-        </div>
-        <div className="text-lg py-1 text-black font-semibold">
-          Confirmation.
-        </div>
-        <div className="text-sm py-1 text-[#9A9A9A]">
-          {isEmail(contactInfo)
-            ? "Enter the code we sent to your e-mail."
-            : "Enter the code we sent to your phone."}
-        </div>
-        <OtpInput value={confirmationCode} onChange={setConfirmationCode} />
-        <div className="text-xs text-[#9A9A9A] mb-4">
-          {timer > 0 ? (
-            <>Resend code 0:{timer.toString().padStart(2, "0")}</>
-          ) : (
-            <button onClick={onResend} className="text-blue-500 underline">
-              Resend code
-            </button>
-          )}
-        </div>
-        <div className="flex flex-col mt-3 items-center">
-          <Button
-            onClick={() => {
-              if (confirmationCode.length === 6) {
-                setStep(3);
-              }
-            }}
-            className="w-72  h-10 cursor-pointer items-center rounded-xl text-white text-base font-normal bg-gradient-to-r from-[#EAC947] to-[#F6A253] hover:opacity-90"
-          >
-            {langToggle ? "Үргэлжлүүлэх" : "Continue"}
-          </Button>
-        </div>
-        <p className="text-sm text-red-500 mt-2">{error}</p>
-        <SocialLogin signIn={signIn} />
-      </div>
-    </div>
-    <div className="w-full md:w-1/2 flex flex-col  items-center justify-center">
-      <img className="h-full rounded-r-3xl" src="/login/image.png" alt="" />
-    </div>
-  </div>
-);
+// Step1 component
+interface Step1Props {
+  lastName: string;
+  setLastName: (lastName: string) => void;
+  firstName: string;
+  setFirstName: (firstName: string) => void;
+  contactInfo: string;
+  setContactInfo: (contactInfo: string) => void;
+  error: string;
+  setError: (error: string) => void;
+  agreed: boolean;
+  setAgreed: (agreed: boolean) => void;
+  setStep: (step: number) => void;
+  langToggle: boolean;
+  setLangToggle: (langToggle: boolean) => void;
+  text: TranslationText;
+  signIn: typeof signIn;
+}
 
-// Step 3
-const Step3 = ({
-  lastName,
-  firstName,
-  contactInfo,
-  password,
-  repassword,
-  setPassword,
-  setRepassword,
-  onSubmit,
-  error,
-  langToggle,
-  text,
-  signIn,
-}: any) => (
-  <div className="flex w-[1059px] rounded-3xl h-[696px]  bg-[#f3f3f3]">
-    <div className="hidden md:flex md:w-1/2 pl-12 py-[45px]  flex-col items-center justify-center p-12 text-white">
-      <div className="w-full max-w-md">
-        <div className="text-start ">
-          <div className="flex justify-between">
-            <img
-              className="w-[160px] h-[25px]"
-              src="/login/login-logo.png"
-              alt=""
-            />
-            <div
-              onClick={() => {
-                setLangToggle((prev: boolean) => !prev);
-              }}
-              className="flex items-center cursor-pointer justify-center h-7 gap-1"
-            >
-              <img src="/login/Vector.png" alt="" />
-              <div className="text-[#5C5C5C] text-2xl w-9 ">
-                {langToggle ? text.mn.mn : text.en.en}
-              </div>
-            </div>
-          </div>
-          <h1 className="text-2xl mt-[50px] font-medium text-[#161616]">
-            {langToggle ? text.mn.head : text.en.head}
-            <span className="text-[#F5BE32] font-medium">
-              {langToggle ? text.mn.headTseg : text.en.headTseg}
-            </span>
-          </h1>
-        </div>
-
-        <div className="mb-4 pt-[44px]">
-          <div className="flex gap-4">
-            <DisabledInput value={lastName} />
-            <DisabledInput value={firstName} />
-          </div>
-          <DisabledInput value={contactInfo} />
-        </div>
-        <div className="mt-7 flex flex-col gap-4">
-          <Input
-            id="passwordRegister"
-            type="password"
-            placeholder={langToggle ? text.mn.inputText4 : text.en.inputText4}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="h-10 rounded-md text-black border-[#e0e0e0] bg-[#ECECEC] px-4 text-lg placeholder:text-[#ababab]"
-          />
-          <Input
-            id="repasswordRegister"
-            type="password"
-            placeholder={langToggle ? text.mn.inputText5 : text.en.inputText5}
-            value={repassword}
-            onChange={(e) => setRepassword(e.target.value)}
-            className="h-10 rounded-md text-black border-[#e0e0e0] bg-[#ECECEC] px-4 text-lg placeholder:text-[#ababab]"
-          />
-          <div className="flex flex-col mt-3 items-center">
-            <Button
-              onClick={onSubmit}
-              className="w-72  h-10 cursor-pointer rounded-xl text-white text-base font-normal bg-gradient-to-r from-[#EAC947] to-[#F6A253] hover:opacity-90"
-            >
-              {langToggle ? text.mn.button : text.en.button}
-            </Button>
-          </div>
-          <p className="text-sm text-red-500 mt-2">{error}</p>
-        </div>
-        <SocialLogin signIn={signIn} />
-      </div>
-    </div>
-    <div className="w-full md:w-1/2 flex flex-col  items-center justify-center">
-      <img className="h-full rounded-r-3xl" src="/login/image.png" alt="" />
-    </div>
-  </div>
-);
-
-const Step1 = ({
+const Step1: React.FC<Step1Props> = ({
   lastName,
   setLastName,
   firstName,
@@ -358,12 +235,11 @@ const Step1 = ({
   setLangToggle,
   text,
   signIn,
-}: any) => (
-  <div className="flex w-[1059px] rounded-3xl h-[696px]  bg-[#f3f3f3]">
-    {/* Left Panel */}
-    <div className="hidden md:flex md:w-1/2 pl-12 py-[45px]  flex-col items-center justify-center p-12 text-white">
+}) => (
+  <div className="flex w-[1059px] rounded-3xl h-[696px] bg-[#f3f3f3]">
+    <div className="hidden md:flex md:w-1/2 pl-12 py-[45px] flex-col items-center justify-center p-12 text-white">
       <div className="w-full justify-center max-w-md">
-        <div className="text-start ">
+        <div className="text-start">
           <div className="flex justify-between">
             <img
               className="w-[160px] h-[25px]"
@@ -371,13 +247,11 @@ const Step1 = ({
               alt=""
             />
             <div
-              onClick={() => {
-                setLangToggle((prev: boolean) => !prev);
-              }}
+              onClick={() => setLangToggle(!langToggle)}
               className="flex items-center cursor-pointer justify-center h-7 gap-1"
             >
               <img src="/login/Vector.png" alt="" />
-              <div className="text-[#5C5C5C] text-2xl w-9 ">
+              <div className="text-[#5C5C5C] text-2xl w-9">
                 {langToggle ? text.mn.mn : text.en.en}
               </div>
             </div>
@@ -391,24 +265,19 @@ const Step1 = ({
         </div>
         <div className="text-[#9A9A9A] mt-3 font-normal text-sm flex gap-2">
           {langToggle ? text.mn.description1 : text.en.description1}
-          <div
-            onClick={() => {
-              setStep(0); // or setLogin(true) if you want to go to login
-            }}
-            className="underline cursor-pointer"
-          >
+          <div onClick={() => setStep(0)} className="underline cursor-pointer">
             {langToggle ? text.mn.description2 : text.en.description2}
           </div>
         </div>
-        <div className=" flex mt-7 flex-col gap-4">
-          <div className="flex w-full justify-between ">
+        <div className="flex mt-7 flex-col gap-4">
+          <div className="flex w-full justify-between">
             <Input
               id="ovog"
               type="text"
               placeholder={langToggle ? text.mn.inputText1 : text.en.inputText1}
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
-              className="h-10 rounded-md w-52 text-black  border-[#e0e0e0] bg-[#ECECEC] px-4 text-lg placeholder:text-[#ababab]"
+              className="h-10 rounded-md w-52 text-black border-[#e0e0e0] bg-[#ECECEC] px-4 text-lg placeholder:text-[#ababab]"
             />
             <Input
               id="ner"
@@ -416,7 +285,7 @@ const Step1 = ({
               placeholder={langToggle ? text.mn.inputText2 : text.en.inputText2}
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
-              className="h-10 rounded-md w-52 text-black  border-[#e0e0e0] bg-[#ECECEC] px-4 text-lg placeholder:text-[#ababab]"
+              className="h-10 rounded-md w-52 text-black border-[#e0e0e0] bg-[#ECECEC] px-4 text-lg placeholder:text-[#ababab]"
             />
           </div>
           <div className="flex gap-4">
@@ -431,7 +300,7 @@ const Step1 = ({
           </div>
           <div>
             <p className="text-sm text-red-500">{error}</p>
-            <div className="flex items-center  space-x-2">
+            <div className="flex items-center space-x-2">
               <Checkbox
                 id="termsRegister"
                 checked={agreed}
@@ -467,7 +336,7 @@ const Step1 = ({
                 setStep(2);
               }}
               disabled={!agreed}
-              className="w-72  h-10 cursor-pointer rounded-xl text-white text-base font-normal bg-gradient-to-r from-[#EAC947] to-[#F6A253] hover:opacity-90"
+              className="w-72 h-10 cursor-pointer rounded-xl text-white text-base font-normal bg-gradient-to-r from-[#EAC947] to-[#F6A253] hover:opacity-90"
             >
               {langToggle ? text.mn.button : text.en.button}
             </Button>
@@ -476,14 +345,229 @@ const Step1 = ({
         </div>
       </div>
     </div>
-    {/* Right Panel */}
-    <div className="w-full md:w-1/2 flex flex-col  items-center justify-center">
+    <div className="w-full md:w-1/2 flex flex-col items-center justify-center">
       <img className="h-full rounded-r-3xl" src="/login/image.png" alt="" />
     </div>
   </div>
 );
 
-const RestRegister = () => {
+// Step2 component
+interface Step2Props {
+  lastName: string;
+  firstName: string;
+  contactInfo: string;
+  confirmationCode: string;
+  setConfirmationCode: (code: string) => void;
+  error: string;
+  setStep: (step: number) => void;
+  isEmail: (value: string) => boolean;
+  timer: number;
+  onResend: () => void;
+  langToggle: boolean;
+  setLangToggle: (langToggle: boolean) => void;
+  text: TranslationText;
+  signIn: typeof signIn;
+}
+
+const Step2: React.FC<Step2Props> = ({
+  lastName,
+  firstName,
+  contactInfo,
+  confirmationCode,
+  setConfirmationCode,
+  error,
+  setStep,
+  isEmail,
+  timer,
+  onResend,
+  langToggle,
+  setLangToggle,
+  text,
+  signIn,
+}) => (
+  <div className="flex w-[1059px] rounded-3xl h-[696px] bg-[#f3f3f3]">
+    <div className="hidden md:flex md:w-1/2 pl-12 py-[45px] flex-col items-center justify-center p-12 text-white">
+      <div className="w-full max-w-md">
+        <div className="text-start">
+          <div className="flex justify-between">
+            <img
+              className="w-[160px] h-[25px]"
+              src="/login/login-logo.png"
+              alt=""
+            />
+            <div
+              onClick={() => setLangToggle(!langToggle)}
+              className="flex items-center cursor-pointer justify-center h-7 gap-1"
+            >
+              <img src="/login/Vector.png" alt="" />
+              <div className="text-[#5C5C5C] text-2xl w-9">
+                {langToggle ? text.mn.mn : text.en.en}
+              </div>
+            </div>
+          </div>
+          <h1 className="text-2xl mt-[50px] font-medium text-[#161616]">
+            {langToggle ? text.mn.head : text.en.head}
+            <span className="text-[#F5BE32] font-medium">
+              {langToggle ? text.mn.headTseg : text.en.headTseg}
+            </span>
+          </h1>
+        </div>
+        <div className="text-[#9A9A9A] py-4 font-normal text-sm flex gap-2">
+          {langToggle ? text.mn.description1 : text.en.description1}
+          <div onClick={() => setStep(0)} className="underline cursor-pointer">
+            {langToggle ? text.mn.description2 : text.en.description2}
+          </div>
+        </div>
+        <div className="mb-4">
+          <div className="flex gap-4">
+            <DisabledInput value={lastName} />
+            <DisabledInput value={firstName} />
+          </div>
+          <DisabledInput value={contactInfo} />
+        </div>
+        <div className="text-lg py-1 text-black font-semibold">
+          Confirmation.
+        </div>
+        <div className="text-sm py-1 text-[#9A9A9A]">
+          {isEmail(contactInfo)
+            ? "Enter the code we sent to your e-mail."
+            : "Enter the code we sent to your phone."}
+        </div>
+        <OtpInput value={confirmationCode} onChange={setConfirmationCode} />
+        <div className="text-xs text-[#9A9A9A] mb-4">
+          {timer > 0 ? (
+            <>Resend code 0:{timer.toString().padStart(2, "0")}</>
+          ) : (
+            <button onClick={onResend} className="text-blue-500 underline">
+              Resend code
+            </button>
+          )}
+        </div>
+        <div className="flex flex-col mt-3 items-center">
+          <Button
+            onClick={() => {
+              if (confirmationCode.length === 6) {
+                setStep(3);
+              }
+            }}
+            className="w-72 h-10 cursor-pointer items-center rounded-xl text-white text-base font-normal bg-gradient-to-r from-[#EAC947] to-[#F6A253] hover:opacity-90"
+          >
+            {langToggle ? "Үргэлжлүүлэх" : "Continue"}
+          </Button>
+        </div>
+        <p className="text-sm text-red-500 mt-2">{error}</p>
+        <SocialLogin signIn={signIn} />
+      </div>
+    </div>
+    <div className="w-full md:w-1/2 flex flex-col items-center justify-center">
+      <img className="h-full rounded-r-3xl" src="/login/image.png" alt="" />
+    </div>
+  </div>
+);
+
+// Step3 component
+interface Step3Props {
+  lastName: string;
+  firstName: string;
+  contactInfo: string;
+  password: string;
+  repassword: string;
+  setPassword: (password: string) => void;
+  setRepassword: (repassword: string) => void;
+  onSubmit: () => void;
+  error: string;
+  langToggle: boolean;
+  setLangToggle: (langToggle: boolean) => void;
+  text: TranslationText;
+  signIn: typeof signIn;
+}
+
+const Step3: React.FC<Step3Props> = ({
+  lastName,
+  firstName,
+  contactInfo,
+  password,
+  repassword,
+  setPassword,
+  setRepassword,
+  onSubmit,
+  error,
+  langToggle,
+  setLangToggle,
+  text,
+  signIn,
+}) => (
+  <div className="flex w-[1059px] rounded-3xl h-[696px] bg-[#f3f3f3]">
+    <div className="hidden md:flex md:w-1/2 pl-12 py-[45px] flex-col items-center justify-center p-12 text-white">
+      <div className="w-full max-w-md">
+        <div className="text-start">
+          <div className="flex justify-between">
+            <img
+              className="w-[160px] h-[25px]"
+              src="/login/login-logo.png"
+              alt=""
+            />
+            <div
+              onClick={() => setLangToggle(!langToggle)}
+              className="flex items-center cursor-pointer justify-center h-7 gap-1"
+            >
+              <img src="/login/Vector.png" alt="" />
+              <div className="text-[#5C5C5C] text-2xl w-9">
+                {langToggle ? text.mn.mn : text.en.en}
+              </div>
+            </div>
+          </div>
+          <h1 className="text-2xl mt-[50px] font-medium text-[#161616]">
+            {langToggle ? text.mn.head : text.en.head}
+            <span className="text-[#F5BE32] font-medium">
+              {langToggle ? text.mn.headTseg : text.en.headTseg}
+            </span>
+          </h1>
+        </div>
+        <div className="mb-4 pt-[44px]">
+          <div className="flex gap-4">
+            <DisabledInput value={lastName} />
+            <DisabledInput value={firstName} />
+          </div>
+          <DisabledInput value={contactInfo} />
+        </div>
+        <div className="mt-7 flex flex-col gap-4">
+          <Input
+            id="passwordRegister"
+            type="password"
+            placeholder={langToggle ? text.mn.inputText4 : text.en.inputText4}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="h-10 rounded-md text-black border-[#e0e0e0] bg-[#ECECEC] px-4 text-lg placeholder:text-[#ababab]"
+          />
+          <Input
+            id="repasswordRegister"
+            type="password"
+            placeholder={langToggle ? text.mn.inputText5 : text.en.inputText5}
+            value={repassword}
+            onChange={(e) => setRepassword(e.target.value)}
+            className="h-10 rounded-md text-black border-[#e0e0e0] bg-[#ECECEC] px-4 text-lg placeholder:text-[#ababab]"
+          />
+          <div className="flex flex-col mt-3 items-center">
+            <Button
+              onClick={onSubmit}
+              className="w-72 h-10 cursor-pointer rounded-xl text-white text-base font-normal bg-gradient-to-r from-[#EAC947] to-[#F6A253] hover:opacity-90"
+            >
+              {langToggle ? text.mn.button : text.en.button}
+            </Button>
+          </div>
+          <p className="text-sm text-red-500 mt-2">{error}</p>
+        </div>
+        <SocialLogin signIn={signIn} />
+      </div>
+    </div>
+    <div className="w-full md:w-1/2 flex flex-col items-center justify-center">
+      <img className="h-full rounded-r-3xl" src="/login/image.png" alt="" />
+    </div>
+  </div>
+);
+
+const RestRegister: React.FC = () => {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
@@ -491,28 +575,20 @@ const RestRegister = () => {
   const [agreed, setAgreed] = useState(false);
   const [error, setError] = useState("");
   const [eye, setEye] = useState(false);
-  const [isopen, setIsopen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [login, setLogin] = useState(false);
-
   const [langToggle, setLangToggle] = useState(true);
-
   const router = useRouter();
 
   // Stepper state
   const [step, setStep] = useState(1);
-  // Combine email/phone into one input
   const [contactInfo, setContactInfo] = useState("");
-  // For confirmation code
   const [confirmationCode, setConfirmationCode] = useState("");
-
   const [id, setId] = useState("");
-
-  // Add state for first and last name
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
 
-  // Add back the text object for translations
-  const text = {
+  const text: TranslationText = {
     mn: {
       mn: "mn",
       head: " Бүртгүүлэх",
@@ -549,58 +625,66 @@ const RestRegister = () => {
     setError("");
   };
 
-  const emailCHeker = async () => {
+  const emailChecker = async () => {
     try {
-      const { data }: any = await axios.post("/api/api_open", {
-        sn: "customer_email_check",
-        id: id,
-      });
-      setIsopen(true);
+      const response: AxiosResponse<{ status: string }> = await axios.post(
+        "/api/api_open",
+        {
+          sn: "customer_email_check",
+          id,
+        }
+      );
+      if (response.data.status === "success") {
+        setIsOpen(true);
+      }
     } catch (error) {
-      console.log(error);
+      console.error("Email check error:", error);
     }
   };
-  const onSubmit = () => {
-    const contactInfo = email || phone;
 
-    if (!contactInfo) {
+  const onSubmit = async () => {
+    const contactInfoValue = email || phone;
+
+    if (!contactInfoValue) {
       setError("И-мэйл эсвэл утасны дугаараа оруулна уу.");
       return;
     }
 
-    if (repassword === password) {
-      const fetchData = async () => {
-        try {
-          const { data }: any = await axios.post("/api/api_open", {
-            sn: "customer_add",
-            phone: phone,
-            email: email,
-            password: password,
-          });
-          if (data.status === "success") {
-            setError("");
-            const user = data.result;
-            const token = data.token;
-            setId(data.new_id);
-            emailCHeker();
-          } else {
-            setError(`${data.message}`);
-            setIsopen(false);
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      };
-      fetchData();
-    } else {
-      setError("нууц үг таарахгүй байна ");
+    if (repassword !== password) {
+      setError("Нууц үг таарахгүй байна");
+      return;
+    }
+
+    try {
+      const response: AxiosResponse<{
+        status: string;
+        result?: any;
+        token?: string;
+        new_id?: string;
+        message?: string;
+      }> = await axios.post("/api/api_open", {
+        sn: "customer_add",
+        phone,
+        email,
+        password,
+      });
+
+      if (response.data.status === "success") {
+        setError("");
+        setId(response.data.new_id || "");
+        await emailChecker();
+      } else {
+        setError(response.data.message || "Registration failed");
+        setIsOpen(false);
+      }
+    } catch (error) {
+      console.error("Registration error:", error);
+      setError("An error occurred during registration");
     }
   };
 
-  // Helper to check if input is email or phone
-  const isEmail = (value: string) => /@/.test(value);
+  const isEmail = (value: string): boolean => /@/.test(value);
 
-  // Timer for resend code
   const [timer, setTimer] = useState(60);
   useEffect(() => {
     if (step === 2 && timer > 0) {
@@ -608,9 +692,10 @@ const RestRegister = () => {
       return () => clearInterval(interval);
     }
   }, [step, timer]);
+
   const onResend = () => setTimer(60);
 
-  let content;
+  let content: JSX.Element;
   if (login) {
     content = <RestLogin />;
   } else if (step === 1) {
@@ -647,6 +732,7 @@ const RestRegister = () => {
         timer={timer}
         onResend={onResend}
         langToggle={langToggle}
+        setLangToggle={setLangToggle}
         text={text}
         signIn={signIn}
       />
@@ -664,6 +750,7 @@ const RestRegister = () => {
         onSubmit={onSubmit}
         error={error}
         langToggle={langToggle}
+        setLangToggle={setLangToggle}
         text={text}
         signIn={signIn}
       />
