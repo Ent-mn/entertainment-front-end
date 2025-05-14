@@ -1,10 +1,11 @@
+// app/api/auth/[...nextauth]/route.ts
+
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import FacebookProvider from "next-auth/providers/facebook";
 import axios from "axios";
 
-/** @type {import("next-auth").NextAuthOptions} */
-export const authOptions = {
+const handler = NextAuth({
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -20,31 +21,25 @@ export const authOptions = {
   },
   secret: process.env.NEXTAUTH_SECRET,
   debug: true,
-
   callbacks: {
     async signIn({ user, account }) {
       if (account?.provider === "google") {
         try {
-          const res = await axios.post("/api/api_open", {
+          await axios.post("/api/api_open", {
             sn: "customer_login_google",
             email: user.email,
             name: user.name,
             image: user.image,
           });
-
-          if (res.data.status !== "success") {
-            console.warn("⚠️ DB insert амжилтгүй:", res.data);
-            // Хүсвэл энд return false хийж болно
-          }
         } catch (error) {
-          console.error("📛 Google DB insert алдаа:", error);
-          // ✳️ Access Denied болохгүйн тулд true буцаана
+          console.error("Google хэрэглэгчийг бүртгэхэд алдаа:", error);
+          return true; // Access Denied үүсгэхгүйн тулд true
         }
       }
-      return true; // ☑️ бүх тохиолдолд login зөвшөөрөх
+      return true;
     },
   },
-};
+});
 
-const handler = NextAuth(authOptions);
+// ❗️Зөвхөн GET, POST-г export хийж байна — authOptions биш!
 export { handler as GET, handler as POST };
