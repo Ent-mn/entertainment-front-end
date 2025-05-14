@@ -22,7 +22,6 @@ import VerificationCodeModal from "./Verification";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-// Type definitions for translation text
 interface TranslationText {
   mn: {
     mn: string;
@@ -66,7 +65,7 @@ const DisabledInput: React.FC<DisabledInputProps> = ({ value }) => (
     type="text"
     value={value}
     disabled
-    className="h-10 w-full rounded-md text-black border-[#e0e0e0] bg-[#ECECEC] px-4 text-lg placeholder:text-[#ababab] opacity-80 cursor-not-allowed mb-2"
+    className="h-[54px] w-full rounded-xl text-black border-[#e0e0e0] bg-[#ECECEC] px-4 text-lg placeholder:text-[#ababab] opacity-80 cursor-not-allowed mb-2"
   />
 );
 
@@ -126,7 +125,7 @@ const OtpInput: React.FC<OtpInputProps> = ({ value, onChange }) => {
           value={value[i] || ""}
           onChange={(e) => handleChange(e, i)}
           onKeyDown={(e) => handleKeyDown(e, i)}
-          className="w-12 h-12 text-center text-xl text-black border-[#e0e0e0] bg-[#ECECEC] rounded-md"
+          className="w-[54px] h-[58px] text-center text-xl text-black border-[#e0e0e0] bg-[#ECECEC] rounded-md"
         />
       ))}
     </div>
@@ -145,7 +144,7 @@ const SocialLogin: React.FC<SocialLoginProps> = ({
   langToggle,
   text,
 }) => (
-  <div className="w-[433.5px] flex flex-col items-center">
+  <div className="w-[585px] flex flex-col items-center">
     <div className="flex w-72 items-center flex-col">
       <div className="flex justify-between w-68 items-center">
         <img className="h-[1px] w-[95px]" src="/login/Line.png" alt="" />
@@ -246,9 +245,9 @@ const Step1: React.FC<Step1Props> = ({
   signIn,
   setLogin,
 }) => (
-  <div className="flex w-[1059px] rounded-3xl h-[760px] bg-[#f3f3f3]">
-    <div className="hidden md:flex md:w-1/2 pl-12 py-[45px] flex-col items-center justify-center p-12 text-white">
-      <div className="w-full justify-center max-w-md">
+  <div className="flex w-[1586px] rounded-3xl h-[900px] bg-[#f3f3f3]">
+    <div className="hidden md:flex md:w-1/2 pl-12 flex-col items-center justify-center p-12 pt-[80px] text-white">
+      <div className="w-full justify-between items-center h-full max-w-[585px]">
         <div className="text-start">
           <div className="flex justify-between">
             <div className="flex items-center gap-1">
@@ -265,31 +264,33 @@ const Step1: React.FC<Step1Props> = ({
               </div>
             </div>
           </div>
-          <h1 className="text-2xl mt-[50px] font-medium text-[#161616]">
+        </div>
+        <div className="text-[#9A9A9A] mt-3 flex-col font-normal text-sm flex gap-2">
+          <h1 className="text-[32px] mt-[130px] font-semibold text-[#161616]">
             {langToggle ? text.mn.head : text.en.head}
             <span className="text-[#F5BE32] font-medium">
               {langToggle ? text.mn.headTseg : text.en.headTseg}
             </span>
           </h1>
-        </div>
-        <div className="text-[#9A9A9A] mt-3 font-normal text-sm flex gap-2">
-          {langToggle ? text.mn.description1 : text.en.description1}
-          <div
-            onClick={() => setLogin(true)} // Changed from setStep(0)
-            className="underline cursor-pointer"
-          >
-            {langToggle ? text.mn.description2 : text.en.description2}
+          <div className="flex gap-2 mt-[17px]">
+            {langToggle ? text.mn.description1 : text.en.description1}
+            <div
+              onClick={() => setLogin(true)} // Changed from setStep(0)
+              className="underline cursor-pointer"
+            >
+              {langToggle ? text.mn.description2 : text.en.description2}
+            </div>
           </div>
         </div>
         <div className="flex mt-7 flex-col gap-4">
-          <div className="flex w-full justify-between">
+          <div className="flex w-[584px] justify-between">
             <Input
               id="ovog"
               type="text"
               placeholder={langToggle ? text.mn.inputText1 : text.en.inputText1}
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
-              className="h-10 rounded-xl w-52 text-black border-[#e0e0e0] bg-[#ECECEC] px-4 text-lg placeholder:text-[#ababab]"
+              className="h-[54px] rounded-xl w-[284px] text-black border-[#e0e0e0] bg-[#ECECEC] px-4 text-lg placeholder:text-[#ababab]"
             />
             <Input
               id="ner"
@@ -297,7 +298,7 @@ const Step1: React.FC<Step1Props> = ({
               placeholder={langToggle ? text.mn.inputText2 : text.en.inputText2}
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
-              className="h-10 rounded-xl w-52 text-black border-[#e0e0e0] bg-[#ECECEC] px-4 text-lg placeholder:text-[#ababab]"
+              className="h-[54px] rounded-xl w-[284px] text-black border-[#e0e0e0] bg-[#ECECEC] px-4 text-lg placeholder:text-[#ababab]"
             />
           </div>
           <div className="flex gap-4">
@@ -310,7 +311,7 @@ const Step1: React.FC<Step1Props> = ({
                 setContactInfo(e.target.value);
                 setError(""); // clear error on typing
               }}
-              className="h-10 w-full rounded-xl text-black border-[#e0e0e0] bg-[#ECECEC] px-4 text-lg placeholder:text-[#ababab]"
+              className="h-[54px] w-full rounded-xl text-black border-[#e0e0e0] bg-[#ECECEC] px-4 text-lg placeholder:text-[#ababab]"
             />
           </div>
           <div>
@@ -383,7 +384,7 @@ const Step1: React.FC<Step1Props> = ({
                 }
               }}
               disabled={!agreed}
-              className="w-72 h-10 cursor-pointer rounded-xl text-white text-base font-normal bg-gradient-to-r from-[#EAC947] to-[#F6A253] hover:opacity-90"
+              className="w-[367px] h-[56px] cursor-pointer rounded-xl text-white text-lg font-medium bg-gradient-to-r from-[#EAC947] to-[#F6A253] hover:opacity-90"
             >
               {langToggle ? text.mn.button : text.en.button}
             </Button>
@@ -393,7 +394,11 @@ const Step1: React.FC<Step1Props> = ({
       </div>
     </div>
     <div className="w-full md:w-1/2 flex flex-col items-center justify-center">
-      <img className="h-full rounded-r-3xl" src="/login/image.png" alt="" />
+      <img
+        className="h-full md:w-full rounded-r-3xl"
+        src="/login/image.png"
+        alt=""
+      />
     </div>
   </div>
 );
@@ -414,7 +419,7 @@ interface Step2Props {
   setLangToggle: (langToggle: boolean) => void;
   text: TranslationText;
   signIn: typeof signIn;
-  setLogin: (login: boolean) => void; // Add setLogin prop
+  setLogin: (login: boolean) => void;
 }
 
 const Step2: React.FC<Step2Props> = ({
@@ -434,12 +439,12 @@ const Step2: React.FC<Step2Props> = ({
   signIn,
   setLogin,
 }) => (
-  <div className="flex w-[1059px] rounded-3xl h-[696px] bg-[#f3f3f3]">
-    <div className="hidden md:flex md:w-1/2 pl-12 py-[45px] flex-col items-center justify-center p-12 text-white">
-      <div className="w-full max-w-md">
+  <div className="flex w-[1586px] rounded-3xl h-[900px] bg-[#f3f3f3]">
+    <div className="hidden md:flex md:w-1/2 pl-12 flex-col items-center justify-center p-12 pt-[80px] text-white">
+      <div className="w-full justify-between items-center h-full max-w-[585px]">
         <div className="text-start">
           <div className="flex justify-between">
-            <div className="flex items-center gap-1 mb-2">
+            <div className="flex items-center gap-1">
               <img className="w-[30px] h-[30px]" src="/blacklogo.png" alt="" />
               <p className="text-2xl text-[#5C5C5C]">restaurant.mn</p>
             </div>
@@ -455,35 +460,38 @@ const Step2: React.FC<Step2Props> = ({
           </div>
           <button
             onClick={() => setStep(1)}
-            className="h-8 text-start flex items-center justify-start text-sm text-gray-700 mb-2"
+            className="h-8 text-start flex mt-[10px] items-center justify-start text-sm text-gray-700 mb-2"
           >
-            <ChevronLeft className="w-5 h-5" />
+            <ChevronLeft className="w-5  h-5" />
             {langToggle ? "Буцах" : "back"}
           </button>
-          <h1 className="text-2xl mt-[30px] font-medium text-[#161616]">
-            {langToggle ? text.mn.head : text.en.head}
-            <span className="text-[#F5BE32] font-medium">
-              {langToggle ? text.mn.headTseg : text.en.headTseg}
-            </span>
-          </h1>
-        </div>
-        <div className="text-[#9A9A9A] py-4 font-normal text-sm flex gap-2">
-          {langToggle ? text.mn.description1 : text.en.description1}
-          <div
-            onClick={() => setLogin(true)} // Changed from setStep(0)
-            className="underline cursor-pointer"
-          >
-            {langToggle ? text.mn.description2 : text.en.description2}
+          <div className="text-[#9A9A9A] mt-3 flex-col font-normal text-sm flex gap-2">
+            <h1 className="text-[32px] mt-[28px] font-semibold text-[#161616]">
+              {langToggle ? text.mn.head : text.en.head}
+              <span className="text-[#F5BE32] font-medium">
+                {langToggle ? text.mn.headTseg : text.en.headTseg}
+              </span>
+            </h1>
+            <div className="flex gap-2 mt-[17px]">
+              {langToggle ? text.mn.description1 : text.en.description1}
+              <div
+                onClick={() => setLogin(true)} // Changed from setStep(0)
+                className="underline cursor-pointer"
+              >
+                {langToggle ? text.mn.description2 : text.en.description2}
+              </div>
+            </div>
           </div>
         </div>
-        <div className="mb-4">
+
+        <div className="mb-4 mt-[44px]">
           <div className="flex gap-4">
             <DisabledInput value={lastName} />
             <DisabledInput value={firstName} />
           </div>
           <DisabledInput value={contactInfo} />
         </div>
-        <div className="text-lg py-1 text-black font-semibold">
+        <div className="text-[32px] pb-1 pt-[44px] text-black font-semibold">
           Confirmation.
         </div>
         <div className="text-sm py-1 text-[#9A9A9A]">
@@ -501,14 +509,14 @@ const Step2: React.FC<Step2Props> = ({
             </button>
           )}
         </div>
-        <div className="flex flex-col mt-3 items-center">
+        <div className="flex flex-col mt-[60px] items-center">
           <Button
             onClick={() => {
               if (confirmationCode.length === 6) {
                 setStep(3);
               }
             }}
-            className="w-72 h-10 cursor-pointer items-center rounded-xl text-white text-base font-normal bg-gradient-to-r from-[#EAC947] to-[#F6A253] hover:opacity-90"
+            className="w-[367px] h-[56px] cursor-pointer items-center rounded-xl text-white text-lg font-medium bg-gradient-to-r from-[#EAC947] to-[#F6A253] hover:opacity-90"
           >
             {langToggle ? "Үргэлжлүүлэх" : "Continue"}
           </Button>
@@ -518,11 +526,14 @@ const Step2: React.FC<Step2Props> = ({
       </div>
     </div>
     <div className="w-full md:w-1/2 flex flex-col items-center justify-center">
-      <img className="h-full rounded-r-3xl" src="/login/image.png" alt="" />
+      <img
+        className="h-full md:w-full rounded-r-3xl"
+        src="/login/image.png"
+        alt=""
+      />
     </div>
   </div>
 );
-
 // Step3 component
 interface Step3Props {
   lastName: string;
@@ -539,6 +550,7 @@ interface Step3Props {
   text: TranslationText;
   signIn: typeof signIn;
   setStep: (step: number) => void;
+  setLogin: (login: boolean) => void;
 }
 
 const Step3: React.FC<Step3Props> = ({
@@ -556,28 +568,16 @@ const Step3: React.FC<Step3Props> = ({
   text,
   signIn,
   setStep,
+  setLogin,
 }) => (
-  <div className="flex w-[1059px] rounded-3xl h-[696px] bg-[#f3f3f3]">
-    <div className="hidden md:flex md:w-1/2 pl-12 py-[45px] flex-col items-center justify-center p-12 text-white">
-      <div className="w-full max-w-md">
+  <div className="flex w-[1586px] rounded-3xl h-[900px] bg-[#f3f3f3]">
+    <div className="hidden md:flex md:w-1/2 pl-12 flex-col items-center justify-center p-12 pt-[80px] text-white">
+      <div className="w-full justify-between items-center h-full max-w-[585px]">
         <div className="text-start">
-          <div className="flex justify-between items-start">
-            <div className="flex flex-col gap-4">
-              <div className="flex items-center gap-1">
-                <img
-                  className="w-[30px] h-[30px]"
-                  src="/blacklogo.png"
-                  alt=""
-                />
-                <p className="text-2xl text-[#5C5C5C]">restaurant.mn</p>
-              </div>
-              <button
-                onClick={() => setStep(2)}
-                className="h-8 text-start flex items-center justify-start text-sm text-gray-700"
-              >
-                <ChevronLeft className="w-5 h-5" />
-                {langToggle ? "Буцах" : "Back"}
-              </button>
+          <div className="flex justify-between">
+            <div className="flex items-center gap-1">
+              <img className="w-[30px] h-[30px]" src="/blacklogo.png" alt="" />
+              <p className="text-2xl text-[#5C5C5C]">restaurant.mn</p>
             </div>
             <div
               onClick={() => setLangToggle(!langToggle)}
@@ -589,13 +589,30 @@ const Step3: React.FC<Step3Props> = ({
               </div>
             </div>
           </div>
-
-          <h1 className="text-2xl mt-[50px] font-medium text-[#161616]">
-            {langToggle ? text.mn.head : text.en.head}
-            <span className="text-[#F5BE32] font-medium">
-              {langToggle ? text.mn.headTseg : text.en.headTseg}
-            </span>
-          </h1>
+          <button
+            onClick={() => setStep(2)}
+            className="h-8 text-start flex mt-[10px] items-center justify-start text-sm text-gray-700 mb-2"
+          >
+            <ChevronLeft className="w-5  h-5" />
+            {langToggle ? "Буцах" : "back"}
+          </button>
+          <div className="text-[#9A9A9A] mt-3 flex-col font-normal text-sm flex gap-2">
+            <h1 className="text-[32px] mt-[28px] font-semibold text-[#161616]">
+              {langToggle ? text.mn.head : text.en.head}
+              <span className="text-[#F5BE32] font-medium">
+                {langToggle ? text.mn.headTseg : text.en.headTseg}
+              </span>
+            </h1>
+            <div className="flex gap-2 mt-[17px]">
+              {langToggle ? text.mn.description1 : text.en.description1}
+              <div
+                onClick={() => setLogin(true)} // Changed from setStep(0)
+                className="underline cursor-pointer"
+              >
+                {langToggle ? text.mn.description2 : text.en.description2}
+              </div>
+            </div>
+          </div>
         </div>
         <div className="mb-4 pt-[44px]">
           <div className="flex gap-4">
@@ -611,7 +628,7 @@ const Step3: React.FC<Step3Props> = ({
             placeholder={langToggle ? text.mn.inputText4 : text.en.inputText4}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="h-10 rounded-md text-black border-[#e0e0e0] bg-[#ECECEC] px-4 text-lg placeholder:text-[#ababab]"
+            className="h-[58px] rounded-md text-black border-[#e0e0e0] bg-[#ECECEC] px-4 text-lg placeholder:text-[#ababab]"
           />
           <Input
             id="repasswordRegister"
@@ -619,12 +636,12 @@ const Step3: React.FC<Step3Props> = ({
             placeholder={langToggle ? text.mn.inputText5 : text.en.inputText5}
             value={repassword}
             onChange={(e) => setRepassword(e.target.value)}
-            className="h-10 rounded-md text-black border-[#e0e0e0] bg-[#ECECEC] px-4 text-lg placeholder:text-[#ababab]"
+            className="h-[58px] rounded-md text-black border-[#e0e0e0] bg-[#ECECEC] px-4 text-lg placeholder:text-[#ababab]"
           />
           <div className="flex flex-col mt-3 items-center">
             <Button
               onClick={onSubmit}
-              className="w-72 h-10 cursor-pointer rounded-xl text-white text-base font-normal bg-gradient-to-r from-[#EAC947] to-[#F6A253] hover:opacity-90"
+              className="w-[367px] h-[56px] cursor-pointer rounded-xl text-white text-lg font-medium bg-gradient-to-r from-[#EAC947] to-[#F6A253] hover:opacity-90"
             >
               {langToggle ? text.mn.button : text.en.button}
             </Button>
@@ -635,7 +652,11 @@ const Step3: React.FC<Step3Props> = ({
       </div>
     </div>
     <div className="w-full md:w-1/2 flex flex-col items-center justify-center">
-      <img className="h-full rounded-r-3xl" src="/login/image.png" alt="" />
+      <img
+        className="h-full md:w-full rounded-r-3xl"
+        src="/login/image.png"
+        alt=""
+      />
     </div>
   </div>
 );
@@ -847,6 +868,7 @@ const RestRegister: React.FC = () => {
         text={text}
         signIn={signIn}
         setStep={setStep}
+        setLogin={setLogin} // Pass setLogin prop
       />
     );
   }
