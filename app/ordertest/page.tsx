@@ -1062,7 +1062,8 @@ function OrderTestContent() {
             <button
               onClick={() => setShowAnnouncement(false)}
               className="text-white hover:text-gray-300 p-1"
-              aria-label="Close announcement">
+              aria-label="Close announcement"
+            >
               <svg
                 className="w-4 h-4"
                 fill="none"
@@ -1070,7 +1071,8 @@ function OrderTestContent() {
                 strokeLinejoin="round"
                 strokeWidth="2"
                 viewBox="0 0 24 24"
-                stroke="currentColor">
+                stroke="currentColor"
+              >
                 <path d="M6 18L18 6M6 6l12 12"></path>
               </svg>
             </button>
@@ -1092,7 +1094,8 @@ function OrderTestContent() {
             <div className="hidden md:flex items-center bg-[#333333]/80 rounded-md   w-full max-w-[665px] mx-8 relative">
               <div
                 onClick={() => setShowBankDropdown(!showBankDropdown)}
-                className="flex bg-[#78787866] py-2 px-4 cursor-pointer rounded-l-lg  items-center gap-2 border-r border-gray-500  relative">
+                className="flex bg-[#78787866] py-2 px-4 cursor-pointer rounded-l-lg  items-center gap-2 border-r border-gray-500  relative"
+              >
                 <span className="text-white  text-sm cursor-pointer">
                   {selectedBank || "Төрөл"}
                 </span>
@@ -1100,7 +1103,8 @@ function OrderTestContent() {
                   className="w-4 h-4 text-white"
                   fill="none"
                   viewBox="0 0 24 24"
-                  stroke="currentColor">
+                  stroke="currentColor"
+                >
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -1114,7 +1118,8 @@ function OrderTestContent() {
                       <div
                         key={bank}
                         className="p-2 text-white hover:bg-amber-500/20 cursor-pointer text-sm"
-                        onClick={() => handleBankClick(bank)}>
+                        onClick={() => handleBankClick(bank)}
+                      >
                         {bank}
                       </div>
                     ))}
@@ -1135,7 +1140,8 @@ function OrderTestContent() {
                     <div
                       key={merchant.id}
                       className="p-3 text-white hover:bg-amber-500/20 cursor-pointer"
-                      onClick={() => handleHeaderResultClick(merchant)}>
+                      onClick={() => handleHeaderResultClick(merchant)}
+                    >
                       <p className="text-sm">{merchant.name || "N/A"}</p>
                       <p className="text-xs text-gray-400">
                         {merchant.phone || "N/A"}
@@ -1156,7 +1162,8 @@ function OrderTestContent() {
                     <Button
                       variant="outline"
                       className="w-full mt-2 text-amber-500 border-amber-500 hover:bg-amber-500/20"
-                      onClick={handleSeeMore}>
+                      onClick={handleSeeMore}
+                    >
                       See More
                     </Button>
                   )}
@@ -1171,7 +1178,8 @@ function OrderTestContent() {
                   href={link.href}
                   className={`text-white text-sm ${
                     link.active ? "border-b-2 border-amber-500 pb-1" : ""
-                  }`}>
+                  }`}
+                >
                   {link.name}
                 </Link>
               ))}
@@ -1195,9 +1203,8 @@ function OrderTestContent() {
                   <div
                     id="profile-button"
                     className="flex items-center gap-3 cursor-pointer"
-                    onClick={() =>
-                      setShowProfileDropdown(!showProfileDropdown)
-                    }>
+                    onClick={() => setShowProfileDropdown(!showProfileDropdown)}
+                  >
                     <img
                       src="bold.png"
                       alt="User profile"
@@ -1205,14 +1212,15 @@ function OrderTestContent() {
                     />
                     <div>
                       <p className="font-semibold text-sm text-white">
-                        {user?.customer_name}
+                        {user?.first_name}
                       </p>
                     </div>
                   </div>
                   {showProfileDropdown && (
                     <div
                       id="profile-dropdown"
-                      className="absolute right-0 mt-2 w-16 bg-[#333333] rounded-md shadow-lg py-1 z-50">
+                      className="absolute right-0 mt-2 w-16 bg-[#333333] rounded-md shadow-lg py-1 z-50"
+                    >
                       <Link href="/profiletest">
                         <button className="w-full text-center px-2 py-2 text-sm text-white hover:bg-[#444444] transition-colors duration-150">
                           Profile
@@ -1223,7 +1231,8 @@ function OrderTestContent() {
                           logout();
                           setShowProfileDropdown(false);
                         }}
-                        className="w-full text-center py-2 px-2 text-sm text-red-500 hover:bg-[#444444] transition-colors duration-150">
+                        className="w-full text-center py-2 px-2 text-sm text-red-500 hover:bg-[#444444] transition-colors duration-150"
+                      >
                         Logout
                       </button>
                     </div>
@@ -1237,7 +1246,8 @@ function OrderTestContent() {
                 className="w-6 h-6"
                 fill="none"
                 viewBox="0 0 24 24"
-                stroke="currentColor">
+                stroke="currentColor"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -1536,7 +1546,8 @@ function OrderTestContent() {
                       <div className="flex cursor-pointer items-center gap-2">
                         <Dialog
                           open={showCapacityModal}
-                          onOpenChange={setShowCapacityModal}>
+                          onOpenChange={setShowCapacityModal}
+                        >
                           <DialogTrigger asChild>
                             <div className="flex items-center gap-2 cursor-pointer">
                               <Users className="w-5 h-5 text-gray-400" />
@@ -1830,25 +1841,29 @@ function OrderTestContent() {
         <Button
           variant="outline"
           size="icon"
-          className="bg-[#333333] border-0 text-amber-500 rounded-full w-10 h-10">
+          className="bg-[#333333] border-0 text-amber-500 rounded-full w-10 h-10"
+        >
           <Sun className="w-5 h-5" />
         </Button>
         <Button
           variant="outline"
           size="icon"
-          className="bg-[#333333] border-0 text-white rounded-full w-10 h-10">
+          className="bg-[#333333] border-0 text-white rounded-full w-10 h-10"
+        >
           <ShoppingCart className="w-5 h-5" />
         </Button>
         <Button
           variant="outline"
           size="icon"
-          className="bg-[#333333] border-0 text-white rounded-full w-10 h-10">
+          className="bg-[#333333] border-0 text-white rounded-full w-10 h-10"
+        >
           <Heart className="w-5 h-5" />
         </Button>
         <Button
           variant="outline"
           size="icon"
-          className="bg-[#333333] border-0 text-white rounded-full w-10 h-10">
+          className="bg-[#333333] border-0 text-white rounded-full w-10 h-10"
+        >
           <Headphones className="w-5 h-5" />
         </Button>
       </div>

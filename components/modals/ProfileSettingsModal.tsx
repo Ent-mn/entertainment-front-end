@@ -37,7 +37,7 @@ interface ProfileSettingsModalProps {
   isOpen: boolean;
   onClose: () => void;
   profile: {
-    customer_name: string;
+    first_name: string;
     org_name: string;
     email: string;
     phone: string;
@@ -58,7 +58,7 @@ export function ProfileSettingsModal({
   const [selectedTab, setSelectedTab] = useState<MainTabType>(initialView);
   const [settingsTab, setSettingsTab] = useState<SettingsTabType>("account");
   const { user, isLoggedIn, logout } = useUser();
-  const [editedName, setEditedName] = useState(profile.customer_name);
+  const [editedName, setEditedName] = useState(profile.first_name);
   const [isSaving, setIsSaving] = useState(false);
   const [isCoverModalOpen, setIsCoverModalOpen] = useState(false);
   const [currentPassword, setCurrentPassword] = useState("");
@@ -92,7 +92,7 @@ export function ProfileSettingsModal({
       const { data } = await axios.post("/api/api_open", {
         sn: "customer_edit_profile",
         id: user?.id,
-        customer_name: editedName,
+        first_name: editedName,
         org_name: profile.org_name,
         email: profile.email,
         phone: phoneNumber,
@@ -102,7 +102,7 @@ export function ProfileSettingsModal({
 
       if (data.status === "success") {
         // Update the user context with new name
-        const updatedUser = { ...user, customer_name: editedName };
+        const updatedUser = { ...user, first_name: editedName };
         localStorage.setItem("userData", JSON.stringify(updatedUser));
         toast.success("Profile updated successfully!");
       } else {
@@ -322,7 +322,7 @@ export function ProfileSettingsModal({
                       </div>
                       <div className="text-center">
                         <h3 className="text-white text-xl">
-                          {profile.customer_name}
+                          {profile.first_name}
                         </h3>
                         <p className="text-gray-400 text-base">
                           {profile.org_name}

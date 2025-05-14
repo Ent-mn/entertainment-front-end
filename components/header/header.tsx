@@ -42,11 +42,14 @@ export const Header = () => {
                   className="w-10 h-10 rounded-2xl"
                 />
                 <div>
-                  <p className="font-semibold text-base">{user?.customer_name}</p>
+                  <p className="font-semibold text-base">{user?.first_name}</p>
                   <p className="text-sm text-gray-500">{user?.org_name}</p>
                 </div>
               </div>
-              <button onClick={logout} className="text-red-500 cursor-pointer text-sm">
+              <button
+                onClick={logout}
+                className="text-red-500 cursor-pointer text-sm"
+              >
                 Logout
               </button>
             </div>

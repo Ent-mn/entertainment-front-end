@@ -10,7 +10,8 @@ import {
 
 interface User {
   id: string;
-  customer_name: string;
+  first_name: string;
+  last_name: string;
   email: string;
   phone: string;
   org_name: string;
@@ -39,7 +40,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     // Try to restore user data from localStorage on mount
-    const storedUser = localStorage.getItem('userData');
+    const storedUser = localStorage.getItem("userData");
     if (storedUser) {
       const userData = JSON.parse(storedUser);
       setUser(userData);
@@ -51,7 +52,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     setUser(userData);
     setIsLoggedIn(true);
     // Store the complete user data in localStorage
-    localStorage.setItem('userData', JSON.stringify(userData));
+    localStorage.setItem("userData", JSON.stringify(userData));
   };
 
   const logout = () => {
@@ -59,7 +60,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     setUser(null);
     setIsLoggedIn(false);
     // Clear user data from localStorage
-    localStorage.removeItem('userData');
+    localStorage.removeItem("userData");
   };
 
   return (

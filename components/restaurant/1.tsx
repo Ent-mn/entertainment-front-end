@@ -169,8 +169,6 @@ export default function RestaurantWebsite() {
   const { user, isLoggedIn, logout } = useUser();
   const router = useRouter();
 
-  console.log("User data:", user);
-
   // Initialize merchants data from staticData
   useEffect(() => {
     const allVenues = [
@@ -650,9 +648,12 @@ export default function RestaurantWebsite() {
                       alt="User profile"
                       className="w-7 h-7 rounded-full"
                     />
-                    <div>
+                    <div className="flex gap-2">
                       <p className="font-semibold text-sm text-white">
-                        {user?.customer_name}
+                        {user?.first_name}
+                      </p>
+                      <p className="font-semibold text-sm text-[#9E9D9C]">
+                        {user?.last_name}
                       </p>
                     </div>
                   </div>
@@ -862,7 +863,7 @@ export default function RestaurantWebsite() {
         isOpen={isProfileModalOpen}
         onClose={() => setIsProfileModalOpen(false)}
         profile={{
-          customer_name: user?.customer_name || "",
+          first_name: user?.first_name || "",
           org_name: user?.org_name || "",
           email: user?.email || "",
           phone: user?.phone || "",

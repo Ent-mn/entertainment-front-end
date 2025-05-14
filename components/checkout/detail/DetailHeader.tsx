@@ -603,7 +603,7 @@ const DetailHeader = () => {
                   />
                   <div>
                     <p className="font-semibold text-sm text-white">
-                      {user?.customer_name}
+                      {user?.first_name}
                     </p>
                   </div>
                 </div>

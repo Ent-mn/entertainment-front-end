@@ -65,7 +65,7 @@ const DisabledInput: React.FC<DisabledInputProps> = ({ value }) => (
     type="text"
     value={value}
     disabled
-    className="h-[54px] w-full rounded-xl text-black border-[#e0e0e0] bg-[#ECECEC] px-4 text-lg placeholder:text-[#ababab] opacity-80 cursor-not-allowed mb-2"
+    className="h-[54px] w-full rounded-xl text-black border-[#e0e0e0] bg-[#ECECEC] px-4 text-[16px] placeholder:text-[#ababab] opacity-80 cursor-not-allowed mb-2"
   />
 );
 
@@ -344,6 +344,11 @@ const Step1: React.FC<Step1Props> = ({
           <div className="flex flex-col mt-3 items-center">
             <Button
               onClick={async () => {
+                if (!firstName || !lastName) {
+                  setError("Овог, нэрээ оруулна уу."); // or English
+                  return;
+                }
+
                 const isEmail = contactInfo.includes("@");
                 const isPhone = /^\d{8}$/.test(contactInfo);
 
@@ -374,6 +379,7 @@ const Step1: React.FC<Step1Props> = ({
                   }
 
                   setError("");
+
                   setStep(2);
                 } catch (error: any) {
                   console.error("API error:", error);
@@ -748,7 +754,8 @@ const RestRegister: React.FC = () => {
 
       const response = await axios.post("/api/api_open", {
         sn: "customer_add",
-        customer_name: customerName,
+        first_name: firstName,
+        last_name: lastName,
         password,
         phone: isPhone ? contactInfoValue : "",
         email: isEmail ? contactInfoValue : "",
@@ -769,6 +776,7 @@ const RestRegister: React.FC = () => {
             draggable: true,
           }
         );
+
         // Redirect to RestLogin
         setLogin(true);
       } else {

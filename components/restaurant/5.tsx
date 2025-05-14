@@ -188,7 +188,7 @@ export default function VenueGallery() {
         isOpen={isProfileModalOpen}
         onClose={() => setIsProfileModalOpen(false)}
         profile={{
-          customer_name: user?.customer_name || "",
+          first_name: user?.first_name || "",
           org_name: user?.org_name || "",
           email: user?.email || "",
           phone: user?.phone || "",
