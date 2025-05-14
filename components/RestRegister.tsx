@@ -146,18 +146,18 @@ const SocialLogin: React.FC<SocialLoginProps> = ({
 }) => (
   <div className="w-[585px] flex flex-col items-center">
     <div className="flex w-72 items-center flex-col">
-      <div className="flex justify-between w-68 items-center">
-        <img className="h-[1px] w-[95px]" src="/login/Line.png" alt="" />
+      <div className="flex justify-between w-[333px] items-center">
+        <img className="h-[1px] w-[135px]" src="/login/Line.png" alt="" />
         <div className="text-[#676767] text-xs">
           {langToggle ? text.mn.text2 : text.en.text2}
         </div>
-        <img className="h-[1px] w-[95px]" src="/login/Line.png" alt="" />
+        <img className="h-[1px] w-[135px]" src="/login/Line.png" alt="" />
       </div>
-      <div className="grid grid-cols-2 gap-3 mt-4 h-9 w-72">
+      <div className="grid grid-cols-2 gap-3 mt-4 h-9 w-[367px]">
         <button
           type="button"
           onClick={() => signIn("facebook", { callbackUrl: "/restaurant" })}
-          className="flex items-center justify-center h-9 px-1 border border-[#e0e0e0] rounded-xl bg-white"
+          className="flex items-center justify-center h-[38px] w-[178px] px-1 border border-[#e0e0e0] rounded-xl bg-white"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -175,7 +175,7 @@ const SocialLogin: React.FC<SocialLoginProps> = ({
         <button
           type="button"
           onClick={() => signIn("google", { callbackUrl: "/restaurant" })}
-          className="flex items-center justify-center h-9 gap-1 px-1 border border-[#e0e0e0] rounded-xl bg-white"
+          className="flex items-center justify-center h-[38px]  w-[178px] gap-1 px-1 border border-[#e0e0e0] rounded-xl bg-white"
         >
           <svg
             width="18"
@@ -316,7 +316,7 @@ const Step1: React.FC<Step1Props> = ({
           </div>
           <div>
             <p className="text-sm text-red-500 mb-2">{error}</p>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center gap-[11px]">
               <Checkbox
                 id="termsRegister"
                 checked={agreed}
@@ -326,7 +326,7 @@ const Step1: React.FC<Step1Props> = ({
               <Dialog>
                 <DialogTrigger asChild>
                   <Button>
-                    <div className="text-[#676767] cursor-pointer text-xs">
+                    <div className="text-[#9A9A9A] hover:text-black cursor-pointer text-base">
                       {langToggle ? text.mn.text1 : text.en.text1}
                     </div>
                   </Button>

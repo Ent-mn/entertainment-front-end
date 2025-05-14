@@ -8,6 +8,8 @@ import axios from "axios";
 import RestRegister from "./RestRegister";
 import RestForgetPass from "./RestForgetPass";
 import { useSession, signIn, signOut } from "next-auth/react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const RestLogin = () => {
   const [email, setEmail] = useState("");
@@ -63,6 +65,17 @@ const RestLogin = () => {
         if (data.result) {
           setError("");
           login(data.result);
+          toast.success(
+            langToggle ? "Амжилттай нэвтэрлээ!" : "Successfully logged in!",
+            {
+              position: "top-right",
+              autoClose: 3000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: false,
+              draggable: true,
+            }
+          );
           router.push("/restaurant");
         } else {
           setError("Нэр эсвэл нууц үг буруу байна ");
@@ -160,8 +173,9 @@ const RestLogin = () => {
                   </div>
                 </div>
               </div>
-              <h1 className="text-4xl mt-[100px] font-medium text-[#161616]">
+              <h1 className="text-[32px] mt-[100px] flex  font-semibold text-[#161616]">
                 {langToggle ? text.mn.head : text.en.head}
+                <div className="text-[#F5BE32]">.</div>
               </h1>
             </div>
 
@@ -220,9 +234,9 @@ const RestLogin = () => {
                 {langToggle ? text.mn.button : text.en.button}
               </Button>
 
-              <div className="flex justify-between items-center mt-6 w-[360px]">
+              <div className="flex justify-between items-center mt-[21px] w-[360px]">
                 <img
-                  className="h-[1px] w-[120px]"
+                  className="h-[1px] w-[130px]"
                   src="/login/Line.png"
                   alt=""
                 />
@@ -230,13 +244,13 @@ const RestLogin = () => {
                   {langToggle ? text.mn.text2 : text.en.text2}
                 </div>
                 <img
-                  className="h-[1px] w-[120px]"
+                  className="h-[1px] w-[130px]"
                   src="/login/Line.png"
                   alt=""
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4 pt-4">
+              <div className="grid grid-cols-2 gap-4">
                 <button
                   type="button"
                   onClick={handleFb}
