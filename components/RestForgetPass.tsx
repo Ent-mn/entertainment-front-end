@@ -94,7 +94,6 @@ const RestForgetPass = ({ onBack }: { onBack?: () => void }) => {
   return (
     <div className="flex h-[760px] w-[587px] items-start pt-[48px] relative justify-center rounded-3xl bg-[#f3f3f3] p-4">
       <div className="w-full max-w-md">
-        {/* Top: Logo and Language Toggle */}
         <div className="flex justify-between">
           <div className="flex items-center gap-[6px]">
             <img className="w-[30px] h-[30px]" src="/blacklogo.png" alt="" />
