@@ -57,7 +57,7 @@ const RestLogin = () => {
       try {
         const { data }: any = await axios.post("/api/api_open", {
           sn: "customer_login",
-          phone: email,
+          user_name: email, // ✅ change from phone to user_name
           password: password,
         });
         if (data.result) {

@@ -342,7 +342,7 @@ const Step1: React.FC<Step1Props> = ({
           </div>
           <div className="flex flex-col mt-3 items-center">
             <Button
-              onClick={() => {
+              onClick={async () => {
                 const isEmail = contactInfo.includes("@");
                 const isPhone = /^\d{8}$/.test(contactInfo);
 
@@ -356,8 +356,31 @@ const Step1: React.FC<Step1Props> = ({
                   return;
                 }
 
-                setError("");
-                setStep(2);
+                try {
+                  const payload: Record<string, string> = {
+                    sn: "customer_email_code_send",
+                  };
+                  if (isEmail) payload.email = contactInfo;
+                  if (isPhone) payload.phone = contactInfo;
+
+                  const res = await axios.post("/api/api_open", payload);
+                  if (res.data.status === "error") {
+                    setError(
+                      res.data.message ||
+                        "И-мэйл бүртгэлтэй байна. Нэвтэрнэ үү."
+                    );
+                    return;
+                  }
+
+                  setError("");
+                  setStep(2);
+                } catch (error: any) {
+                  console.error("API error:", error);
+                  setError(
+                    error.response?.data?.message ||
+                      "Алдаа гарлаа. Та дахин оролдоно уу."
+                  );
+                }
               }}
               disabled={!agreed}
               className="w-72 h-10 cursor-pointer rounded-xl text-white text-base font-normal bg-gradient-to-r from-[#EAC947] to-[#F6A253] hover:opacity-90"
@@ -681,6 +704,15 @@ const RestRegister: React.FC = () => {
 
     if (!contactInfoValue) {
       setError("И-мэйл эсвэл утасны дугаараа оруулна уу.");
+      return;
+    }
+
+    if (password.length < 8) {
+      setError(
+        langToggle
+          ? "Нууц үг хамгийн багадаа 8 тэмдэгт байх ёстой."
+          : "Password must be at least 8 characters."
+      );
       return;
     }
 
