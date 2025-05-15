@@ -70,7 +70,7 @@ const OtpInput = ({
     const paste = e.clipboardData.getData("text").replace(/[^0-9]/g, "");
     if (paste.length === 6) {
       onChange(paste);
-      // Focus last input
+
       setTimeout(() => {
         inputs.current[5]?.focus();
       }, 0);
