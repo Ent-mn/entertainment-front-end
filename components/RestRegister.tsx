@@ -1,11 +1,11 @@
 "use client";
 
-import { ChevronLeft, Earth, Eye } from "lucide-react";
+import { ChevronLeft, Earth, Eye, EyeOff } from "lucide-react";
 import { Input } from "./ui/input";
 import { useEffect, useState, useRef } from "react";
 import { Checkbox } from "./ui/checkbox";
 import { Button } from "./ui/button";
-import axios, { AxiosResponse } from "axios";
+import axios from "axios";
 import { useRouter } from "next/navigation";
 import RestLogin from "./RestLogin";
 import { signIn } from "next-auth/react";
@@ -76,13 +76,10 @@ interface OtpInputProps {
 }
 
 const OtpInput: React.FC<OtpInputProps> = ({ value, onChange }) => {
-  const inputs = useRef<(HTMLInputElement | null)[]>(Array(6).fill(null));
+  const inputs = useRef<(HTMLInputElement | null)[]>([]);
 
   useEffect(() => {
-    const firstInput = inputs.current[0];
-    if (firstInput) {
-      firstInput.focus();
-    }
+    inputs.current[0]?.focus();
   }, []);
 
   const handleChange = (
@@ -95,21 +92,40 @@ const OtpInput: React.FC<OtpInputProps> = ({ value, onChange }) => {
     arr[idx] = val;
     const newValue = arr.join("").slice(0, 6);
     onChange(newValue);
-    if (val && idx < 5 && inputs.current[idx + 1]) {
-      inputs.current[idx + 1]?.focus();
-    }
+    if (val && idx < 5) inputs.current[idx + 1]?.focus();
   };
 
   const handleKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
     idx: number
   ) => {
-    if (e.key === "Backspace" && !value[idx] && idx > 0) {
+    if (e.key === "Backspace") {
       const arr = value.split("");
-      arr[idx - 1] = "";
-      onChange(arr.join("").slice(0, 6));
+
+      if (value[idx]) {
+        arr[idx] = "";
+        onChange(arr.join(""));
+      } else if (idx > 0) {
+        arr[idx - 1] = "";
+        onChange(arr.join(""));
+        inputs.current[idx - 1]?.focus();
+      }
+    } else if (e.key === "ArrowLeft" && idx > 0) {
       inputs.current[idx - 1]?.focus();
+    } else if (e.key === "ArrowRight" && idx < 5) {
+      inputs.current[idx + 1]?.focus();
     }
+  };
+
+  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    const paste = e.clipboardData.getData("text").replace(/[^0-9]/g, "");
+    if (paste.length === 6) {
+      onChange(paste);
+      setTimeout(() => {
+        inputs.current[5]?.focus();
+      }, 0);
+    }
+    e.preventDefault();
   };
 
   return (
@@ -118,6 +134,7 @@ const OtpInput: React.FC<OtpInputProps> = ({ value, onChange }) => {
         <input
           key={i}
           type="text"
+          inputMode="numeric"
           maxLength={1}
           ref={(el) => {
             inputs.current[i] = el;
@@ -125,6 +142,7 @@ const OtpInput: React.FC<OtpInputProps> = ({ value, onChange }) => {
           value={value[i] || ""}
           onChange={(e) => handleChange(e, i)}
           onKeyDown={(e) => handleKeyDown(e, i)}
+          onPaste={handlePaste}
           className="w-[54px] h-[58px] text-center text-xl text-black border-[#e0e0e0] bg-[#ECECEC] rounded-md"
         />
       ))}
@@ -168,7 +186,7 @@ const SocialLogin: React.FC<SocialLoginProps> = ({
           >
             <path d="M12 2.04C6.5 2.04 2 6.53 2 12.06C2 17.06 5.66 21.21 10.44 21.96V14.96H7.9V12.06H10.44V9.85C10.44 7.34 11.93 5.96 14.22 5.96C15.31 5.96 16.45 6.15 16.45 6.15V8.62H15.19C13.95 8.62 13.56 9.39 13.56 10.18V12.06H16.34L15.89 14.96H13.56V21.96C18.34 21.21 22 17.06 22 12.06C22 6.53 17.5 2.04 12 2.04Z" />
           </svg>
-          <span className="text-[#8c8c8c] font-normal  text-[11px]">
+          <span className="text-[#8c8c8c] font-normal text-[11px]">
             Sign up with Facebook
           </span>
         </button>
@@ -200,7 +218,7 @@ const SocialLogin: React.FC<SocialLoginProps> = ({
               fill="#EA4335"
             />
           </svg>
-          <span className="text-[#8c8c8c] font-normal  text-[11px]">
+          <span className="text-[#8c8c8c] font-normal text-[11px]">
             Sign up with Google
           </span>
         </button>
@@ -226,7 +244,7 @@ interface Step1Props {
   setLangToggle: (langToggle: boolean) => void;
   text: TranslationText;
   signIn: typeof signIn;
-  setLogin: (login: boolean) => void; // Add setLogin prop
+  setLogin: (login: boolean) => void;
   setSentCode: (code: string) => void;
 }
 
@@ -247,7 +265,7 @@ const Step1: React.FC<Step1Props> = ({
   text,
   signIn,
   setLogin,
-  setSentCode, // ✅ ADD THIS LINE
+  setSentCode,
 }) => (
   <div className="font-lato flex w-[1586px] rounded-3xl h-[900px] bg-[#f3f3f3]">
     <div className="hidden md:flex md:w-1/2 pl-12 flex-col items-center justify-center p-12 pt-[80px] text-white">
@@ -279,7 +297,7 @@ const Step1: React.FC<Step1Props> = ({
           <div className="flex gap-2 text-base font-normal mt-[17px]">
             {langToggle ? text.mn.description1 : text.en.description1}
             <div
-              onClick={() => setLogin(true)} // Changed from setStep(0)
+              onClick={() => setLogin(true)}
               className="underline cursor-pointer"
             >
               {langToggle ? text.mn.description2 : text.en.description2}
@@ -313,7 +331,7 @@ const Step1: React.FC<Step1Props> = ({
               value={contactInfo}
               onChange={(e) => {
                 setContactInfo(e.target.value);
-                setError(""); // clear error on typing
+                setError("");
               }}
               className="h-[54px] w-full rounded-xl text-black border-[#e0e0e0] bg-[#ECECEC] px-4 text-lg placeholder:text-[#ababab]"
             />
@@ -349,41 +367,73 @@ const Step1: React.FC<Step1Props> = ({
             <Button
               onClick={async () => {
                 if (!firstName || !lastName) {
-                  setError("Овог, нэрээ оруулна уу."); // or English
+                  setError("Овог, нэрээ оруулна уу.");
+                  toast.error(
+                    langToggle
+                      ? "Овог, нэрээ оруулна уу."
+                      : "Please enter your first and last name."
+                  );
                   return;
                 }
 
-                const isEmail = contactInfo.includes("@");
+                const isValidEmail =
+                  contactInfo.includes("@") &&
+                  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactInfo);
                 const isPhone = /^\d{8}$/.test(contactInfo);
 
                 if (!contactInfo) {
                   setError("И-мэйл эсвэл утасны дугаараа оруулна уу.");
+                  toast.error(
+                    langToggle
+                      ? "И-мэйл эсвэл утасны дугаараа оруулна уу."
+                      : "Please enter your email or phone number."
+                  );
                   return;
                 }
 
-                if (!isEmail && !isPhone) {
+                if (!isValidEmail && !isPhone) {
                   setError("Имэйл эсвэл утасны дугаар оруулна уу.");
+                  toast.error(
+                    langToggle
+                      ? "Имэйл эсвэл утасны дугаар оруулна уу."
+                      : "Please enter a valid email or phone number."
+                  );
                   return;
                 }
 
                 try {
                   const payload: Record<string, string> = {
-                    sn: "customer_email_code_send",
+                    sn: "customer_send_code_signup",
+                    to_value: contactInfo,
+                    type: isValidEmail ? "1" : "2",
                   };
-                  if (isEmail) payload.email = contactInfo;
-                  if (isPhone) payload.phone = contactInfo;
 
                   const res = await axios.post("/api/api_open", payload);
 
+                  // Check if the response indicates the email is already registered
                   if (res.data.status === "error") {
                     setError(
                       res.data.message ||
-                        "И-мэйл бүртгэлтэй байна. Нэвтэрнэ үү."
+                        (langToggle
+                          ? "И-мэйл бүртгэлтэй байна. Нэвтэрнэ үү."
+                          : "Email already registered. Please login.")
+                    );
+                    toast.error(
+                      res.data.message ||
+                        (langToggle
+                          ? "И-мэйл бүртгэлтэй байна. Нэвтэрнэ үү."
+                          : "Email already registered. Please login.")
                     );
                     return;
                   }
 
-                  setSentCode(res.data.code); // ✅ store received code here
+                  // If we get here, the email is not registered, and we have received a verification code
+                  setSentCode(res.data.code);
+                  toast.success(
+                    langToggle
+                      ? "Баталгаажуулах код илгээгдлээ!"
+                      : "Verification code sent!"
+                  );
                   setError("");
                   setStep(2);
                 } catch (error: any) {
@@ -391,6 +441,10 @@ const Step1: React.FC<Step1Props> = ({
                   setError(
                     error.response?.data?.message ||
                       "Алдаа гарлаа. Та дахин оролдоно уу."
+                  );
+                  toast.error(
+                    error.response?.data?.message ||
+                      "An error occurred. Please try again."
                   );
                 }
               }}
@@ -424,6 +478,7 @@ interface Step2Props {
   error: string;
   setStep: (step: number) => void;
   isEmail: (value: string) => boolean;
+  isPhone: (value: string) => boolean;
   timer: number;
   onResend: () => void;
   langToggle: boolean;
@@ -432,6 +487,7 @@ interface Step2Props {
   signIn: typeof signIn;
   setLogin: (login: boolean) => void;
   sentCode: string;
+  setSentCode: (code: string) => void;
 }
 
 const Step2: React.FC<Step2Props> = ({
@@ -443,6 +499,7 @@ const Step2: React.FC<Step2Props> = ({
   error,
   setStep,
   isEmail,
+  isPhone,
   timer,
   onResend,
   langToggle,
@@ -450,14 +507,23 @@ const Step2: React.FC<Step2Props> = ({
   text,
   signIn,
   setLogin,
-  sentCode, // ✅ ADD THIS LINE
+  sentCode,
+  setSentCode,
 }) => {
-  // Add local error state for code verification
   const [localError, setLocalError] = useState("");
+  const [verifying, setVerifying] = useState(false);
 
-  const handleVerifyCode = () => {
+  const handleVerifyCode = async () => {
+    if (verifying) return;
+
+    setLocalError("");
     if (confirmationCode.length !== 6) {
       setLocalError(
+        langToggle
+          ? "6 оронтой кодоо бүрэн оруулна уу."
+          : "Please enter the full 6-digit code."
+      );
+      toast.error(
         langToggle
           ? "6 оронтой кодоо бүрэн оруулна уу."
           : "Please enter the full 6-digit code."
@@ -465,13 +531,117 @@ const Step2: React.FC<Step2Props> = ({
       return;
     }
 
-    const input = confirmationCode.trim();
-    const correct = sentCode.trim();
+    setVerifying(true);
 
-    if (input === correct) {
-      setStep(3);
-    } else {
-      setLocalError(langToggle ? "Код буруу байна." : "Incorrect code.");
+    try {
+      console.log("Entered code:", confirmationCode);
+      console.log("Expected code from server:", sentCode);
+
+      if (confirmationCode === sentCode) {
+        toast.success(
+          langToggle
+            ? "Код амжилттай баталгаажлаа!"
+            : "Code verified successfully!"
+        );
+        setStep(3);
+        return;
+      }
+
+      const isEmailFormat = isEmail(contactInfo);
+      const isPhoneFormat = isPhone(contactInfo);
+
+      const payload = {
+        sn: "customer_verify_email",
+        code: confirmationCode,
+        email: isEmailFormat ? contactInfo : "",
+        phone: isPhoneFormat ? contactInfo : "",
+      };
+
+      console.log("Verifying with API payload:", payload);
+
+      const res = await axios.post("/api/api_open", payload);
+      console.log("API verification response:", res.data);
+
+      if (res.data.status === "success") {
+        toast.success(
+          langToggle
+            ? "Код амжилттай баталгаажлаа!"
+            : "Code verified successfully!"
+        );
+        setStep(3);
+      } else {
+        setLocalError(
+          res.data.message ||
+            (langToggle ? "Код буруу байна." : "Invalid code.")
+        );
+        toast.error(
+          res.data.message ||
+            (langToggle ? "Код буруу байна." : "Invalid code.")
+        );
+      }
+    } catch (error: any) {
+      console.error("Verification error:", error);
+      setLocalError(
+        error.response?.data?.message ||
+          (langToggle
+            ? "Алдаа гарлаа. Та дахин оролдоно уу."
+            : "An error occurred. Please try again.")
+      );
+      toast.error(
+        error.response?.data?.message ||
+          (langToggle
+            ? "Алдаа гарлаа. Та дахин оролдоно уу."
+            : "An error occurred. Please try again.")
+      );
+    } finally {
+      setVerifying(false);
+    }
+  };
+
+  const handleResend = async () => {
+    onResend();
+
+    try {
+      const isEmailFormat = isEmail(contactInfo);
+      const isPhoneFormat = isPhone(contactInfo);
+      const payload: Record<string, string> = {
+        sn: "customer_send_code_signup",
+        to_value: contactInfo,
+        type: isEmailFormat ? "1" : "2",
+      };
+
+      console.log("Resending code with payload:", payload);
+      const res = await axios.post("/api/api_open", payload);
+      console.log("Resend API response:", res.data);
+
+      if (res.data.status === "success") {
+        if (res.data.code) {
+          console.log("New code received:", res.data.code);
+          setSentCode(res.data.code);
+          toast.success(
+            langToggle ? "Код дахин илгээгдлээ!" : "Code resent successfully!"
+          );
+        } else {
+          console.warn("No code in response", res.data);
+          toast.warning(
+            langToggle
+              ? "Код хүлээн авах боломжгүй байна"
+              : "Unable to receive verification code"
+          );
+        }
+      } else {
+        console.error("API error response:", res.data);
+        toast.error(
+          res.data.message ||
+            (langToggle ? "Код илгээхэд алдаа гарлаа!" : "Error sending code!")
+        );
+      }
+    } catch (error: any) {
+      console.error("API error:", error);
+      toast.error(
+        error.response?.data?.message ||
+          (langToggle ? "Сүлжээний алдаа!" : "Network error!")
+      );
     }
   };
 
@@ -503,7 +673,7 @@ const Step2: React.FC<Step2Props> = ({
               onClick={() => setStep(1)}
               className="h-8 text-start flex mt-[10px] items-center justify-start text-sm text-gray-700 mb-2"
             >
-              <ChevronLeft className="w-5  h-5" />
+              <ChevronLeft className="w-5 h-5" />
               {langToggle ? "Буцах" : "back"}
             </button>
             <div className="text-[#9A9A9A] mt-3 flex-col font-normal text-sm flex gap-2">
@@ -516,7 +686,7 @@ const Step2: React.FC<Step2Props> = ({
               <div className="flex gap-2 mt-[17px]">
                 {langToggle ? text.mn.description1 : text.en.description1}
                 <div
-                  onClick={() => setLogin(true)} // Changed from setStep(0)
+                  onClick={() => setLogin(true)}
                   className="underline cursor-pointer"
                 >
                   {langToggle ? text.mn.description2 : text.en.description2}
@@ -525,15 +695,16 @@ const Step2: React.FC<Step2Props> = ({
             </div>
           </div>
 
-          <div className="mb-4 mt-[44px]">
+          <div className="mt-[44px]">
             <div className="flex gap-4">
               <DisabledInput value={lastName} />
               <DisabledInput value={firstName} />
             </div>
             <DisabledInput value={contactInfo} />
           </div>
-          <div className="text-[32px] pb-1 pt-[44px] text-black font-semibold">
-            Confirmation.
+          <div className="text-[32px] flex gap-2 pb-1 pt-[36px] text-black font-semibold">
+            Confirmation
+            <p className="text-[#F5BE32]">.</p>
           </div>
           <div className="text-sm py-1 text-[#9A9A9A]">
             {isEmail(contactInfo)
@@ -541,21 +712,66 @@ const Step2: React.FC<Step2Props> = ({
               : "Enter the code we sent to your phone."}
           </div>
           <OtpInput value={confirmationCode} onChange={setConfirmationCode} />
-          <div className="text-xs text-[#9A9A9A] mb-4">
+          <div className="text-base font-semibold text-[#707070] mt-4 flex items-center">
+            <span>{langToggle ? "Дахин илгээх" : "Resend code"}</span>
             {timer > 0 ? (
-              <>Resend code 0:{timer.toString().padStart(2, "0")}</>
+              <div className="ml-2 relative">
+                <div className="flex items-center justify-center">
+                  <svg className="w-6 h-6">
+                    <circle
+                      className="text-gray-200"
+                      strokeWidth="2"
+                      stroke="currentColor"
+                      fill="transparent"
+                      r="10"
+                      cx="12"
+                      cy="12"
+                    />
+                    <circle
+                      className="text-yellow-400"
+                      strokeWidth="2"
+                      strokeDasharray={63}
+                      strokeDashoffset={63 - (63 * timer) / 60}
+                      strokeLinecap="round"
+                      stroke="currentColor"
+                      fill="transparent"
+                      r="10"
+                      cx="12"
+                      cy="12"
+                    />
+                  </svg>
+                  <span className="absolute text-xs">{timer}</span>
+                </div>
+              </div>
             ) : (
-              <button onClick={onResend} className="text-gray-700 underline">
-                Resend code
+              <button
+                onClick={handleResend}
+                className="ml-2 underline text-yellow-500 hover:text-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2 rounded-sm"
+                disabled={timer > 0}
+                aria-label="Resend verification code"
+              >
+                {langToggle ? "Илгээх" : "Send"}
               </button>
             )}
           </div>
           <div className="flex flex-col mt-[60px] items-center">
             <Button
               onClick={handleVerifyCode}
-              className="w-[367px] h-[56px] cursor-pointer items-center rounded-xl text-white text-lg font-medium bg-gradient-to-r from-[#EAC947] to-[#F6A253] hover:opacity-90"
+              disabled={verifying || confirmationCode.length !== 6}
+              className="w-[367px] h-[56px] cursor-pointer items-center rounded-xl text-white text-lg font-medium bg-gradient-to-r from-[#EAC947] to-[#F6A253] hover:opacity-90 disabled:opacity-50 transition-opacity duration-200"
             >
-              {langToggle ? "Үргэлжлүүлэх" : "Continue"}
+              {verifying ? (
+                <div className="flex items-center justify-center w-full">
+                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                  <span>
+                    {langToggle ? "Баталгаажуулж байна..." : "Verifying..."}
+                  </span>
+                </div>
+              ) : langToggle ? (
+                "Үргэлжлүүлэх"
+              ) : (
+                "Continue"
+              )}
             </Button>
           </div>
           <p className="text-sm text-red-500 mt-2">{localError || error}</p>
@@ -584,6 +800,7 @@ interface Step3Props {
   setRepassword: (repassword: string) => void;
   onSubmit: () => void;
   error: string;
+  setError: (error: string) => void;
   langToggle: boolean;
   setLangToggle: (langToggle: boolean) => void;
   text: TranslationText;
@@ -602,103 +819,173 @@ const Step3: React.FC<Step3Props> = ({
   setRepassword,
   onSubmit,
   error,
+  setError,
   langToggle,
   setLangToggle,
   text,
   signIn,
   setStep,
   setLogin,
-}) => (
-  <div className="font-lato flex w-[1586px] rounded-3xl h-[900px] bg-[#f3f3f3]">
-    <div className="hidden md:flex md:w-1/2 pl-12 flex-col items-center justify-center p-12 pt-[80px] text-white">
-      <div className="w-full justify-between items-center h-full max-w-[585px]">
-        <div className="text-start">
-          <div className="flex justify-between">
-            <div className="flex items-center gap-1">
-              <img className="w-[30px] h-[30px]" src="/blacklogo.png" alt="" />
-              <p className="text-2xl text-[#5C5C5C]">restaurant.mn</p>
-            </div>
-            <div
-              onClick={() => setLangToggle(!langToggle)}
-              className="flex items-center cursor-pointer justify-center h-7 gap-1"
-            >
-              <Earth className="text-black h-[30px] w-[30px]" />
-              <div className="text-black text-2xl w-9">
-                {langToggle ? text.mn.mn : text.en.en}
+}) => {
+  const [showPassword, setShowPassword] = useState(false);
+  const [showRePassword, setShowRePassword] = useState(false);
+
+  return (
+    <div className="font-lato flex w-[1586px] rounded-3xl h-[900px] bg-[#f3f3f3]">
+      <div className="hidden md:flex md:w-1/2 pl-12 flex-col items-center justify-center p-12 pt-[80px] text-white">
+        <div className="w-full justify-between items-center h-full max-w-[585px]">
+          <div className="text-start">
+            <div className="flex justify-between">
+              <div className="flex items-center gap-1">
+                <img
+                  className="w-[30px] h-[30px]"
+                  src="/blacklogo.png"
+                  alt=""
+                />
+                <p className="text-2xl text-[#5C5C5C]">restaurant.mn</p>
               </div>
-            </div>
-          </div>
-          <button
-            onClick={() => setStep(2)}
-            className="h-8 text-start flex mt-[10px] items-center justify-start text-sm text-gray-700 mb-2"
-          >
-            <ChevronLeft className="w-5  h-5" />
-            {langToggle ? "Буцах" : "back"}
-          </button>
-          <div className="text-[#9A9A9A] mt-3 flex-col font-normal text-sm flex gap-2">
-            <h1 className="text-[32px] mt-[28px] font-semibold text-[#161616]">
-              {langToggle ? text.mn.head : text.en.head}
-              <span className="text-[#F5BE32] font-medium">
-                {langToggle ? text.mn.headTseg : text.en.headTseg}
-              </span>
-            </h1>
-            <div className="flex gap-2 mt-[17px]">
-              {langToggle ? text.mn.description1 : text.en.description1}
               <div
-                onClick={() => setLogin(true)} // Changed from setStep(0)
-                className="underline cursor-pointer"
+                onClick={() => setLangToggle(!langToggle)}
+                className="flex items-center cursor-pointer justify-center h-7 gap-1"
               >
-                {langToggle ? text.mn.description2 : text.en.description2}
+                <Earth className="text-black h-[30px] w-[30px]" />
+                <div className="text-black text-2xl w-9">
+                  {langToggle ? text.mn.mn : text.en.en}
+                </div>
+              </div>
+            </div>
+            <button
+              onClick={() => setStep(2)}
+              className="h-8 text-start flex mt-[10px] items-center justify-start text-sm text-gray-700 mb-2"
+            >
+              <ChevronLeft className="w-5 h-5" />
+              {langToggle ? "Буцах" : "back"}
+            </button>
+            <div className="text-[#9A9A9A] mt-3 flex-col font-normal text-sm flex gap-2">
+              <h1 className="text-[32px] mt-[28px] font-semibold text-[#161616]">
+                {langToggle ? text.mn.head : text.en.head}
+                <span className="text-[#F5BE32] font-medium">
+                  {langToggle ? text.mn.headTseg : text.en.headTseg}
+                </span>
+              </h1>
+              <div className="flex gap-2 mt-[17px]">
+                {langToggle ? text.mn.description1 : text.en.description1}
+                <div
+                  onClick={() => setLogin(true)}
+                  className="underline cursor-pointer"
+                >
+                  {langToggle ? text.mn.description2 : text.en.description2}
+                </div>
               </div>
             </div>
           </div>
-        </div>
-        <div className="mb-4 pt-[44px]">
-          <div className="flex gap-4">
-            <DisabledInput value={lastName} />
-            <DisabledInput value={firstName} />
+          <div className="mb-4 pt-[44px]">
+            <div className="flex gap-4">
+              <DisabledInput value={lastName} />
+              <DisabledInput value={firstName} />
+            </div>
+            <DisabledInput value={contactInfo} />
           </div>
-          <DisabledInput value={contactInfo} />
-        </div>
-        <div className="mt-7 flex flex-col gap-4">
-          <Input
-            id="passwordRegister"
-            type="password"
-            placeholder={langToggle ? text.mn.inputText4 : text.en.inputText4}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="h-[58px] rounded-md text-black border-[#e0e0e0] bg-[#ECECEC] px-4 text-lg placeholder:text-[#ababab]"
-          />
-          <Input
-            id="repasswordRegister"
-            type="password"
-            placeholder={langToggle ? text.mn.inputText5 : text.en.inputText5}
-            value={repassword}
-            onChange={(e) => setRepassword(e.target.value)}
-            className="h-[58px] rounded-md text-black border-[#e0e0e0] bg-[#ECECEC] px-4 text-lg placeholder:text-[#ababab]"
-          />
-          <div className="flex flex-col mt-3 items-center">
-            <Button
-              onClick={onSubmit}
-              className="w-[367px] h-[56px] cursor-pointer rounded-xl text-white text-lg font-medium bg-gradient-to-r from-[#EAC947] to-[#F6A253] hover:opacity-90"
-            >
-              {langToggle ? text.mn.button : text.en.button}
-            </Button>
+          <div className="mt-7 flex flex-col gap-4">
+            <div className="relative">
+              <Input
+                id="passwordRegister"
+                type={showPassword ? "text" : "password"}
+                placeholder={
+                  langToggle ? text.mn.inputText4 : text.en.inputText4
+                }
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="h-[58px] rounded-md text-black border-[#e0e0e0] bg-[#ECECEC] px-4 text-lg placeholder:text-[#ababab] pr-12"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? (
+                  <EyeOff className="h-5 w-5" />
+                ) : (
+                  <Eye className="h-5 w-5" />
+                )}
+              </button>
+            </div>
+
+            <div className="relative">
+              <Input
+                id="repasswordRegister"
+                type={showRePassword ? "text" : "password"}
+                placeholder={
+                  langToggle ? text.mn.inputText5 : text.en.inputText5
+                }
+                value={repassword}
+                onChange={(e) => setRepassword(e.target.value)}
+                className="h-[58px] rounded-md text-black border-[#e0e0e0] bg-[#ECECEC] px-4 text-lg placeholder:text-[#ababab] pr-12"
+              />
+              <button
+                type="button"
+                onClick={() => setShowRePassword(!showRePassword)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
+                aria-label={showRePassword ? "Hide password" : "Show password"}
+              >
+                {showRePassword ? (
+                  <EyeOff className="h-5 w-5" />
+                ) : (
+                  <Eye className="h-5 w-5" />
+                )}
+              </button>
+            </div>
+
+            <div className="flex flex-col mt-3 items-center">
+              <Button
+                onClick={() => {
+                  if (password.length < 8) {
+                    setError(
+                      langToggle
+                        ? "Нууц үг хамгийн багадаа 8 тэмдэгт байх ёстой."
+                        : "Password must be at least 8 characters."
+                    );
+                    toast.error(
+                      langToggle
+                        ? "Нууц үг хамгийн багадаа 8 тэмдэгт байх ёстой."
+                        : "Password must be at least 8 characters."
+                    );
+                    return;
+                  }
+
+                  if (repassword !== password) {
+                    setError("Нууц үг таарахгүй байна");
+                    toast.error(
+                      langToggle
+                        ? "Нууц үг таарахгүй байна"
+                        : "Passwords do not match"
+                    );
+                    return;
+                  }
+
+                  onSubmit();
+                }}
+                className="w-[367px] h-[56px] cursor-pointer rounded-xl text-white text-lg font-medium bg-gradient-to-r from-[#EAC947] to-[#F6A253] hover:opacity-90"
+              >
+                {langToggle ? text.mn.button : text.en.button}
+              </Button>
+            </div>
+            <p className="text-sm text-red-500 mt-2">{error}</p>
           </div>
-          <p className="text-sm text-red-500 mt-2">{error}</p>
+          <SocialLogin signIn={signIn} langToggle={langToggle} text={text} />
         </div>
-        <SocialLogin signIn={signIn} langToggle={langToggle} text={text} />
+      </div>
+      <div className="w-full md:w-1/2 flex flex-col items-center justify-center">
+        <img
+          className="h-full md:w-full rounded-r-3xl"
+          src="/login/image.png"
+          alt=""
+        />
       </div>
     </div>
-    <div className="w-full md:w-1/2 flex flex-col items-center justify-center">
-      <img
-        className="h-full md:w-full rounded-r-3xl"
-        src="/login/image.png"
-        alt=""
-      />
-    </div>
-  </div>
-);
+  );
+};
 
 const RestRegister: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -720,7 +1007,7 @@ const RestRegister: React.FC = () => {
   const [id, setId] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [sentCode, setSentCode] = useState(""); // ✅ stores backend code for verification
+  const [sentCode, setSentCode] = useState("");
 
   const text: TranslationText = {
     mn: {
@@ -783,22 +1070,22 @@ const RestRegister: React.FC = () => {
     }
 
     try {
-      const isPhone = /^\d{8}$/.test(contactInfoValue);
-      const isEmail = /@/.test(contactInfoValue);
-
-      const response = await axios.post("/api/api_open", {
+      const isEmailFormat = isEmail(contactInfoValue);
+      
+      const payload = {
         sn: "customer_add",
         first_name: firstName,
         last_name: lastName,
         password,
-        phone: isPhone ? contactInfoValue : "",
-        email: isEmail ? contactInfoValue : "",
-      });
+        phone: isEmailFormat ? "" : contactInfoValue,
+        email: isEmailFormat ? contactInfoValue : "",
+      };
+
+      const response = await axios.post("/api/api_open", payload);
 
       if (response.data.status === "success") {
         setError("");
         setId(response.data.new_id || "");
-        // Show success toast
         toast.success(
           langToggle ? "Амжилттай бүртгэгдлээ!" : "Successfully registered!",
           {
@@ -810,36 +1097,61 @@ const RestRegister: React.FC = () => {
             draggable: true,
           }
         );
-
-        // Redirect to RestLogin
         setLogin(true);
+      } else if (response.data.message === "И-мэйл бүртгэлтэй байна.") {
+        // If email is already registered
+        toast.info(
+          langToggle 
+            ? "Таны и-мэйл бүртгэлтэй байна. Нэвтрэх хуудас руу шилжүүлж байна."
+            : "Your email is already registered. Redirecting to login page.",
+          {
+            position: "top-right",
+            autoClose: 3000,
+          }
+        );
+        setTimeout(() => {
+          setLogin(true);
+        }, 2000);
       } else {
-        // Display specific API error message
         setError(
           response.data.message ||
             (langToggle ? "Бүртгэл амжилтгүй боллоо" : "Registration failed")
         );
-        // Reset contactInfo to allow user to try a different email/phone
-        setContactInfo("");
-        setStep(1); // Go back to Step 1 to re-enter contact info
       }
     } catch (error: any) {
       console.error("Registration error:", error);
-      setError(
-        error.response?.data?.message ||
-          (langToggle
-            ? "Бүртгэлийн явцад алдаа гарлаа"
-            : "An error occurred during registration")
-      );
-      // Reset contactInfo and go back to Step 1
-      setContactInfo("");
-      setStep(1);
+      
+      // Check if the error is about already registered email
+      if (error.response?.data?.message === "И-мэйл бүртгэлтэй байна.") {
+        toast.info(
+          langToggle 
+            ? "Таны и-мэйл бүртгэлтэй байна. Нэвтрэх хуудас руу шилжүүлж байна."
+            : "Your email is already registered. Redirecting to login page.",
+          {
+            position: "top-right",
+            autoClose: 3000,
+          }
+        );
+        setTimeout(() => {
+          setLogin(true);
+        }, 2000);
+      } else {
+        setError(
+          error.response?.data?.message ||
+            (langToggle
+              ? "Бүртгэлийн явцад алдаа гарлаа"
+              : "An error occurred during registration")
+        );
+      }
     }
   };
 
-  const isEmail = (value: string): boolean => /@/.test(value);
+  const isEmail = (value: string): boolean =>
+    value.includes("@") && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
-  const [timer, setTimer] = useState(60);
+  const isPhone = (value: string): boolean => /^\d{8}$/.test(value);
+
+  const [timer, setTimer] = useState(45);
   useEffect(() => {
     if (step === 2 && timer > 0) {
       const interval = setInterval(() => setTimer((t) => t - 1), 1000);
@@ -847,7 +1159,51 @@ const RestRegister: React.FC = () => {
     }
   }, [step, timer]);
 
-  const onResend = () => setTimer(60);
+  const onResend = async () => {
+    setTimer(45);
+    try {
+      const isEmailFormat = isEmail(contactInfo);
+      const isPhoneFormat = isPhone(contactInfo);
+      const payload: Record<string, string> = {
+        sn: "customer_send_code_signup",
+        to_value: contactInfo,
+        type: isEmailFormat ? "1" : "2",
+      };
+
+      console.log("Resending code with payload:", payload);
+      const res = await axios.post("/api/api_open", payload);
+      console.log("Resend API response:", res.data);
+
+      if (res.data.status === "success") {
+        if (res.data.code) {
+          console.log("New code received:", res.data.code);
+          setSentCode(res.data.code);
+          toast.success(
+            langToggle ? "Код дахин илгээгдлээ!" : "Code resent successfully!"
+          );
+        } else {
+          console.warn("No code in response", res.data);
+          toast.warning(
+            langToggle
+              ? "Код хүлээн авах боломжгүй байна"
+              : "Unable to receive verification code"
+          );
+        }
+      } else {
+        console.error("API error response:", res.data);
+        toast.error(
+          res.data.message ||
+            (langToggle ? "Код илгээхэд алдаа гарлаа!" : "Error sending code!")
+        );
+      }
+    } catch (error: any) {
+      console.error("API error:", error);
+      toast.error(
+        error.response?.data?.message ||
+          (langToggle ? "Сүлжээний алдаа!" : "Network error!")
+      );
+    }
+  };
 
   let content: JSX.Element;
   if (login) {
@@ -870,7 +1226,7 @@ const RestRegister: React.FC = () => {
         setLangToggle={setLangToggle}
         text={text}
         signIn={signIn}
-        setLogin={setLogin} // Pass setLogin prop
+        setLogin={setLogin}
         setSentCode={setSentCode}
       />
     );
@@ -884,15 +1240,17 @@ const RestRegister: React.FC = () => {
         setConfirmationCode={setConfirmationCode}
         error={error}
         setStep={setStep}
-        isEmail={isEmail}
         timer={timer}
         onResend={onResend}
         langToggle={langToggle}
         setLangToggle={setLangToggle}
         text={text}
         signIn={signIn}
-        setLogin={setLogin} // Pass setLogin prop
+        setLogin={setLogin}
         sentCode={sentCode}
+        setSentCode={setSentCode}
+        isEmail={isEmail}
+        isPhone={isPhone}
       />
     );
   } else {
@@ -907,12 +1265,13 @@ const RestRegister: React.FC = () => {
         setRepassword={setRepassword}
         onSubmit={onSubmit}
         error={error}
+        setError={setError}
         langToggle={langToggle}
         setLangToggle={setLangToggle}
         text={text}
         signIn={signIn}
         setStep={setStep}
-        setLogin={setLogin} // Pass setLogin prop
+        setLogin={setLogin}
       />
     );
   }

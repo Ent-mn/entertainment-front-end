@@ -70,7 +70,7 @@ const OtpInput = ({
     const paste = e.clipboardData.getData("text").replace(/[^0-9]/g, "");
     if (paste.length === 6) {
       onChange(paste);
-
+      // Focus last input
       setTimeout(() => {
         inputs.current[5]?.focus();
       }, 0);
@@ -149,7 +149,7 @@ export default function ResetPasswordCode({
 }: ResetPasswordCodeProps) {
   const [code, setCode] = useState("");
   const [error, setError] = useState("");
-  const [timer, setTimer] = useState(45);
+  const [timer, setTimer] = useState(5);
   const [loading, setLoading] = useState(false);
   const [resendLoading, setResendLoading] = useState(false);
   const [verifying, setVerifying] = useState(false);

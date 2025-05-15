@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { Eye, EyeOff } from "lucide-react";
 
 interface ResetPasswordNewProps {
   email: string;
@@ -21,6 +22,8 @@ export default function ResetPasswordNew({
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [langToggle, setLangToggle] = useState(true); // default to MN
+  const [showPassword, setShowPassword] = useState(false);
+  const [showRepeatPassword, setShowRepeatPassword] = useState(false);
 
   const text = {
     mn: {
@@ -115,20 +118,50 @@ export default function ResetPasswordNew({
         <p className="text-[#9A9A9A] text-base">{t.description}</p>
 
         <div className="flex flex-col w-[464px] gap-4">
-          <Input
-            type="password"
-            placeholder={t.password1}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="h-14 rounded-xl w-[464px] text-black border-[#e0e0e0] bg-[#ECECEC] px-4 text-lg placeholder:text-[#ababab]"
-          />
-          <Input
-            type="password"
-            placeholder={t.password2}
-            value={repeat}
-            onChange={(e) => setRepeat(e.target.value)}
-            className="h-14 rounded-xl w-[464px] text-black border-[#e0e0e0] bg-[#ECECEC] px-4 text-lg placeholder:text-[#ababab]"
-          />
+          <div className="relative">
+            <Input
+              type={showPassword ? "text" : "password"}
+              placeholder={t.password1}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="h-14 rounded-xl w-[464px] text-black border-[#e0e0e0] bg-[#ECECEC] px-4 text-lg placeholder:text-[#ababab] pr-12"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
+              aria-label={showPassword ? "Hide password" : "Show password"}
+            >
+              {showPassword ? (
+                <EyeOff className="h-5 w-5" />
+              ) : (
+                <Eye className="h-5 w-5" />
+              )}
+            </button>
+          </div>
+          
+          <div className="relative">
+            <Input
+              type={showRepeatPassword ? "text" : "password"}
+              placeholder={t.password2}
+              value={repeat}
+              onChange={(e) => setRepeat(e.target.value)}
+              className="h-14 rounded-xl w-[464px] text-black border-[#e0e0e0] bg-[#ECECEC] px-4 text-lg placeholder:text-[#ababab] pr-12"
+            />
+            <button
+              type="button"
+              onClick={() => setShowRepeatPassword(!showRepeatPassword)}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
+              aria-label={showRepeatPassword ? "Hide password" : "Show password"}
+            >
+              {showRepeatPassword ? (
+                <EyeOff className="h-5 w-5" />
+              ) : (
+                <Eye className="h-5 w-5" />
+              )}
+            </button>
+          </div>
+          
           {error && <p className="text-sm text-red-500">{error}</p>}
         </div>
 

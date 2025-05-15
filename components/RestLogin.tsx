@@ -10,6 +10,7 @@ import RestForgetPass from "./RestForgetPass";
 import { useSession, signIn, signOut } from "next-auth/react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Eye, EyeOff } from "lucide-react";
 
 const RestLogin = () => {
   const [email, setEmail] = useState("");
@@ -18,6 +19,7 @@ const RestLogin = () => {
   const [register, setRegister] = useState(false);
   const [forget, setForget] = useState(false);
   const [langToggle, setLangToggle] = useState(true);
+  const [showPassword, setShowPassword] = useState(false);
 
   const { login } = useUser();
   const router = useRouter();
@@ -201,17 +203,29 @@ const RestLogin = () => {
                     className="h-14 rounded-xl text-black border-[#e0e0e0] bg-[#ECECEC] px-4 text-lg placeholder:text-[#ababab]"
                   />
                 </div>
-                <div className="space-y-2" onChange={handleChange}>
+                <div className="space-y-2 relative" onChange={handleChange}>
                   <Input
                     id="password"
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     placeholder={
                       langToggle ? text.mn.inputText2 : text.en.inputText2
                     }
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="h-14 rounded-xl border-[#e0e0e0] text-black bg-[#ECECEC] px-4 text-lg placeholder:text-[#ababab]"
+                    className="h-14 rounded-xl border-[#e0e0e0] text-black bg-[#ECECEC] px-4 text-lg placeholder:text-[#ababab] pr-12"
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-5 w-5" />
+                    ) : (
+                      <Eye className="h-5 w-5" />
+                    )}
+                  </button>
                 </div>
                 <p className="text-sm text-red-500">{error}</p>
               </div>
