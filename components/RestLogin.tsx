@@ -31,7 +31,7 @@ const RestLogin = () => {
       description2: "Бүртгүүлэх",
       inputText1: "И-мэйл эсвэл Утасны дугаар",
       inputText2: "Нууц үг",
-      text1: "Нүүц үг сэргээх",
+      text1: "Нууц үгээ мартсан",
       button: "Нэвтрэх",
       text2: "Эсвэл",
     },

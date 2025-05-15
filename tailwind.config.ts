@@ -79,6 +79,7 @@ const config: Config = {
       },
       fontFamily: {
         playfair: ['Playfair Display', 'serif'],
+        lato: ['var(--font-lato)', 'Lato', 'sans-serif'],
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",

@@ -10,6 +10,7 @@ import axios from "axios";
 import ResetPasswordCode from "./ResetPasswordCode";
 import ResetPasswordNew from "./ResetPasswordNew";
 import RestLogin from "./RestLogin";
+import RestRegister from "./RestRegister";
 import { toast } from "react-toastify";
 
 const RestForgetPass = ({ onBack }: { onBack?: () => void }) => {
@@ -22,6 +23,7 @@ const RestForgetPass = ({ onBack }: { onBack?: () => void }) => {
   const [sentCode, setSentCode] = useState("");
   const [userId, setUserId] = useState<number | null>(null);
   const [showLogin, setShowLogin] = useState(false);
+  const [register, setRegister] = useState(false);
 
   const router = useRouter();
 
@@ -29,7 +31,7 @@ const RestForgetPass = ({ onBack }: { onBack?: () => void }) => {
     mn: {
       mn: "mn",
       head: "Нууц үг сэргээх",
-      inputText1: "И-мэйл",
+      inputText1: "Утасны дугаар эсвэл е-майл хаяг",
       button: "Баталгаажуулах код илгээх",
       success: "Нууц үг сэргээх код таны и-мэйл хаяг руу илгээгдлээ",
       error: "Алдаа гарлаа, дахин оролдоно уу",
@@ -40,7 +42,7 @@ const RestForgetPass = ({ onBack }: { onBack?: () => void }) => {
     en: {
       en: "en",
       head: "Forgot Password",
-      inputText1: "E-mail",
+      inputText1: "Phone number or E-mail",
       button: "Send confirmation Code",
       success: "A reset code has been sent to your email address",
       error: "An error occurred, please try again",
@@ -101,6 +103,10 @@ const RestForgetPass = ({ onBack }: { onBack?: () => void }) => {
 
     fetchData();
   };
+
+  if (register) {
+    return <RestRegister />;
+  }
 
   if (showLogin) {
     return <RestLogin />;
@@ -166,7 +172,10 @@ const RestForgetPass = ({ onBack }: { onBack?: () => void }) => {
         {/* Description: Don't have an account? Sign Up */}
         <div className="text-[#9A9A9A] font-normal text-base pt-4 flex gap-2">
           {langToggle ? text.mn.description1 : text.en.description1}
-          <div className="underline cursor-pointer">
+          <div
+            onClick={() => setRegister(true)}
+            className="underline cursor-pointer"
+          >
             {langToggle ? text.mn.description2 : text.en.description2}
           </div>
         </div>
@@ -196,9 +205,9 @@ const RestForgetPass = ({ onBack }: { onBack?: () => void }) => {
             {langToggle ? text.mn.button : text.en.button}
           </Button>
           {/* Divider */}
-          <div className="flex gap-4 justify-center items-center my-[21px] w-[360px]">
+          <div className="flex gap-4 justify-center items-center my-[21px] w-[370px]">
             <img className="h-[1px] w-[130px]" src="/login/Line.png" alt="" />
-            <div className="text-[#676767] text-[10px]">
+            <div className="text-[#676767] text-[12px]">
               {langToggle ? text.mn.text2 : text.en.text2}
             </div>
             <img className="h-[1px] w-[130px]" src="/login/Line.png" alt="" />
