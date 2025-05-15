@@ -23,8 +23,6 @@ const RestLogin = () => {
   const router = useRouter();
   const { data: session, status } = useSession();
 
-  console.log(session, status);
-
   const text = {
     mn: {
       mn: "mn",

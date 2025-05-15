@@ -86,7 +86,9 @@ const RestForgetPass = ({ onBack }: { onBack?: () => void }) => {
           setSentCode(data.code || "000000"); // fallback for demo
           setUserId(Number(data.customer_id)); // store user id from API
           setStep(2);
-          toast.success(langToggle ? "Код илгээгдлээ!" : "Code sent to your email!");
+          toast.success(
+            langToggle ? "Код илгээгдлээ!" : "Code sent to your email!"
+          );
         } else {
           setError(langToggle ? text.mn.error : text.en.error);
         }
@@ -111,6 +113,8 @@ const RestForgetPass = ({ onBack }: { onBack?: () => void }) => {
         sentCode={sentCode}
         onSuccess={() => setStep(3)}
         onBack={() => setStep(1)}
+        langToggle={langToggle}
+        setLangToggle={setLangToggle}
       />
     );
   }
