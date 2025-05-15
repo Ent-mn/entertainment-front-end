@@ -65,7 +65,7 @@ const DisabledInput: React.FC<DisabledInputProps> = ({ value }) => (
     type="text"
     value={value}
     disabled
-    className="h-[54px] w-full rounded-xl text-black border-[#e0e0e0] bg-[#ECECEC] px-4 text-[16px] placeholder:text-[#ababab] opacity-80 cursor-not-allowed mb-2"
+    className="h-[54px] w-full rounded-xl text-black border-[#e0e0e0] bg-[#ECECEC] px-4 text-[15px] placeholder:text-[#ababab] opacity-80 cursor-not-allowed mb-2"
   />
 );
 
@@ -153,33 +153,33 @@ const SocialLogin: React.FC<SocialLoginProps> = ({
         </div>
         <img className="h-[1px] w-[135px]" src="/login/Line.png" alt="" />
       </div>
-      <div className="grid grid-cols-2 gap-3 mt-4 h-9 w-[367px]">
+      <div className="grid grid-cols-2 gap-2 mt-4 h-9 w-[367px]">
         <button
           type="button"
           onClick={() => signIn("facebook", { callbackUrl: "/restaurant" })}
-          className="flex items-center justify-center h-[38px] w-[178px] px-1 border border-[#e0e0e0] rounded-xl bg-white"
+          className="flex items-center justify-center gap-2 p-3 border border-[#e0e0e0] rounded-2xl bg-white"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="25"
-            height="25"
+            width="30"
+            height="30"
             viewBox="0 0 24 24"
-            fill="#1577f2"
+            fill="#1577F2"
           >
             <path d="M12 2.04C6.5 2.04 2 6.53 2 12.06C2 17.06 5.66 21.21 10.44 21.96V14.96H7.9V12.06H10.44V9.85C10.44 7.34 11.93 5.96 14.22 5.96C15.31 5.96 16.45 6.15 16.45 6.15V8.62H15.19C13.95 8.62 13.56 9.39 13.56 10.18V12.06H16.34L15.89 14.96H13.56V21.96C18.34 21.21 22 17.06 22 12.06C22 6.53 17.5 2.04 12 2.04Z" />
           </svg>
-          <span className="text-[#8c8c8c] text-[8px] ml-1">
+          <span className="text-[#8c8c8c] font-normal  text-[11px]">
             Sign up with Facebook
           </span>
         </button>
         <button
           type="button"
           onClick={() => signIn("google", { callbackUrl: "/restaurant" })}
-          className="flex items-center justify-center h-[38px]  w-[178px] gap-1 px-1 border border-[#e0e0e0] rounded-xl bg-white"
+          className="flex items-center justify-center gap-2 p-3 border border-[#e0e0e0] rounded-2xl bg-white"
         >
           <svg
-            width="18"
-            height="18"
+            width="24"
+            height="24"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
           >
@@ -200,7 +200,9 @@ const SocialLogin: React.FC<SocialLoginProps> = ({
               fill="#EA4335"
             />
           </svg>
-          <span className="text-[#8c8c8c] text-[8px]">Sign up with Google</span>
+          <span className="text-[#8c8c8c] font-normal  text-[11px]">
+            Sign up with Google
+          </span>
         </button>
       </div>
     </div>
@@ -225,6 +227,7 @@ interface Step1Props {
   text: TranslationText;
   signIn: typeof signIn;
   setLogin: (login: boolean) => void; // Add setLogin prop
+  setSentCode: (code: string) => void;
 }
 
 const Step1: React.FC<Step1Props> = ({
@@ -244,8 +247,9 @@ const Step1: React.FC<Step1Props> = ({
   text,
   signIn,
   setLogin,
+  setSentCode, // ✅ ADD THIS LINE
 }) => (
-  <div className="flex w-[1586px] rounded-3xl h-[900px] bg-[#f3f3f3]">
+  <div className="font-lato flex w-[1586px] rounded-3xl h-[900px] bg-[#f3f3f3]">
     <div className="hidden md:flex md:w-1/2 pl-12 flex-col items-center justify-center p-12 pt-[80px] text-white">
       <div className="w-full justify-between items-center h-full max-w-[585px]">
         <div className="text-start">
@@ -272,7 +276,7 @@ const Step1: React.FC<Step1Props> = ({
               {langToggle ? text.mn.headTseg : text.en.headTseg}
             </span>
           </h1>
-          <div className="flex gap-2 mt-[17px]">
+          <div className="flex gap-2 text-base font-normal mt-[17px]">
             {langToggle ? text.mn.description1 : text.en.description1}
             <div
               onClick={() => setLogin(true)} // Changed from setStep(0)
@@ -290,7 +294,7 @@ const Step1: React.FC<Step1Props> = ({
               placeholder={langToggle ? text.mn.inputText1 : text.en.inputText1}
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
-              className="h-[54px] rounded-xl w-[284px] text-black border-[#e0e0e0] bg-[#ECECEC] px-4 text-lg placeholder:text-[#ababab]"
+              className="h-[54px] rounded-xl w-[284px] text-black border-[#e0e0e0] bg-[#ECECEC] px-4 text-2xl placeholder:text-[#ababab]"
             />
             <Input
               id="ner"
@@ -370,6 +374,7 @@ const Step1: React.FC<Step1Props> = ({
                   if (isPhone) payload.phone = contactInfo;
 
                   const res = await axios.post("/api/api_open", payload);
+
                   if (res.data.status === "error") {
                     setError(
                       res.data.message ||
@@ -378,8 +383,8 @@ const Step1: React.FC<Step1Props> = ({
                     return;
                   }
 
+                  setSentCode(res.data.code); // ✅ store received code here
                   setError("");
-
                   setStep(2);
                 } catch (error: any) {
                   console.error("API error:", error);
@@ -426,6 +431,7 @@ interface Step2Props {
   text: TranslationText;
   signIn: typeof signIn;
   setLogin: (login: boolean) => void;
+  sentCode: string;
 }
 
 const Step2: React.FC<Step2Props> = ({
@@ -444,102 +450,129 @@ const Step2: React.FC<Step2Props> = ({
   text,
   signIn,
   setLogin,
-}) => (
-  <div className="flex w-[1586px] rounded-3xl h-[900px] bg-[#f3f3f3]">
-    <div className="hidden md:flex md:w-1/2 pl-12 flex-col items-center justify-center p-12 pt-[80px] text-white">
-      <div className="w-full justify-between items-center h-full max-w-[585px]">
-        <div className="text-start">
-          <div className="flex justify-between">
-            <div className="flex items-center gap-1">
-              <img className="w-[30px] h-[30px]" src="/blacklogo.png" alt="" />
-              <p className="text-2xl text-[#5C5C5C]">restaurant.mn</p>
-            </div>
-            <div
-              onClick={() => setLangToggle(!langToggle)}
-              className="flex items-center cursor-pointer justify-center h-7 gap-1"
-            >
-              <Earth className="text-black h-[30px] w-[30px]" />
-              <div className="text-black text-2xl w-9">
-                {langToggle ? text.mn.mn : text.en.en}
-              </div>
-            </div>
-          </div>
-          <button
-            onClick={() => setStep(1)}
-            className="h-8 text-start flex mt-[10px] items-center justify-start text-sm text-gray-700 mb-2"
-          >
-            <ChevronLeft className="w-5  h-5" />
-            {langToggle ? "Буцах" : "back"}
-          </button>
-          <div className="text-[#9A9A9A] mt-3 flex-col font-normal text-sm flex gap-2">
-            <h1 className="text-[32px] mt-[28px] font-semibold text-[#161616]">
-              {langToggle ? text.mn.head : text.en.head}
-              <span className="text-[#F5BE32] font-medium">
-                {langToggle ? text.mn.headTseg : text.en.headTseg}
-              </span>
-            </h1>
-            <div className="flex gap-2 mt-[17px]">
-              {langToggle ? text.mn.description1 : text.en.description1}
-              <div
-                onClick={() => setLogin(true)} // Changed from setStep(0)
-                className="underline cursor-pointer"
-              >
-                {langToggle ? text.mn.description2 : text.en.description2}
-              </div>
-            </div>
-          </div>
-        </div>
+  sentCode, // ✅ ADD THIS LINE
+}) => {
+  // Add local error state for code verification
+  const [localError, setLocalError] = useState("");
 
-        <div className="mb-4 mt-[44px]">
-          <div className="flex gap-4">
-            <DisabledInput value={lastName} />
-            <DisabledInput value={firstName} />
-          </div>
-          <DisabledInput value={contactInfo} />
-        </div>
-        <div className="text-[32px] pb-1 pt-[44px] text-black font-semibold">
-          Confirmation.
-        </div>
-        <div className="text-sm py-1 text-[#9A9A9A]">
-          {isEmail(contactInfo)
-            ? "Enter the code we sent to your e-mail."
-            : "Enter the code we sent to your phone."}
-        </div>
-        <OtpInput value={confirmationCode} onChange={setConfirmationCode} />
-        <div className="text-xs text-[#9A9A9A] mb-4">
-          {timer > 0 ? (
-            <>Resend code 0:{timer.toString().padStart(2, "0")}</>
-          ) : (
-            <button onClick={onResend} className="text-gray-700 underline">
-              Resend code
+  const handleVerifyCode = () => {
+    if (confirmationCode.length !== 6) {
+      setLocalError(
+        langToggle
+          ? "6 оронтой кодоо бүрэн оруулна уу."
+          : "Please enter the full 6-digit code."
+      );
+      return;
+    }
+
+    const input = confirmationCode.trim();
+    const correct = sentCode.trim();
+
+    if (input === correct) {
+      setStep(3);
+    } else {
+      setLocalError(langToggle ? "Код буруу байна." : "Incorrect code.");
+    }
+  };
+
+  return (
+    <div className="font-lato flex w-[1586px] rounded-3xl h-[900px] bg-[#f3f3f3]">
+      <div className="hidden md:flex md:w-1/2 pl-12 flex-col items-center justify-center p-12 pt-[80px] text-white">
+        <div className="w-full justify-between items-center h-full max-w-[585px]">
+          <div className="text-start">
+            <div className="flex justify-between">
+              <div className="flex items-center gap-1">
+                <img
+                  className="w-[30px] h-[30px]"
+                  src="/blacklogo.png"
+                  alt=""
+                />
+                <p className="text-2xl text-[#5C5C5C]">restaurant.mn</p>
+              </div>
+              <div
+                onClick={() => setLangToggle(!langToggle)}
+                className="flex items-center cursor-pointer justify-center h-7 gap-1"
+              >
+                <Earth className="text-black h-[30px] w-[30px]" />
+                <div className="text-black text-2xl w-9">
+                  {langToggle ? text.mn.mn : text.en.en}
+                </div>
+              </div>
+            </div>
+            <button
+              onClick={() => setStep(1)}
+              className="h-8 text-start flex mt-[10px] items-center justify-start text-sm text-gray-700 mb-2"
+            >
+              <ChevronLeft className="w-5  h-5" />
+              {langToggle ? "Буцах" : "back"}
             </button>
-          )}
+            <div className="text-[#9A9A9A] mt-3 flex-col font-normal text-sm flex gap-2">
+              <h1 className="text-[32px] mt-[28px] font-semibold text-[#161616]">
+                {langToggle ? text.mn.head : text.en.head}
+                <span className="text-[#F5BE32] font-medium">
+                  {langToggle ? text.mn.headTseg : text.en.headTseg}
+                </span>
+              </h1>
+              <div className="flex gap-2 mt-[17px]">
+                {langToggle ? text.mn.description1 : text.en.description1}
+                <div
+                  onClick={() => setLogin(true)} // Changed from setStep(0)
+                  className="underline cursor-pointer"
+                >
+                  {langToggle ? text.mn.description2 : text.en.description2}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="mb-4 mt-[44px]">
+            <div className="flex gap-4">
+              <DisabledInput value={lastName} />
+              <DisabledInput value={firstName} />
+            </div>
+            <DisabledInput value={contactInfo} />
+          </div>
+          <div className="text-[32px] pb-1 pt-[44px] text-black font-semibold">
+            Confirmation.
+          </div>
+          <div className="text-sm py-1 text-[#9A9A9A]">
+            {isEmail(contactInfo)
+              ? "Enter the code we sent to your e-mail."
+              : "Enter the code we sent to your phone."}
+          </div>
+          <OtpInput value={confirmationCode} onChange={setConfirmationCode} />
+          <div className="text-xs text-[#9A9A9A] mb-4">
+            {timer > 0 ? (
+              <>Resend code 0:{timer.toString().padStart(2, "0")}</>
+            ) : (
+              <button onClick={onResend} className="text-gray-700 underline">
+                Resend code
+              </button>
+            )}
+          </div>
+          <div className="flex flex-col mt-[60px] items-center">
+            <Button
+              onClick={handleVerifyCode}
+              className="w-[367px] h-[56px] cursor-pointer items-center rounded-xl text-white text-lg font-medium bg-gradient-to-r from-[#EAC947] to-[#F6A253] hover:opacity-90"
+            >
+              {langToggle ? "Үргэлжлүүлэх" : "Continue"}
+            </Button>
+          </div>
+          <p className="text-sm text-red-500 mt-2">{localError || error}</p>
+          <SocialLogin signIn={signIn} langToggle={langToggle} text={text} />
         </div>
-        <div className="flex flex-col mt-[60px] items-center">
-          <Button
-            onClick={() => {
-              if (confirmationCode.length === 6) {
-                setStep(3);
-              }
-            }}
-            className="w-[367px] h-[56px] cursor-pointer items-center rounded-xl text-white text-lg font-medium bg-gradient-to-r from-[#EAC947] to-[#F6A253] hover:opacity-90"
-          >
-            {langToggle ? "Үргэлжлүүлэх" : "Continue"}
-          </Button>
-        </div>
-        <p className="text-sm text-red-500 mt-2">{error}</p>
-        <SocialLogin signIn={signIn} langToggle={langToggle} text={text} />
+      </div>
+      <div className="w-full md:w-1/2 flex flex-col items-center justify-center">
+        <img
+          className="h-full md:w-full rounded-r-3xl"
+          src="/login/image.png"
+          alt=""
+        />
       </div>
     </div>
-    <div className="w-full md:w-1/2 flex flex-col items-center justify-center">
-      <img
-        className="h-full md:w-full rounded-r-3xl"
-        src="/login/image.png"
-        alt=""
-      />
-    </div>
-  </div>
-);
+  );
+};
+
 // Step3 component
 interface Step3Props {
   lastName: string;
@@ -576,7 +609,7 @@ const Step3: React.FC<Step3Props> = ({
   setStep,
   setLogin,
 }) => (
-  <div className="flex w-[1586px] rounded-3xl h-[900px] bg-[#f3f3f3]">
+  <div className="font-lato flex w-[1586px] rounded-3xl h-[900px] bg-[#f3f3f3]">
     <div className="hidden md:flex md:w-1/2 pl-12 flex-col items-center justify-center p-12 pt-[80px] text-white">
       <div className="w-full justify-between items-center h-full max-w-[585px]">
         <div className="text-start">
@@ -687,6 +720,7 @@ const RestRegister: React.FC = () => {
   const [id, setId] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [sentCode, setSentCode] = useState(""); // ✅ stores backend code for verification
 
   const text: TranslationText = {
     mn: {
@@ -837,6 +871,7 @@ const RestRegister: React.FC = () => {
         text={text}
         signIn={signIn}
         setLogin={setLogin} // Pass setLogin prop
+        setSentCode={setSentCode}
       />
     );
   } else if (step === 2) {
@@ -857,6 +892,7 @@ const RestRegister: React.FC = () => {
         text={text}
         signIn={signIn}
         setLogin={setLogin} // Pass setLogin prop
+        sentCode={sentCode}
       />
     );
   } else {
@@ -882,7 +918,7 @@ const RestRegister: React.FC = () => {
   }
 
   return (
-    <div>
+    <div className="font-lato">
       {content}
       <ToastContainer />
     </div>

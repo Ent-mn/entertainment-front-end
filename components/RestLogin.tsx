@@ -145,13 +145,13 @@ const RestLogin = () => {
   }
 
   return (
-    <div>
+    <div className="font-lato">
       {forget ? (
         <RestForgetPass onBack={() => setForget(false)} />
       ) : register ? (
         <RestRegister />
       ) : (
-        <div className="flex h-[760px] w-[587px] items-start pt-[48px] relative justify-center rounded-3xl bg-[#f3f3f3] p-4">
+        <div className="flex h-[760px] w-[587px] items-start pt-[48px] relative justify-center rounded-3xl bg-[#f3f3f3] p-4 font-lato">
           <div className="w-full max-w-md space-y-8">
             <div className="text-start">
               <div className="flex justify-between">

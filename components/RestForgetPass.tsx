@@ -7,6 +7,10 @@ import { Earth, ChevronLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import axios from "axios";
+import ResetPasswordCode from "./ResetPasswordCode";
+import ResetPasswordNew from "./ResetPasswordNew";
+import RestLogin from "./RestLogin";
+import { toast } from "react-toastify";
 
 const RestForgetPass = ({ onBack }: { onBack?: () => void }) => {
   const [email, setEmail] = useState("");
@@ -14,6 +18,10 @@ const RestForgetPass = ({ onBack }: { onBack?: () => void }) => {
   const [load, setLoad] = useState(false);
   const [langToggle, setLangToggle] = useState(true);
   const [success, setSuccess] = useState("");
+  const [step, setStep] = useState(1);
+  const [sentCode, setSentCode] = useState("");
+  const [userId, setUserId] = useState<number | null>(null);
+  const [showLogin, setShowLogin] = useState(false);
 
   const router = useRouter();
 
@@ -21,9 +29,9 @@ const RestForgetPass = ({ onBack }: { onBack?: () => void }) => {
     mn: {
       mn: "mn",
       head: "Нууц үг сэргээх",
-      inputText1: "И-мэйл эсвэл Утасны дугаар",
+      inputText1: "И-мэйл",
       button: "Баталгаажуулах код илгээх",
-      success: "Шинэ нууц үг таны и-мэйл хаяг руу илгээгдлээ",
+      success: "Нууц үг сэргээх код таны и-мэйл хаяг руу илгээгдлээ",
       error: "Алдаа гарлаа, дахин оролдоно уу",
       description1: "Бүртгэлгүй бол",
       description2: "Бүртгүүлэх",
@@ -32,9 +40,9 @@ const RestForgetPass = ({ onBack }: { onBack?: () => void }) => {
     en: {
       en: "en",
       head: "Forgot Password",
-      inputText1: "E-mail or Phone number",
+      inputText1: "E-mail",
       button: "Send confirmation Code",
-      success: "A new password has been sent to your email address",
+      success: "A reset code has been sent to your email address",
       error: "An error occurred, please try again",
       description1: "Don't have an account?",
       description2: "Sign Up",
@@ -53,17 +61,15 @@ const RestForgetPass = ({ onBack }: { onBack?: () => void }) => {
     setSuccess("");
 
     let emailToSend = "";
-    let phoneToSend = "";
 
-    if (email.includes("@")) {
+    // Only allow email input
+    if (email.includes("@") && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       emailToSend = email;
-    } else if (/^\d{8}$/.test(email)) {
-      phoneToSend = email;
     } else {
       setError(
         langToggle
-          ? "Зөв имэйл эсвэл 8 оронтой утасны дугаар оруулна уу"
-          : "Please enter a valid email or 8-digit phone number"
+          ? "Зөв имэйл хаяг оруулна уу"
+          : "Please enter a valid email address"
       );
       setLoad(false);
       return;
@@ -72,12 +78,15 @@ const RestForgetPass = ({ onBack }: { onBack?: () => void }) => {
     const fetchData = async () => {
       try {
         const { data }: any = await axios.post("/api/api_open", {
-          sn: "customer_password_reset",
-          phone: phoneToSend,
+          sn: "customer_email_code_send_password_reset",
           email: emailToSend,
         });
         if (data.status == "success") {
           setSuccess(langToggle ? text.mn.success : text.en.success);
+          setSentCode(data.code || "000000"); // fallback for demo
+          setUserId(Number(data.customer_id)); // store user id from API
+          setStep(2);
+          toast.success(langToggle ? "Код илгээгдлээ!" : "Code sent to your email!");
         } else {
           setError(langToggle ? text.mn.error : text.en.error);
         }
@@ -91,8 +100,35 @@ const RestForgetPass = ({ onBack }: { onBack?: () => void }) => {
     fetchData();
   };
 
+  if (showLogin) {
+    return <RestLogin />;
+  }
+
+  if (step === 2) {
+    return (
+      <ResetPasswordCode
+        email={email}
+        sentCode={sentCode}
+        onSuccess={() => setStep(3)}
+        onBack={() => setStep(1)}
+      />
+    );
+  }
+  if (step === 3) {
+    return (
+      <ResetPasswordNew
+        email={email}
+        id={userId as number}
+        onSuccess={() => {
+          setSuccess(langToggle ? "Амжилттай!" : "Success!");
+          setShowLogin(true);
+        }}
+      />
+    );
+  }
+
   return (
-    <div className="flex h-[760px] w-[587px] items-start pt-[48px] relative justify-center rounded-3xl bg-[#f3f3f3] p-4">
+    <div className="flex h-[760px] w-[587px] items-start pt-[48px] relative justify-center rounded-3xl bg-[#f3f3f3] p-4 font-lato">
       <div className="w-full max-w-md">
         <div className="flex justify-between">
           <div className="flex items-center gap-[6px]">
